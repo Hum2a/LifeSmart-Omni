@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../firebase/auth';
 import '../styles/HomeScreen.css';
+import Modal from '../common/Modal';
 
 const HomeScreen = () => {
   const [showForm, setShowForm] = useState(false);
@@ -9,6 +10,12 @@ const HomeScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: '',
+    message: '',
+    type: 'success'
+  });
   
   const navigate = useNavigate();
   const { signIn, register } = useAuth();
@@ -43,19 +50,38 @@ const HomeScreen = () => {
         // Handle Sign-In
         const user = await signIn(email, password);
         console.log("Signed in user:", user);
-        alert("Sign-In successful!");
-        navigate('/quiz-landing');
+        setModalConfig({
+          title: 'Welcome Back!',
+          message: 'You have successfully signed in.',
+          type: 'success'
+        });
+        setModalOpen(true);
+        setTimeout(() => {
+          navigate('/quiz-landing');
+        }, 1500);
       } else {
         // Handle Register
         const user = await register(email, password);
         console.log("Registered user:", user);
-        alert("Registration successful!");
-        navigate('/quiz-landing');
+        setModalConfig({
+          title: 'Welcome to LifeSmart!',
+          message: 'Your account has been successfully created.',
+          type: 'success'
+        });
+        setModalOpen(true);
+        setTimeout(() => {
+          navigate('/quiz-landing');
+        }, 1500);
       }
       closeForm();
     } catch (error) {
       console.error("Authentication error:", error.message);
-      alert(error.message);
+      setModalConfig({
+        title: 'Authentication Error',
+        message: error.message,
+        type: 'error'
+      });
+      setModalOpen(true);
     }
   };
 
@@ -150,6 +176,14 @@ const HomeScreen = () => {
           <p className="copyright">© 2024 Life Smart. All rights reserved.</p>
         </footer>
       </div>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        type={modalConfig.type}
+      />
     </div>
   );
 };
