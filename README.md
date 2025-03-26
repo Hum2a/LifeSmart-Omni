@@ -1,74 +1,130 @@
-# Belinca - Financial Education Web Application
+# LifeSmart - Financial Education Platform
 
-Belinca is a React-based financial education web application designed to help users learn about financial concepts through interactive quizzes and simulations. This project is a React implementation of the Lifesmart Vue.js application.
+<div align="center">
+  <img src="src/assets/logo.png" alt="LifeSmart Logo" width="200"/>
+  
+  [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
+  [![Firebase](https://img.shields.io/badge/Firebase-10.7.0-orange.svg)](https://firebase.google.com/)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Features
+  A modern financial education platform helping users make smarter financial decisions through interactive tools and personalized guidance.
+</div>
 
-- **User Authentication**: Sign up and sign in functionality using Firebase Authentication
+## 🌟 Features
+
+### Currently Available
+- **Budget Tool**: Interactive budgeting assistant that helps users create and manage their personal budget
+  - Step-by-step budget creation process
+  - Personalized budget recommendations
+  - Visual budget breakdown
+  - Exportable budget spreadsheet
+
+### Coming Soon
 - **Financial Quiz**: Test your financial knowledge with interactive quizzes
-- **Team-based Learning**: Create teams to compete in quizzes and simulations
-- **Financial Simulation**: Simulate investment decisions and see their impact over time
+- **Investment Simulation**: Make investment decisions and see their impact over time
 - **Investment Calculator**: Calculate potential returns on investments with different parameters
-- **Results Analysis**: View detailed results and financial advice based on simulation performance
 
-## Technologies Used
+## 🚀 Tech Stack
 
-- React.js
-- React Router for navigation
-- Firebase (Authentication, Firestore)
-- CSS for styling
+- **Frontend Framework**: React.js 18
+- **Routing**: React Router v6
+- **Styling**: CSS3 with modern features (Flexbox, Grid, CSS Variables)
+- **Authentication**: Firebase Authentication
+- **Database**: Firebase Firestore
+- **Deployment**: Firebase Hosting
 
-## Getting Started
+## 🛠️ Getting Started
 
 ### Prerequisites
 
 - Node.js (v14 or later)
-- npm or yarn
+- npm (v6 or later)
+- Firebase account and project setup
 
 ### Installation
 
-1. Clone the repository
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/lifesmart.git
+   cd lifesmart
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   Create a `.env` file in the root directory with the following variables:
+   ```env
+   REACT_APP_FIREBASE_API_KEY=your_api_key
+   REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+   REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   REACT_APP_FIREBASE_APP_ID=your_app_id
+   REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm start
+   ```
+
+5. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+## 📁 Project Structure
+
 ```
-git clone https://github.com/yourusername/belinca.git
-cd belinca
+src/
+├── components/
+│   ├── screens/           # Main screen components
+│   │   ├── budget/       # Budget tool components
+│   │   ├── quiz/         # Quiz components (coming soon)
+│   │   └── simulation/   # Simulation components (coming soon)
+│   ├── widgets/          # Reusable UI components
+│   └── styles/           # Component-specific styles
+├── firebase/             # Firebase configuration
+├── assets/              # Images and other static assets
+└── utils/               # Utility functions
 ```
 
-2. Install dependencies
-```
-npm install
-```
+## 🎯 Usage
 
-3. Start the development server
-```
-npm start
-```
+1. **Home Screen**: Access the main dashboard
+2. **Budget Tool**: Create and manage your personal budget
+   - Follow the step-by-step process
+   - Get personalized recommendations
+   - Export your budget as a spreadsheet
+3. **Coming Soon Features**: Stay tuned for new tools and features
 
-4. Open your browser and navigate to `http://localhost:3000`
+## 🤝 Contributing
 
-## Project Structure
+We welcome contributions! Please follow these steps:
 
-- `/src`: Source code
-  - `/components`: React components
-    - `/screens`: Main screen components
-      - `/quiz`: Quiz-related components
-      - `/simulation`: Simulation-related components
-    - `/widgets`: Reusable UI components
-    - `/styles`: Shared styles
-  - `/firebase`: Firebase configuration and utilities
-  - `/assets`: Images and other static assets
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Usage
+## 📝 License
 
-1. **Home Screen**: Sign up or sign in to access the application
-2. **Quiz**: Test your financial knowledge with interactive quizzes
-3. **Simulation**: Make investment decisions and see their impact over time
-4. **Investment Calculator**: Calculate potential returns on investments
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## License
+## 🙏 Acknowledgments
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+- Original LifeSmart project for inspiration
+- Firebase for providing robust backend services
+- All contributors who have helped shape this project
 
-## Acknowledgments
+## 📞 Support
 
-- Original Lifesmart project for inspiration
-- Firebase for authentication and database services
+For support, please open an issue in the GitHub repository or contact the development team.
+
+---
+
+<div align="center">
+  Made with ❤️ by the LifeSmart Team
+</div>
