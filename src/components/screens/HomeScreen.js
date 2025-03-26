@@ -57,7 +57,7 @@ const HomeScreen = () => {
         });
         setModalOpen(true);
         setTimeout(() => {
-          navigate('/quiz-landing');
+          navigate('/select');
         }, 1500);
       } else {
         // Handle Register
@@ -70,7 +70,7 @@ const HomeScreen = () => {
         });
         setModalOpen(true);
         setTimeout(() => {
-          navigate('/quiz-landing');
+          navigate('/select');
         }, 1500);
       }
       closeForm();
@@ -86,41 +86,41 @@ const HomeScreen = () => {
   };
 
   return (
-    <div className="modern-auth-screen">
-      <div className="animated-background">
-        <div className="shape shape1"></div>
-        <div className="shape shape2"></div>
-        <div className="shape shape3"></div>
+    <div className="homescreen-modern-auth-screen">
+      <div className="homescreen-animated-background">
+        <div className="homescreen-shape homescreen-shape1"></div>
+        <div className="homescreen-shape homescreen-shape2"></div>
+        <div className="homescreen-shape homescreen-shape3"></div>
       </div>
       
-      <div className="content-container">
+      <div className="homescreen-content-container">
         {/* Header */}
-        <header className="modern-header">
-          <h1 className="modern-title">
-            <span className="title-life">Life</span>
-            <span className="title-smart">Smart</span>
+        <header className="homescreen-modern-header">
+          <h1 className="homescreen-modern-title">
+            <span className="homescreen-title-life">Life</span>
+            <span className="homescreen-title-smart">Smart</span>
           </h1>
-          <p className="tagline">Your journey to financial wisdom begins here</p>
+          <p className="homescreen-tagline">Your journey to financial wisdom begins here</p>
         </header>
 
         {/* Main Content */}
-        <main className="modern-main">
+        <main className="homescreen-modern-main">
           {!showForm ? (
-            <div className="modern-buttons">
-              <button onClick={showSignInForm} className="modern-button sign-in-button">
-                <span className="button-text">Sign In</span>
-                <span className="button-icon">→</span>
+            <div className="homescreen-modern-buttons">
+              <button onClick={showSignInForm} className="homescreen-modern-button homescreen-sign-in-button">
+                <span className="homescreen-button-text">Sign In</span>
+                <span className="homescreen-button-icon">→</span>
               </button>
-              <button onClick={showRegisterForm} className="modern-button register-button">
-                <span className="button-text">Register</span>
-                <span className="button-icon">+</span>
+              <button onClick={showRegisterForm} className="homescreen-modern-button homescreen-register-button">
+                <span className="homescreen-button-text">Register</span>
+                <span className="homescreen-button-icon">+</span>
               </button>
             </div>
           ) : (
-            <div className="form-container">
-              <form onSubmit={handleFormSubmit} className="modern-form">
-                <h2 className="form-title">{isSignInMode ? 'Welcome Back' : 'Join Us'}</h2>
-                <div className="input-group">
+            <div className="homescreen-form-container">
+              <form onSubmit={handleFormSubmit} className="homescreen-modern-form">
+                <h2 className="homescreen-form-title">{isSignInMode ? 'Welcome Back' : 'Join Us'}</h2>
+                <div className="homescreen-input-group">
                   <label htmlFor="email">Email</label>
                   <input
                     id="email"
@@ -129,10 +129,10 @@ const HomeScreen = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    className="modern-input"
+                    className="homescreen-modern-input"
                   />
                 </div>
-                <div className="input-group">
+                <div className="homescreen-input-group">
                   <label htmlFor="password">Password</label>
                   <input
                     id="password"
@@ -141,11 +141,11 @@ const HomeScreen = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
-                    className="modern-input"
+                    className="homescreen-modern-input"
                   />
                 </div>
                 {!isSignInMode && (
-                  <div className="input-group">
+                  <div className="homescreen-input-group">
                     <label htmlFor="confirmPassword">Confirm Password</label>
                     <input
                       id="confirmPassword"
@@ -154,15 +154,15 @@ const HomeScreen = () => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm your password"
                       required
-                      className="modern-input"
+                      className="homescreen-modern-input"
                     />
                   </div>
                 )}
-                <div className="form-actions">
-                  <button type="submit" className="modern-button submit-button">
+                <div className="homescreen-form-actions">
+                  <button type="submit" className="homescreen-modern-button homescreen-submit-button">
                     {isSignInMode ? 'Sign In' : 'Create Account'}
                   </button>
-                  <button type="button" onClick={closeForm} className="modern-button cancel-button">
+                  <button type="button" onClick={closeForm} className="homescreen-modern-button homescreen-cancel-button">
                     Cancel
                   </button>
                 </div>
@@ -172,8 +172,8 @@ const HomeScreen = () => {
         </main>
 
         {/* Footer */}
-        <footer className="modern-footer">
-          <p className="copyright">© 2024 Life Smart. All rights reserved.</p>
+        <footer className="homescreen-modern-footer">
+          <p className="homescreen-copyright">© 2024 Life Smart. All rights reserved.</p>
         </footer>
       </div>
 
