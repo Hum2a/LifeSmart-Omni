@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import '../../styles/BudgetTool.css';
 import BudgetSpreadsheet from './BudgetSpreadsheet';
+import SpreadsheetModal from './SpreadsheetModal';
 import * as XLSX from 'xlsx';
 
 const BudgetTool = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [showSpreadsheet, setShowSpreadsheet] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     // Income Information
     monthlyIncome: '',
@@ -44,8 +46,8 @@ const BudgetTool = () => {
     travel: '',
     
     // Savings & Investments
-    hasSavingsPot: '',
-    savingsPotType: '',
+    hasSavingsPot: 'no',
+    savingsPotType: 'one',
     emergencyFund: '',
     sinkingFund: '',
     goalFund: '',
@@ -56,11 +58,11 @@ const BudgetTool = () => {
     otherDebt: '',
     
     // 6-Month Projection
-    incomeChange: '',
+    incomeChange: 'yes',
     incomeChangeMonth: '',
-    needsChange: '',
+    needsChange: 'yes',
     needsChangeMonth: '',
-    wantsChange: '',
+    wantsChange: 'yes',
     wantsChangeMonth: '',
     monthlyProjections: Array(6).fill().map(() => ({
       income: '',
@@ -557,6 +559,7 @@ const BudgetTool = () => {
             onChange={handleInputChange}
             className="budgettool-select"
           >
+            <option value="">Select option</option>
             {question.options.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -937,14 +940,38 @@ const BudgetTool = () => {
           >
             Previous
           </button>
-          <button
-            onClick={currentStep === questions.length - 1 ? downloadBudgetSpreadsheet : handleNext}
-            className="budgettool-button budgettool-button-primary"
-          >
-            {currentStep === questions.length - 1 ? 'Download Spreadsheet' : 'Next'}
-          </button>
+          <div className="budgettool-navigation-right">
+            {currentStep === questions.length - 1 && (
+              <>
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="budgettool-button budgettool-button-secondary"
+                >
+                  View Spreadsheet
+                </button>
+                <button
+                  onClick={() => window.location.href = '/homescreen'}
+                  className="budgettool-button budgettool-button-secondary"
+                >
+                  Return to Home
+                </button>
+              </>
+            )}
+            <button
+              onClick={currentStep === questions.length - 1 ? downloadBudgetSpreadsheet : handleNext}
+              className="budgettool-button budgettool-button-primary"
+            >
+              {currentStep === questions.length - 1 ? 'Download Spreadsheet' : 'Next'}
+            </button>
+          </div>
         </div>
       </div>
+
+      <SpreadsheetModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        formData={formData}
+      />
     </div>
   );
 };

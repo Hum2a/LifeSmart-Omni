@@ -112,6 +112,11 @@
   gap: 1rem;
 }
 
+.budgettool-navigation-right {
+  display: flex;
+  gap: 1rem;
+}
+
 .budgettool-button {
   padding: 0.8rem 2rem;
   border: none;
@@ -370,6 +375,11 @@
 
   .budgettool-navigation {
     flex-direction: column;
+  }
+
+  .budgettool-navigation-right {
+    flex-direction: column;
+    width: 100%;
   }
 
   .budgettool-button {
