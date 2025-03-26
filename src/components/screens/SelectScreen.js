@@ -36,29 +36,23 @@ const SelectScreen = () => {
               <span className="selectscreen-tool-text">Budget Tool</span>
             </button>
 
-            <button 
-              onClick={() => handleNavigation('/quiz')} 
-              className="selectscreen-tool-button selectscreen-quiz"
-            >
+            <div className="selectscreen-tool-button selectscreen-quiz selectscreen-disabled">
+              <div className="selectscreen-coming-soon">Coming Soon</div>
               <span className="selectscreen-tool-icon">📝</span>
               <span className="selectscreen-tool-text">Financial Quiz</span>
-            </button>
+            </div>
 
-            <button 
-              onClick={() => handleNavigation('/simulation')} 
-              className="selectscreen-tool-button selectscreen-simulation"
-            >
+            <div className="selectscreen-tool-button selectscreen-simulation selectscreen-disabled">
+              <div className="selectscreen-coming-soon">Coming Soon</div>
               <span className="selectscreen-tool-icon">🎮</span>
               <span className="selectscreen-tool-text">Simulation</span>
-            </button>
+            </div>
 
-            <button 
-              onClick={() => handleNavigation('/calculator')} 
-              className="selectscreen-tool-button selectscreen-calculator"
-            >
+            <div className="selectscreen-tool-button selectscreen-calculator selectscreen-disabled">
+              <div className="selectscreen-coming-soon">Coming Soon</div>
               <span className="selectscreen-tool-icon">🧮</span>
               <span className="selectscreen-tool-text">Investment Calculator</span>
-            </button>
+            </div>
           </div>
         </main>
 

@@ -115,6 +115,7 @@ firebase-debug.log*
 firebase-debug.*.log*
 .firebaserc
 firebase.json
+lifesmart-investing-tool-firebase-adminsdk-1drpe-2b150e5975.json
 
 # TypeScript
 *.tsbuildinfo
