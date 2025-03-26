@@ -50,16 +50,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app;
-try {
-  app = initializeApp(firebaseConfig);
-} catch (error) {
-  console.error('Error initializing Firebase:', error);
-  throw error;
-}
-
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const firebaseAuth = getAuth(app);
 const db = getFirestore(app);
-const auth = getAuth(app); // Initialize Firebase Authentication
 
 // Save stock data to Firestore
 export const saveStockDataToFirestore = async (symbol, data) => {
@@ -103,7 +97,5 @@ export const isDataFetchedForToday = async (symbol) => {
   return false;
 };
 
-// Initialize and export Firebase services
-export const analytics = getAnalytics(app);
-export const firebaseAuth = auth; // Export auth for use in components
-export default app; 
+// Export the Firebase app instance and other services
+export { app, analytics, firebaseAuth, db }; 

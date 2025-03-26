@@ -427,3 +427,77 @@
     transform: translateY(0);
   }
 }
+
+.homescreen-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+.homescreen-social-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.homescreen-social-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.homescreen-social-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 1.2rem;
+}
+
+.homescreen-google-button {
+  background: #ffffff;
+  color: #333333;
+}
+
+.homescreen-google-button:hover {
+  background: #f5f5f5;
+}
+
+.homescreen-apple-button {
+  background: #000000;
+  color: #ffffff;
+}
+
+.homescreen-apple-button:hover {
+  background: #1a1a1a;
+}
+
+.homescreen-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.homescreen-divider::before,
+.homescreen-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.homescreen-divider span {
+  padding: 0 1rem;
+  font-size: 0.9rem;
+}
