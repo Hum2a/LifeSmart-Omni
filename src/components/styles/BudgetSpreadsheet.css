@@ -1,0 +1,142 @@
+.budgetspreadsheet-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: #ffffff;
+}
+
+.budgetspreadsheet-content {
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgetspreadsheet-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.budgetspreadsheet-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #4CAF50, #2196F3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.budgetspreadsheet-subtitle {
+  font-size: 1.1rem;
+  color: #cccccc;
+}
+
+.budgetspreadsheet-tables {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.budgetspreadsheet-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.budgetspreadsheet-section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+.budgetspreadsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.budgetspreadsheet-table th,
+.budgetspreadsheet-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgetspreadsheet-table th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.budgetspreadsheet-table td {
+  color: #cccccc;
+}
+
+.budgetspreadsheet-total {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 500;
+}
+
+.budgetspreadsheet-total td {
+  color: #ffffff;
+}
+
+.budgetspreadsheet-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.budgetspreadsheet-summary-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.budgetspreadsheet-summary-label {
+  font-size: 1rem;
+  color: #cccccc;
+}
+
+.budgetspreadsheet-summary-value {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .budgetspreadsheet-content {
+    padding: 1.5rem;
+  }
+
+  .budgetspreadsheet-title {
+    font-size: 2rem;
+  }
+
+  .budgetspreadsheet-subtitle {
+    font-size: 1rem;
+  }
+
+  .budgetspreadsheet-table th,
+  .budgetspreadsheet-table td {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .budgetspreadsheet-summary {
+    grid-template-columns: 1fr;
+  }
+} 
