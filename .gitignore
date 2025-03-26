@@ -7,14 +7,25 @@
 
 # Testing
 /coverage
+__tests__
+*.test.*
+*.spec.*
 
 # Production
 /build
 /dist
+/out
+build/
+dist/
+out/
 
 # Environment Variables
 .env
+.env.*
 .env.local
+.env.development
+.env.test
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -27,6 +38,8 @@ yarn-error.log*
 debug.log*
 logs
 *.log
+log.txt
+error.log
 
 # IDE - VSCode
 .vscode/*
@@ -35,12 +48,14 @@ logs
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+.history/
 
 # IDE - JetBrains
 .idea/
 *.iml
 *.iws
 .idea_modules/
+*.ipr
 
 # IDE - WebStorm
 /.idea
@@ -50,8 +65,9 @@ logs
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
 
-# Misc
+# System Files
 .DS_Store
 .DS_Store?
 ._*
@@ -59,6 +75,147 @@ logs
 .Trashes
 ehthumbs.db
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# npm & yarn
+.npm
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+.yarn-integrity
+yarn.lock
+package-lock.json
+
+# Cache directories
+.eslintcache
+.stylelintcache
+.cache
+.parcel-cache
+.next
+.nuxt
+.vuepress/dist
+.serverless
+.fusebox
+.dynamodb
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.webpack
+.grunt
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+.firebaserc
+firebase.json
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Next.js
+.next/
+out/
+.vercel
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+.temp
+temp/
+
+# Office Documents
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.pdf
+*.rtf
+*.odt
+*.ods
+*.odp
+
+# Image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.ico
+*.svg
+*.bmp
+*.tiff
+*.webp
+
+# Audio & Video
+*.mp3
+*.wav
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+
+# Archive files
+*.zip
+*.rar
+*.7z
+*.gz
+*.tar
+*.tgz
+
+# Database
+*.sql
+*.sqlite
+*.db
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.obj
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Backup files
+*.backup
+*.bak
+*-backup
+*-bak
+*.old
+
+# Local development
+local/
+dev/
+development/
+*.local
+*.dev
+*.development
+
+# Dependency directories
+bower_components/
+jspm_packages/
 
 # Optional npm cache directory
 .npm
@@ -81,29 +238,20 @@ Thumbs.db
 # Output of 'npm pack'
 *.tgz
 
-# Yarn
-.yarn-integrity
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
+# Storybook
+storybook-static/
 
-# Firebase
-.firebase/
-firebase-debug.log*
-firebase-debug.*.log*
+# Coverage directory
+coverage/
+.nyc_output
+*.lcov
 
-# TypeScript
-*.tsbuildinfo
+# Cypress
+cypress/videos
+cypress/screenshots
 
-# Next.js
-.next/
-out/
-
-# Temporary files
-*.swp
-*.swo
-*~
+# Misc development files
+*.map
+*.d.ts
+!*.d.ts.map
+.env.example
