@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "LifeSmart",
+  "name": "LifeSmart Financial Education Platform",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,16 +10,59 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#4CAF50",
+  "background_color": "#1a1a1a",
+  "orientation": "portrait",
+  "scope": "/",
+  "description": "Make smarter financial decisions with LifeSmart's interactive tools",
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "categories": ["finance", "education", "productivity"],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "LifeSmart Dashboard"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Budget Tool"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Budget Tool",
+      "short_name": "Budget",
+      "description": "Create and manage your budget",
+      "url": "/budget-tool",
+      "icons": [{ "src": "budget-icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Financial Quiz",
+      "short_name": "Quiz",
+      "description": "Test your financial knowledge",
+      "url": "/quiz",
+      "icons": [{ "src": "quiz-icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7"
 }
