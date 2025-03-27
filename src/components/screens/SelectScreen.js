@@ -2,6 +2,34 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/SelectScreen.css';
 
+// Configuration object for tool availability
+const TOOL_CONFIG = {
+  budgetTool: {
+    enabled: true,
+    path: '/budget-tool',
+    icon: '💰',
+    text: 'Budget Tool'
+  },
+  financialQuiz: {
+    enabled: true,
+    path: '/quiz',
+    icon: '📝',
+    text: 'Financial Quiz'
+  },
+  simulation: {
+    enabled: false,
+    path: '/simulation',
+    icon: '🎮',
+    text: 'Simulation'
+  },
+  investmentCalculator: {
+    enabled: false,
+    path: '/calculator',
+    icon: '🧮',
+    text: 'Investment Calculator'
+  }
+};
+
 const SelectScreen = () => {
   const navigate = useNavigate();
 
@@ -28,31 +56,24 @@ const SelectScreen = () => {
 
         <main className="selectscreen-select-main">
           <div className="selectscreen-tools-grid">
-            <button 
-              onClick={() => handleNavigation('/budget-tool')} 
-              className="selectscreen-tool-button selectscreen-budget-tool"
-            >
-              <span className="selectscreen-tool-icon">💰</span>
-              <span className="selectscreen-tool-text">Budget Tool</span>
-            </button>
-
-            <div className="selectscreen-tool-button selectscreen-quiz selectscreen-disabled">
-              <div className="selectscreen-coming-soon">Coming Soon</div>
-              <span className="selectscreen-tool-icon">📝</span>
-              <span className="selectscreen-tool-text">Financial Quiz</span>
-            </div>
-
-            <div className="selectscreen-tool-button selectscreen-simulation selectscreen-disabled">
-              <div className="selectscreen-coming-soon">Coming Soon</div>
-              <span className="selectscreen-tool-icon">🎮</span>
-              <span className="selectscreen-tool-text">Simulation</span>
-            </div>
-
-            <div className="selectscreen-tool-button selectscreen-calculator selectscreen-disabled">
-              <div className="selectscreen-coming-soon">Coming Soon</div>
-              <span className="selectscreen-tool-icon">🧮</span>
-              <span className="selectscreen-tool-text">Investment Calculator</span>
-            </div>
+            {Object.entries(TOOL_CONFIG).map(([key, config]) => (
+              config.enabled ? (
+                <button 
+                  key={key}
+                  onClick={() => handleNavigation(config.path)} 
+                  className="selectscreen-tool-button"
+                >
+                  <span className="selectscreen-tool-icon">{config.icon}</span>
+                  <span className="selectscreen-tool-text">{config.text}</span>
+                </button>
+              ) : (
+                <div key={key} className="selectscreen-tool-button selectscreen-disabled">
+                  <div className="selectscreen-coming-soon">Coming Soon</div>
+                  <span className="selectscreen-tool-icon">{config.icon}</span>
+                  <span className="selectscreen-tool-text">{config.text}</span>
+                </div>
+              )
+            ))}
           </div>
         </main>
 

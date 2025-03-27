@@ -1631,7 +1631,7 @@ const BudgetTool = () => {
                   View Spreadsheet
                 </button>
                 <button
-                  onClick={() => window.location.href = '/homescreen'}
+                  onClick={() => window.location.href = '/select'}
                   className="budgettool-button budgettool-button-secondary"
                 >
                   Return to Home

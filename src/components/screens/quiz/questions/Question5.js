@@ -1,227 +1,274 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './Question5.css';
 
 const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [timer, setTimer] = useState(300);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [glossaryTitle, setGlossaryTitle] = useState('');
+  const [glossaryContent, setGlossaryContent] = useState('');
+  const [hoverModal, setHoverModal] = useState({
+    show: false,
+    title: "",
+    content: "",
+    x: 0,
+    y: 0,
+  });
+  const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill([]));
 
-  const handleOptionSelect = (index) => {
-    if (!showFeedback) {
-      setSelectedOption(index);
+  const answerOptions = [
+    'A: Paying bills and payments on time',
+    'B: Registering on the electoral roll',
+    'C: Frequently applying for new credit',
+    'D: Paying off or maintaining low levels of debt',
+    'E: Keeping a bank account open for many years',
+    'F: Maxing out your credit cards regularly',
+    'G: Avoiding frequent credit applications',
+    'H: Moving house regularly'
+  ];
+
+  const correctAnswers = [0, 1, 3, 4, 6]; // Correct answers: A, B, D, E, G
+
+  useEffect(() => {
+    let intervalId;
+    if (timerStarted && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer(prev => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [timerStarted, timer]);
+
+  const minutes = Math.floor(timer / 60);
+  const seconds = timer % 60;
+  const progressBarWidth = (timer / 300) * 100;
+
+  const startTimer = () => {
+    if (!timerStarted) {
+      setTimerStarted(true);
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedOption === null) return;
-
-    const isCorrect = selectedOption === 2; // Index of correct answer (Starting early with less...)
-    setShowFeedback(true);
-    
-    // Award points based on correct answer
-    const points = teams.map(() => isCorrect ? 1 : 0);
-    onAwardPoints(points);
+  const showHoverModal = (title, content, event) => {
+    if (!event) return;
+    setHoverModal({
+      show: true,
+      title,
+      content,
+      x: event.clientX + 15,
+      y: event.clientY + 15
+    });
   };
 
-  const styles = {
-    questionContainer: {
-      padding: '2rem',
-      maxWidth: '800px',
-      margin: '0 auto',
-      backgroundColor: 'white',
-      borderRadius: '10px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
-    title: {
-      color: '#003F91',
-      fontSize: '1.5rem',
-      marginBottom: '1.5rem',
-      textAlign: 'center',
-    },
-    scenario: {
-      backgroundColor: '#f8f9fa',
-      padding: '1.5rem',
-      borderRadius: '8px',
-      marginBottom: '2rem',
-    },
-    scenarioText: {
-      fontSize: '1.1rem',
-      lineHeight: '1.6',
-      color: '#495057',
-      margin: 0,
-    },
-    optionsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-    },
-    option: {
-      padding: '1rem',
-      border: '2px solid transparent',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      backgroundColor: '#f8f9fa',
-      textAlign: 'left',
-      fontSize: '1rem',
-      width: '100%',
-    },
-    optionSelected: {
-      backgroundColor: '#B8CEF0',
-      borderColor: '#003F91',
-    },
-    optionCorrect: {
-      backgroundColor: '#d4edda',
-      borderColor: '#28a745',
-      color: '#155724',
-    },
-    optionIncorrect: {
-      backgroundColor: '#f8d7da',
-      borderColor: '#dc3545',
-      color: '#721c24',
-    },
-    feedback: {
-      marginTop: '1.5rem',
-      padding: '1rem',
-      borderRadius: '8px',
-      backgroundColor: '#f8f9fa',
-    },
-    feedbackText: {
-      marginBottom: '1rem',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-    },
-    explanation: {
-      color: '#495057',
-      lineHeight: '1.5',
-    },
-    button: {
-      backgroundColor: '#003F91',
-      color: 'white',
-      border: 'none',
-      padding: '0.8rem 1.5rem',
-      borderRadius: '8px',
-      fontSize: '1rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      marginTop: '1.5rem',
-      width: '100%',
-    },
-    buttonHover: {
-      backgroundColor: '#002a61',
-    },
-    buttonDisabled: {
-      backgroundColor: '#cccccc',
-      cursor: 'not-allowed',
-    },
+  const hideHoverModal = () => {
+    setHoverModal(prev => ({ ...prev, show: false }));
   };
 
-  const getOptionStyle = (index) => {
-    if (!showFeedback) {
-      return {
-        ...styles.option,
-        ...(selectedOption === index ? styles.optionSelected : {})
-      };
+  const openGlossary = (term) => {
+    setShowGlossary(true);
+    if (term === 'creditRating') {
+      setGlossaryTitle('Credit Rating');
+      setGlossaryContent('A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.');
     }
-    
-    if (index === 2) { // Correct answer
-      return { ...styles.option, ...styles.optionCorrect };
+  };
+
+  const toggleTeamAnswer = (teamIndex, optionIndex) => {
+    const newAnswers = [...teamAnswers];
+    const answers = [...newAnswers[teamIndex]];
+    const answerPosition = answers.indexOf(optionIndex);
+
+    if (answerPosition === -1) {
+      answers.push(optionIndex);
+    } else {
+      answers.splice(answerPosition, 1);
     }
-    
-    if (selectedOption === index) {
-      return { ...styles.option, ...styles.optionIncorrect };
-    }
-    
-    return styles.option;
+    newAnswers[teamIndex] = answers;
+    setTeamAnswers(newAnswers);
+  };
+
+  const submitAnswers = () => {
+    setShowResults(true);
+  };
+
+  const calculateScore = (index) => {
+    const answers = teamAnswers[index] || [];
+    let score = 0;
+    answers.forEach((answer) => {
+      if (correctAnswers.includes(answer)) {
+        score += 1;
+      }
+    });
+    return score;
+  };
+
+  const nextQuestion = () => {
+    const pointsArray = teamAnswers.map((answers, index) => calculateScore(index));
+    onAwardPoints(pointsArray);
+    onNextQuestion();
   };
 
   return (
-    <div style={styles.questionContainer}>
-      <h2 style={styles.title}>Question 5: Retirement Planning</h2>
-      
-      <div style={styles.scenario}>
-        <p style={styles.scenarioText}>
-          What is the power of compound interest in retirement savings?
+    <div className="question-container">
+      {/* Header and Progress Bar */}
+      <div className="progress-bar-container">
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+        </div>
+
+        <div className="timer-container">
+          {!timerStarted ? (
+            <button onClick={startTimer} className="start-timer-button">
+              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
+            </button>
+          ) : (
+            <div className="timer">
+              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Task Description */}
+      <div className="task-header">
+        <div className="top-layer">
+          <div className="points-section">
+            <h3>Challenge 5</h3>
+            <img src="/assets/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <p className="points">5 points</p>
+          </div>
+          <div className="button-container">
+            {/* <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button> */}
+          </div>
+        </div>
+        <div>
+          <p>
+            Ben decides he wants to get another loan in the future, so he would like to improve his
+            <span className="hoverable-term"
+                  onMouseOver={(e) => showHoverModal('Credit Rating', 'A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.', e)}
+                  onMouseLeave={hideHoverModal}>
+              <strong>credit rating</strong>
+            </span>.
+          </p>
+          <img src="/assets/moneyhandshake.png" alt="Task 5 Image" className="task-image" />
+        </div>
+      </div>
+
+      {/* Glossary Sidebar */}
+      {showGlossary && (
+        <div className="glossary-sidebar">
+          <div className="glossary-header">
+            <h2>{glossaryTitle}</h2>
+            <button className="close-button" onClick={() => setShowGlossary(false)}>X</button>
+          </div>
+          <div className="glossary-content">
+            <p>{glossaryContent}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Hint Modal */}
+      {showHintModal && (
+        <div className="hint-modal-overlay">
+          <div className="hint-modal">
+            <h3>Hint</h3>
+            <p>Net worth = Total Assets – Total Liabilities</p>
+            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Question Section */}
+      <div className="question-section">
+        <p className="question-section">
+          Which of the following things improve your
+          <span className="hoverable-term"
+                onMouseOver={(e) => showHoverModal('Credit Rating', 'A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.', e)}
+                onMouseLeave={hideHoverModal}>
+            <strong>credit rating</strong>
+          </span>?
         </p>
       </div>
 
-      <div style={styles.optionsContainer}>
-        <button 
-          style={getOptionStyle(0)}
-          onClick={() => handleOptionSelect(0)}
-          disabled={showFeedback}
-        >
-          It only affects high-risk investments
-        </button>
-        
-        <button 
-          style={getOptionStyle(1)}
-          onClick={() => handleOptionSelect(1)}
-          disabled={showFeedback}
-        >
-          It's less effective than saving more money later
-        </button>
-        
-        <button 
-          style={getOptionStyle(2)}
-          onClick={() => handleOptionSelect(2)}
-          disabled={showFeedback}
-        >
-          Starting early with less money can outperform starting later with more
-        </button>
-        
-        <button 
-          style={getOptionStyle(3)}
-          onClick={() => handleOptionSelect(3)}
-          disabled={showFeedback}
-        >
-          It only works with certain types of retirement accounts
-        </button>
-      </div>
+      {/* Answer Options and Team Selection */}
+      {!showResults ? (
+        <div>
+          {/* Answer Options */}
+          <div className="answer-options">
+            {answerOptions.map((option, index) => (
+              <div key={index} className="answer-option">
+                <p>{option}</p>
+              </div>
+            ))}
+          </div>
 
-      {showFeedback ? (
-        <div style={styles.feedback}>
-          <p style={{
-            ...styles.feedbackText,
-            color: selectedOption === 2 ? '#155724' : '#721c24'
-          }}>
-            {selectedOption === 2 ? 'Correct!' : 'Incorrect!'}
-          </p>
-          <p style={styles.explanation}>
-            The power of compound interest lies in time, not just the amount invested. When you start 
-            saving early, your money has more time to grow and earn interest on interest. This means 
-            that someone who starts investing a smaller amount in their 20s can end up with more money 
-            than someone who starts investing larger amounts in their 40s. This principle applies to 
-            all types of investments, regardless of risk level or account type.
-          </p>
-          <button 
-            style={styles.button}
-            onClick={onNextQuestion}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Next
-          </button>
+          {/* Teams Answer Selection */}
+          <div className="teams-selection">
+            {teams.map((team, teamIndex) => (
+              <div key={teamIndex} className="team-selection">
+                <h4>{team.name}</h4>
+                <div className="team-options">
+                  {answerOptions.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`${teamAnswers[teamIndex]?.includes(index) ? 'selected' : ''}`}
+                      onClick={() => toggleTeamAnswer(teamIndex, index)}
+                    >
+                      {String.fromCharCode(65 + index)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Submit Button */}
+          <button className="submit-button" onClick={submitAnswers}>Submit</button>
         </div>
       ) : (
-        <button 
-          style={{
-            ...styles.button,
-            ...(selectedOption === null ? styles.buttonDisabled : {})
-          }}
-          onClick={handleSubmit}
-          disabled={selectedOption === null}
-          onMouseOver={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor;
-            }
-          }}
-          onMouseOut={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.button.backgroundColor;
-            }
-          }}
-        >
-          Submit Answer
-        </button>
+        <div className="results-section">
+          {/* Updated answer options with correct/incorrect indicators */}
+          <div className="answer-options">
+            {answerOptions.map((option, index) => (
+              <div
+                key={index}
+                className={`answer-option ${correctAnswers.includes(index) ? 'correct' : 'incorrect'}`}
+              >
+                <p>{option}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Team Results */}
+          <div className="teams-results">
+            {teams.map((team, index) => (
+              <div key={index} className="team-result">
+                <h4>{team.name}</h4>
+                {teamAnswers[index]?.map((answer, answerIndex) => (
+                  <div
+                    key={answerIndex}
+                    className={correctAnswers.includes(answer) ? 'correct' : 'incorrect'}
+                  >
+                    {String.fromCharCode(65 + answer)}
+                  </div>
+                ))}
+                <p>Points: {calculateScore(index)}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Next Button */}
+          <button className="next-button" onClick={nextQuestion}>Next</button>
+        </div>
+      )}
+
+      {/* Hover Modal */}
+      {hoverModal.show && (
+        <div className="hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
+          <h3>{hoverModal.title}</h3>
+          <p>{hoverModal.content}</p>
+        </div>
       )}
     </div>
   );

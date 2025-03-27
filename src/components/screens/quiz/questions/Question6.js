@@ -1,228 +1,168 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './Question6.css';
 
 const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [timer, setTimer] = useState(600); // 10-minute timer
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [expandedAssets, setExpandedAssets] = useState(Array(5).fill(false));
 
-  const handleOptionSelect = (index) => {
-    if (!showFeedback) {
-      setSelectedOption(index);
-    }
+  const assets = [
+    {
+      name: "Equities",
+      icon: "📈",
+      image: "equities",
+      definition: "Equities are shares of ownership in a company. Investing in equities can offer high returns but comes with higher risk.",
+    },
+    {
+      name: "Bonds",
+      icon: "💵",
+      image: "bonds",
+      definition: "Bonds are loans to a company or government. They provide lower returns compared to stocks but are considered safer.",
+    },
+    {
+      name: "Real Estate",
+      icon: "🏠",
+      image: "real_estate",
+      definition: "Real estate involves investing in property. It can provide steady income through rent and long-term appreciation.",
+    },
+    {
+      name: "Commodities",
+      icon: "⛏️",
+      image: "commodities",
+      definition: "Commodities include raw materials like gold, oil, and agricultural products. These are often used as a hedge against inflation.",
+    },
+    {
+      name: "Alternative Investments",
+      icon: "📊",
+      image: "other",
+      definition: "Alternative investments include assets like hedge funds, private equity, and cryptocurrencies. They are less traditional but can offer diversification.",
+    },
+  ];
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (timer > 0) {
+        setTimer(prev => prev - 1);
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timer]);
+
+  const minutes = Math.floor(timer / 60);
+  const seconds = timer % 60;
+  const progressBarWidth = (timer / 600) * 100;
+
+  const toggleAsset = (index) => {
+    setExpandedAssets(prev => prev.map((expanded, i) => i === index ? !expanded : false));
   };
 
-  const handleSubmit = () => {
-    if (selectedOption === null) return;
-
-    const isCorrect = selectedOption === 2; // Index of correct answer (highest interest rate)
-    setShowFeedback(true);
-    
-    // Award points based on correct answer
-    const points = teams.map(() => isCorrect ? 1 : 0);
-    onAwardPoints(points);
-  };
-
-  const styles = {
-    questionContainer: {
-      padding: '2rem',
-      maxWidth: '800px',
-      margin: '0 auto',
-      backgroundColor: 'white',
-      borderRadius: '10px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
-    title: {
-      color: '#003F91',
-      fontSize: '1.5rem',
-      marginBottom: '1.5rem',
-      textAlign: 'center',
-    },
-    scenario: {
-      backgroundColor: '#f8f9fa',
-      padding: '1.5rem',
-      borderRadius: '8px',
-      marginBottom: '2rem',
-    },
-    scenarioText: {
-      fontSize: '1.1rem',
-      lineHeight: '1.6',
-      color: '#495057',
-      margin: 0,
-    },
-    optionsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-    },
-    option: {
-      padding: '1rem',
-      border: '2px solid transparent',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      backgroundColor: '#f8f9fa',
-      textAlign: 'left',
-      fontSize: '1rem',
-      width: '100%',
-    },
-    optionSelected: {
-      backgroundColor: '#B8CEF0',
-      borderColor: '#003F91',
-    },
-    optionCorrect: {
-      backgroundColor: '#d4edda',
-      borderColor: '#28a745',
-      color: '#155724',
-    },
-    optionIncorrect: {
-      backgroundColor: '#f8d7da',
-      borderColor: '#dc3545',
-      color: '#721c24',
-    },
-    feedback: {
-      marginTop: '1.5rem',
-      padding: '1rem',
-      borderRadius: '8px',
-      backgroundColor: '#f8f9fa',
-    },
-    feedbackText: {
-      marginBottom: '1rem',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-    },
-    explanation: {
-      color: '#495057',
-      lineHeight: '1.5',
-    },
-    button: {
-      backgroundColor: '#003F91',
-      color: 'white',
-      border: 'none',
-      padding: '0.8rem 1.5rem',
-      borderRadius: '8px',
-      fontSize: '1rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      marginTop: '1.5rem',
-      width: '100%',
-    },
-    buttonHover: {
-      backgroundColor: '#002a61',
-    },
-    buttonDisabled: {
-      backgroundColor: '#cccccc',
-      cursor: 'not-allowed',
-    },
-  };
-
-  const getOptionStyle = (index) => {
-    if (!showFeedback) {
-      return {
-        ...styles.option,
-        ...(selectedOption === index ? styles.optionSelected : {})
-      };
-    }
-    
-    if (index === 2) { // Correct answer
-      return { ...styles.option, ...styles.optionCorrect };
-    }
-    
-    if (selectedOption === index) {
-      return { ...styles.option, ...styles.optionIncorrect };
-    }
-    
-    return styles.option;
+  const nextQuestion = () => {
+    onNextQuestion();
   };
 
   return (
-    <div style={styles.questionContainer}>
-      <h2 style={styles.title}>Question 6: Debt Management</h2>
-      
-      <div style={styles.scenario}>
-        <p style={styles.scenarioText}>
-          Which debt should typically be paid off first?
-        </p>
-      </div>
-
-      <div style={styles.optionsContainer}>
-        <button 
-          style={getOptionStyle(0)}
-          onClick={() => handleOptionSelect(0)}
-          disabled={showFeedback}
-        >
-          The largest debt
-        </button>
-        
-        <button 
-          style={getOptionStyle(1)}
-          onClick={() => handleOptionSelect(1)}
-          disabled={showFeedback}
-        >
-          The newest debt
-        </button>
-        
-        <button 
-          style={getOptionStyle(2)}
-          onClick={() => handleOptionSelect(2)}
-          disabled={showFeedback}
-        >
-          The debt with the highest interest rate
-        </button>
-        
-        <button 
-          style={getOptionStyle(3)}
-          onClick={() => handleOptionSelect(3)}
-          disabled={showFeedback}
-        >
-          The debt with the lowest balance
-        </button>
-      </div>
-
-      {showFeedback ? (
-        <div style={styles.feedback}>
-          <p style={{
-            ...styles.feedbackText,
-            color: selectedOption === 2 ? '#155724' : '#721c24'
-          }}>
-            {selectedOption === 2 ? 'Correct!' : 'Incorrect!'}
-          </p>
-          <p style={styles.explanation}>
-            The debt with the highest interest rate should typically be paid off first because it costs 
-            you the most money over time. This strategy, known as the "debt avalanche" method, minimizes 
-            the total amount of interest you'll pay. While the "debt snowball" method (paying off smallest 
-            debts first) can provide psychological benefits, mathematically, targeting high-interest debt 
-            first will save you the most money in the long run.
-          </p>
-          <button 
-            style={styles.button}
-            onClick={onNextQuestion}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Next
-          </button>
+    <div className="question-container">
+      {/* Header and Progress Bar */}
+      <div className="progress-bar-container">
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
         </div>
-      ) : (
-        <button 
-          style={{
-            ...styles.button,
-            ...(selectedOption === null ? styles.buttonDisabled : {})
-          }}
-          onClick={handleSubmit}
-          disabled={selectedOption === null}
-          onMouseOver={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor;
-            }
-          }}
-          onMouseOut={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.button.backgroundColor;
-            }
-          }}
-        >
-          Submit Answer
-        </button>
+        <div className="timer">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</div>
+      </div>
+
+      {/* Glossary Sidebar */}
+      {showGlossary && (
+        <div className="glossary-sidebar">
+          <div className="glossary-header">
+            <h2>📖 Glossary</h2>
+            <button className="close-button" onClick={() => setShowGlossary(false)}>X</button>
+          </div>
+          <div className="glossary-content">
+            <h3>Assets</h3>
+            <p>Things you own that are worth money. For example, if you have a bicycle, some books, or a little money in a piggy bank, those are all your assets.</p>
+            <h3>Liabilities</h3>
+            <p>Money you owe to someone else. If you borrowed money from your friend to buy a new game and you have to give it back, that money is a liability.</p>
+            <h3>Income Tax</h3>
+            <p>A portion of the money that people earn from their jobs or other places, which they need to give to the government. This money helps pay for things like schools, roads, and hospitals.</p>
+            <h3>Tax Rates</h3>
+            <p>This tells you how much income tax you need to pay. It's like a rule that says how much money you give to the government based on how much money you make.</p>
+            <h3>Mortgage</h3>
+            <p>A special kind of loan that people use to buy a house. They borrow money from a bank and pay it back every month for many years. While they are paying it back, they can live in the house.</p>
+            <h3>Cryptocurrency</h3>
+            <p>A type of money you can use on a computer but can't touch like coins or bills. It's made using special computer codes and you can use it to buy things online.</p>
+            <h3>Stocks Fund Portfolio</h3>
+            <p>A basket of different companies that are all put together. When you buy a part of the basket, you own a small piece of all the companies in it. This helps spread the risk because if one company doesn't do well, others in the basket might still grow!</p>
+            <h3>S&P 500</h3>
+            <p>A list of the 500 biggest and most important companies in America. If you invest in the S&P 500, you're buying a little piece of each of those 500 companies.</p>
+            <h3>Interest</h3>
+            <p>If you save your money in a bank, the bank pays you extra money for letting them keep it there. This extra money is called interest.</p>
+            <h3>Compound Interest</h3>
+            <p>This is when you get interest on both the money you saved and the extra money (interest) you earned before. It's like your money making more money because the interest starts earning interest too!</p>
+            <h3>Annual Return</h3>
+            <p>This is how much money you make or lose from an investment in a year. It tells you how good or bad the investment did.</p>
+            <h3>Credit Rating</h3>
+            <p>A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you're good at paying back and are more likely to lend you money.</p>
+          </div>
+        </div>
       )}
+
+      {/* Hint Modal */}
+      {showHintModal && (
+        <div className="hint-modal-overlay">
+          <div className="hint-modal">
+            <h3>Hint</h3>
+            <p>Net worth = Total Assets – Total Liabilities</p>
+            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Task Description */}
+      <div className="task-header">
+        <div className="header-content">
+          <h3>Challenge 6</h3>
+          <div className="button-container">
+            <button className="glossary-button" onClick={() => setShowGlossary(true)}>📖 Glossary</button>
+            {/* <button className="hint-button" onClick={() => setShowHintModal(true)}>💡 Hint</button> */}
+          </div>
+        </div>
+        <p>
+          So now for the final round and the investment challenge to decide the ultimate winner. Ben has £100,000 in savings and wants to build a diversified portfolio of different asset classes.
+        </p>
+        <p>Each team will get a bonus £200 for each point they scored in the previous rounds.</p>
+      </div>
+
+      {/* Asset Allocation Section */}
+      <div className="allocation-header">
+        <p>Decide how to allocate the money between these 5 asset classes.</p>
+      </div>
+
+      {/* Asset Classes */}
+      <div className="asset-classes-container">
+        {assets.map((asset, index) => (
+          <div key={asset.name} className="asset-class">
+            <button className="asset-button" onClick={() => toggleAsset(index)}>
+              <img src={`/assets/icons/${asset.image}.png`} alt={asset.name} className="asset-icon" />
+              <span>{asset.name}</span>
+            </button>
+            {expandedAssets[index] && (
+              <div className="asset-definition">
+                <p>{asset.definition}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Asset Classes Breakdown Graph */}
+      <img src="/assets/icons/graphimage.png" alt="Asset Allocation Graph" className="allocation-graph" />
+
+      {/* Next Button */}
+      <button className="submit-button" onClick={nextQuestion}>Next</button>
     </div>
   );
 };

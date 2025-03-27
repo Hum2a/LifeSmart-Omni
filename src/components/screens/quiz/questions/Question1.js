@@ -1,227 +1,279 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './Question1.css';
 
 const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [timer, setTimer] = useState(180);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const [glossaryTitle, setGlossaryTitle] = useState('');
+  const [glossaryContent, setGlossaryContent] = useState('');
+  const [hoverTerm, setHoverTerm] = useState(null);
+  const [hoverContent, setHoverContent] = useState('');
+  const [bubblePosition, setBubblePosition] = useState({ top: 0, left: 0 });
+  const [showHoverModal, setShowHoverModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalContent, setModalContent] = useState('');
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
 
-  const handleOptionSelect = (index) => {
-    if (!showFeedback) {
-      setSelectedOption(index);
+  const correctAnswer = 'C';
+
+  useEffect(() => {
+    let intervalId;
+    if (timerStarted && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer(prev => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [timerStarted, timer]);
+
+  const minutes = Math.floor(timer / 60);
+  const seconds = timer % 60;
+  const progressBarWidth = (timer / 180) * 100;
+
+  const startTimer = () => {
+    if (!timerStarted) {
+      setTimerStarted(true);
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedOption === null) return;
+  const showModal = (term, event) => {
+    if (term === 'assets') {
+      setModalTitle('Assets');
+      setModalContent('Assets are things you own that have monetary value, such as cash, property, or investments.');
+    } else if (term === 'liabilities') {
+      setModalTitle('Liabilities');
+      setModalContent('Liabilities are things you owe, such as debts or financial obligations.');
+    }
+    setShowHoverModal(true);
 
-    const isCorrect = selectedOption === 1; // Index of correct answer
-    setShowFeedback(true);
-    
-    // Award points based on correct answer
-    const points = teams.map(() => isCorrect ? 1 : 0);
-    onAwardPoints(points);
+    const rect = event.target.getBoundingClientRect();
+    setModalPosition({
+      top: rect.top + window.scrollY - 60,
+      left: rect.left + window.scrollX + 20,
+    });
   };
 
-  const styles = {
-    questionContainer: {
-      padding: '2rem',
-      maxWidth: '800px',
-      margin: '0 auto',
-      backgroundColor: 'white',
-      borderRadius: '10px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
-    title: {
-      color: '#003F91',
-      fontSize: '1.5rem',
-      marginBottom: '1.5rem',
-      textAlign: 'center',
-    },
-    scenario: {
-      backgroundColor: '#f8f9fa',
-      padding: '1.5rem',
-      borderRadius: '8px',
-      marginBottom: '2rem',
-    },
-    scenarioText: {
-      fontSize: '1.1rem',
-      lineHeight: '1.6',
-      color: '#495057',
-      margin: 0,
-    },
-    optionsContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-    },
-    option: {
-      padding: '1rem',
-      border: '2px solid transparent',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      backgroundColor: '#f8f9fa',
-      textAlign: 'left',
-      fontSize: '1rem',
-      width: '100%',
-    },
-    optionSelected: {
-      backgroundColor: '#B8CEF0',
-      borderColor: '#003F91',
-    },
-    optionCorrect: {
-      backgroundColor: '#d4edda',
-      borderColor: '#28a745',
-      color: '#155724',
-    },
-    optionIncorrect: {
-      backgroundColor: '#f8d7da',
-      borderColor: '#dc3545',
-      color: '#721c24',
-    },
-    feedback: {
-      marginTop: '1.5rem',
-      padding: '1rem',
-      borderRadius: '8px',
-      backgroundColor: '#f8f9fa',
-    },
-    feedbackText: {
-      marginBottom: '1rem',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-    },
-    explanation: {
-      color: '#495057',
-      lineHeight: '1.5',
-    },
-    button: {
-      backgroundColor: '#003F91',
-      color: 'white',
-      border: 'none',
-      padding: '0.8rem 1.5rem',
-      borderRadius: '8px',
-      fontSize: '1rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      marginTop: '1.5rem',
-      width: '100%',
-    },
-    buttonHover: {
-      backgroundColor: '#002a61',
-    },
-    buttonDisabled: {
-      backgroundColor: '#cccccc',
-      cursor: 'not-allowed',
-    },
+  const hideModal = () => {
+    setShowHoverModal(false);
   };
 
-  const getOptionStyle = (index) => {
-    if (!showFeedback) {
-      return {
-        ...styles.option,
-        ...(selectedOption === index ? styles.optionSelected : {})
-      };
+  const showDefinition = (term, event) => {
+    setHoverTerm(term);
+    if (term === 'assets') {
+      setHoverContent('Things you own that are worth money.');
+    } else if (term === 'liabilities') {
+      setHoverContent('Money you owe to someone else.');
     }
-    
-    if (index === 1) { // Correct answer
-      return { ...styles.option, ...styles.optionCorrect };
-    }
-    
-    if (selectedOption === index) {
-      return { ...styles.option, ...styles.optionIncorrect };
-    }
-    
-    return styles.option;
+    const rect = event.target.getBoundingClientRect();
+    setBubblePosition({
+      top: rect.top + window.scrollY - 40,
+      left: rect.left + window.scrollX + 10
+    });
+  };
+
+  const hideDefinition = () => {
+    setHoverTerm(null);
+  };
+
+  const submitAnswers = () => {
+    setShowResults(true);
+    const pointsArray = teamAnswers.map(answer => (answer === correctAnswer ? 3 : 0));
+    onAwardPoints(pointsArray);
+  };
+
+  const nextQuestion = () => {
+    onNextQuestion();
+  };
+
+  const handleTeamAnswerChange = (index, value) => {
+    const newAnswers = [...teamAnswers];
+    newAnswers[index] = value;
+    setTeamAnswers(newAnswers);
   };
 
   return (
-    <div style={styles.questionContainer}>
-      <h2 style={styles.title}>Question 1: Understanding Credit Cards</h2>
-      
-      <div style={styles.scenario}>
-        <p style={styles.scenarioText}>
-          Your friend is considering getting their first credit card and asks for your advice. 
-          What's the most important factor to consider when using a credit card responsibly?
-        </p>
+    <div className="question-container">
+      {/* Progress Bar Container */}
+      <div className="progress-bar-container">
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+        </div>
+        
+        <div className="timer-container">
+          {!timerStarted ? (
+            <button onClick={startTimer} className="start-timer-button">
+              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
+            </button>
+          ) : (
+            <div className="timer">
+              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div style={styles.optionsContainer}>
-        <button 
-          style={getOptionStyle(0)}
-          onClick={() => handleOptionSelect(0)}
-          disabled={showFeedback}
-        >
-          Getting the highest possible credit limit
-        </button>
-        
-        <button 
-          style={getOptionStyle(1)}
-          onClick={() => handleOptionSelect(1)}
-          disabled={showFeedback}
-        >
-          Paying the full balance each month to avoid interest
-        </button>
-        
-        <button 
-          style={getOptionStyle(2)}
-          onClick={() => handleOptionSelect(2)}
-          disabled={showFeedback}
-        >
-          Using the card for all purchases to maximize rewards
-        </button>
-        
-        <button 
-          style={getOptionStyle(3)}
-          onClick={() => handleOptionSelect(3)}
-          disabled={showFeedback}
-        >
-          Having multiple credit cards to build credit faster
-        </button>
-      </div>
-
-      {showFeedback ? (
-        <div style={styles.feedback}>
-          <p style={{
-            ...styles.feedbackText,
-            color: selectedOption === 1 ? '#155724' : '#721c24'
-          }}>
-            {selectedOption === 1 ? 'Correct!' : 'Incorrect!'}
-          </p>
-          <p style={styles.explanation}>
-            Paying your credit card balance in full each month is crucial because it helps you avoid 
-            paying interest charges and maintains a good credit score. While credit limits, rewards, 
-            and having multiple cards can be important, responsible payment behavior is the foundation 
-            of good credit card management.
-          </p>
-          <button 
-            style={styles.button}
-            onClick={onNextQuestion}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+      {/* Task Header */}
+      <div className="task-header">
+        <div className="header-content">
+          <div className="points-section">
+            <h3>Challenge 1</h3>
+            <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <p className="points">3 points</p>
+          </div>
+          <div className="button-container">
+            <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
+          </div>
+        </div>
+        <img src="/assets/icons/q1image.png" alt="Task 1 Image" className="task-image" />
+        <p>
+          Ben is a 30 year old engineer. He has the following
+          <span
+            className="clickable-term assets-class"
+            onMouseOver={(e) => showModal('assets', e)}
+            onMouseLeave={hideModal}
           >
-            Next
-          </button>
+            <strong>assets</strong>
+          </span>
+          and
+          <span
+            className="clickable-term liabilities-class"
+            onMouseOver={(e) => showModal('liabilities', e)}
+            onMouseLeave={hideModal}
+          >
+            <strong>liabilities</strong>
+          </span>.
+        </p>
+
+        {/* Hover Modal */}
+        {showHoverModal && (
+          <div
+            className="hover-modal"
+            style={{ top: modalPosition.top + 'px', left: modalPosition.left + 'px' }}
+          >
+            <h4>{modalTitle}</h4>
+            <p>{modalContent}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Assets and Liabilities Section */}
+      <div className="assets-liabilities-wrapper">
+        <div className="assets-liabilities">
+          <div className="card">
+            <h4>Assets</h4>
+            <ul>
+              <li>
+                <span className="asset-icon">🏠 House</span>
+                <span className="asset-value">£200,000</span>
+              </li>
+              <li>
+                <span className="asset-icon">🚗 Car</span>
+                <span className="asset-value">£50,000</span>
+              </li>
+              <li>
+                <span className="asset-icon">💵 Cash</span>
+                <span className="asset-value">£20,000</span>
+              </li>
+            </ul>
+          </div>
+          <div className="card">
+            <h4>Liabilities</h4>
+            <ul>
+              <li>
+                <span className="asset-icon">🏠 Mortgage (6%)</span>
+                <span className="asset-value">£150,000</span>
+              </li>
+              <li>
+                <span className="asset-icon">🚗 Car Loan (10%)</span>
+                <span className="asset-value">£20,000</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Results Section */}
+      {showResults ? (
+        <div className="result-section">
+          <h4>Correct Answer:</h4>
+          <p className="correct-answer">£100,000</p>
+          <p className="correct-answer-description">Net Worth is</p>
+          <p className="correct-answer-description"><strong>Total Assets – Total Liabilities</strong></p>
+          <p className="correct-answer-description">£270,000 - £170,000</p>
+          <h4 className="your-answers">Your answers</h4>
+
+          <div className="team-answer-comparison">
+            {teams.map((team, index) => (
+              <div key={team.name} className="team-answer-box">
+                <p>{team.name}</p>
+                <div className={teamAnswers[index] === correctAnswer ? 'correct' : 'incorrect'}>
+                  {teamAnswers[index] || '-'}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button className="next-button" onClick={nextQuestion}>Next</button>
         </div>
       ) : (
-        <button 
-          style={{
-            ...styles.button,
-            ...(selectedOption === null ? styles.buttonDisabled : {})
-          }}
-          onClick={handleSubmit}
-          disabled={selectedOption === null}
-          onMouseOver={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor;
-            }
-          }}
-          onMouseOut={(e) => {
-            if (selectedOption !== null) {
-              e.currentTarget.style.backgroundColor = styles.button.backgroundColor;
-            }
-          }}
-        >
-          Submit Answer
-        </button>
+        <div>
+          {/* Question Section */}
+          <div className="question-section">
+            <p className="question">What is his net worth?</p>
+          </div>
+
+          {/* Multiple Choice Options */}
+          <div className="choices-container">
+            <button className="choice-button">A. £20,000</button>
+            <button className="choice-button">B. £50,000</button>
+            <button className="choice-button">C. £100,000</button>
+            <button className="choice-button">D. £270,000</button>
+            <button className="choice-button">E. £440,000</button>
+          </div>
+
+          {/* Team Answer Section */}
+          <div className="team-answer-section">
+            <h4>Your answers</h4>
+            <div className="team-answer-container">
+              {teams.map((team, index) => (
+                <div key={team.name} className="team-answer-box">
+                  <p>{team.name}</p>
+                  <select
+                    value={teamAnswers[index]}
+                    onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
+                    className="answer-select"
+                  >
+                    <option value="" disabled>Select answer</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button className="submit-button" onClick={submitAnswers}>Submit</button>
+        </div>
+      )}
+
+      {/* Hint Modal */}
+      {showHintModal && (
+        <div className="hint-modal-overlay">
+          <div className="hint-modal">
+            <h3>Hint</h3>
+            <p>Net worth = Total Assets – Total Liabilities</p>
+            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+          </div>
+        </div>
       )}
     </div>
   );

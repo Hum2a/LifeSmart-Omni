@@ -15,7 +15,7 @@ const QuizLandingPage = () => {
   const navigate = useNavigate();
   const [showTeamCreation, setShowTeamCreation] = useState(false);
   const [teamCount, setTeamCount] = useState(1);
-  const [teams, setTeams] = useState([""]);
+  const [teams, setTeams] = useState(Array(1).fill(""));
   const maxTeams = 10000;
 
   const startTeamCreation = () => {
@@ -24,27 +24,33 @@ const QuizLandingPage = () => {
 
   const increaseTeams = () => {
     if (teamCount < maxTeams) {
-      setTeamCount(teamCount + 1);
-      setTeams([...teams, ""]);
+      setTeamCount(prevCount => prevCount + 1);
+      setTeams(prevTeams => [...prevTeams, ""]);
     }
   };
 
   const decreaseTeams = () => {
     if (teamCount > 1) {
-      setTeamCount(teamCount - 1);
-      setTeams(teams.slice(0, -1));
+      setTeamCount(prevCount => prevCount - 1);
+      setTeams(prevTeams => prevTeams.slice(0, -1));
     }
   };
 
   const handleTeamNameChange = (index, value) => {
-    const newTeams = [...teams];
-    newTeams[index] = value;
-    setTeams(newTeams);
+    setTeams(prevTeams => {
+      const newTeams = [...prevTeams];
+      newTeams[index] = value;
+      return newTeams;
+    });
   };
 
   const startQuiz = () => {
     if (teams.every(name => name.trim())) {
-      navigate(`/quiz?teams=${teams.join(',')}`);
+      // Match Vue.js navigation style using object-based navigation
+      navigate({
+        pathname: '/quiz',
+        search: `?teams=${teams.join(',')}`
+      });
     }
   };
 
@@ -106,10 +112,10 @@ const QuizLandingPage = () => {
 
               <div className="quiz-landing-team-names">
                 <label>TEAM NAMES</label>
-                {Array.from({ length: teamCount }).map((_, index) => (
+                {teams.map((team, index) => (
                   <div key={index} className="quiz-landing-input-container">
                     <input 
-                      value={teams[index]} 
+                      value={team} 
                       onChange={(e) => handleTeamNameChange(index, e.target.value)} 
                       type="text" 
                       placeholder="Enter team name" 
