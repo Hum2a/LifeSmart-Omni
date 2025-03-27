@@ -149,26 +149,26 @@ temp/
 *.ods
 *.odp
 
-# Image files
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.ico
-*.svg
-*.bmp
-*.tiff
-*.webp
+# # Image files
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.ico
+# *.svg
+# *.bmp
+# *.tiff
+# *.webp
 
-# Audio & Video
-*.mp3
-*.wav
-*.mp4
-*.avi
-*.mov
-*.wmv
-*.flv
-*.mkv
+# # Audio & Video
+# *.mp3
+# *.wav
+# *.mp4
+# *.avi
+# *.mov
+# *.wmv
+# *.flv
+# *.mkv
 
 # Archive files
 *.zip
@@ -183,13 +183,13 @@ temp/
 *.sqlite
 *.db
 
-# Binary files
-*.exe
-*.dll
-*.so
-*.dylib
-*.bin
-*.obj
+# # Binary files
+# *.exe
+# *.dll
+# *.so
+# *.dylib
+# *.bin
+# *.obj
 
 # Certificates and keys
 *.pem
