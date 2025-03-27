@@ -360,6 +360,274 @@
   line-height: 1.6;
 }
 
+.budgettool-analysis {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+.budgettool-analysis-title {
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.budgettool-analysis-chart {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.budgettool-analysis-content {
+  color: #ffffff;
+}
+
+.budgettool-analysis-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.budgettool-analysis-list {
+  list-style: none;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.budgettool-analysis-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-analysis-list li:last-child {
+  border-bottom: none;
+}
+
+.budgettool-analysis-warning {
+  color: #ff5757;
+  background: rgba(255, 87, 87, 0.1);
+  border: 1px solid rgba(255, 87, 87, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.budgettool-analysis-savings {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-analysis-savings h4 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.budgettool-analysis-savings p {
+  margin: 1rem 0;
+  color: #cccccc;
+}
+
+.budgettool-monthly-inputs {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-monthly-inputs-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+.budgettool-monthly-inputs-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.budgettool-monthly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.budgettool-monthly-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.budgettool-monthly-item:hover {
+  transform: translateY(-5px);
+}
+
+.budgettool-monthly-item h4 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+.budgettool-monthly-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.budgettool-monthly-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.budgettool-monthly-field label {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.budgettool-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.budgettool-input-group .budgettool-input {
+  flex: 1;
+}
+
+.budgettool-percentage-input {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 100px;
+}
+
+.budgettool-percentage-input .budgettool-input {
+  width: 80px;
+  padding-right: 0.5rem;
+}
+
+.budgettool-percentage-input span {
+  color: #cccccc;
+  font-size: 0.9rem;
+}
+
+.budgettool-monthly-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.budgettool-monthly-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.budgettool-button-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.budgettool-button-small:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.budgettool-monthly-summary {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-monthly-summary h5 {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.budgettool-monthly-summary-grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.budgettool-monthly-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.budgettool-monthly-summary-item span:first-child {
+  color: #cccccc;
+  min-width: 70px;
+}
+
+.budgettool-monthly-summary-item span:nth-child(2) {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.budgettool-monthly-summary-item span.positive {
+  color: #4CAF50;
+}
+
+.budgettool-monthly-summary-item span.negative {
+  color: #ff5757;
+}
+
+.budgettool-monthly-distribution {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.budgettool-monthly-distribution-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.budgettool-monthly-distribution-item span:first-child {
+  color: #cccccc;
+  min-width: 85px;
+}
+
+.budgettool-monthly-distribution-item span:not(:first-child) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .budgettool-content {
     padding: 1.5rem;
@@ -396,5 +664,213 @@
 
   .budgettool-projections-grid {
     grid-template-columns: 1fr;
+  }
+
+  .budgettool-analysis {
+    padding: 1rem;
+  }
+
+  .budgettool-analysis-title {
+    font-size: 1.5rem;
+  }
+
+  .budgettool-analysis-chart {
+    max-width: 300px;
+    height: 300px;
+  }
+
+  .budgettool-monthly-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .budgettool-monthly-item {
+    padding: 1rem;
+  }
+
+  .budgettool-input-group {
+    flex-direction: column;
+  }
+
+  .budgettool-percentage-input {
+    width: 100%;
+  }
+
+  .budgettool-percentage-input .budgettool-input {
+    width: 100%;
+  }
+
+  .budgettool-monthly-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .budgettool-button-small {
+    width: 100%;
+  }
+
+  .budgettool-monthly-distribution-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .budgettool-monthly-distribution-item span:not(:first-child) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Modal Styles */
+.budgettool-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.budgettool-modal-content {
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+}
+
+.budgettool-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.budgettool-modal-header h2 {
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.budgettool-modal-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.budgettool-modal-close:hover {
+  opacity: 1;
+}
+
+.budgettool-modal-body {
+  color: #ffffff;
+}
+
+.budgettool-modal-section {
+  margin-bottom: 2rem;
+}
+
+.budgettool-modal-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.budgettool-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.budgettool-modal-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.budgettool-modal-item span:first-child {
+  color: #cccccc;
+  font-size: 0.9rem;
+}
+
+.budgettool-modal-item span:last-child {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.budgettool-modal-table {
+  width: 100%;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.budgettool-modal-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.budgettool-modal-table th,
+.budgettool-modal-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-modal-table th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.budgettool-modal-table td {
+  color: #cccccc;
+}
+
+.budgettool-modal-table tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .budgettool-modal-content {
+    padding: 1rem;
+  }
+
+  .budgettool-modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .budgettool-modal-section h3 {
+    font-size: 1.2rem;
+  }
+
+  .budgettool-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .budgettool-modal-table {
+    margin: 0 -1rem;
+    border-radius: 0;
   }
 } 

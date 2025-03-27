@@ -3,6 +3,11 @@ import '../../styles/BudgetTool.css';
 import BudgetSpreadsheet from './BudgetSpreadsheet';
 import SpreadsheetModal from './SpreadsheetModal';
 import * as XLSX from 'xlsx';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+// Register ChartJS components
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const BudgetTool = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -12,9 +17,9 @@ const BudgetTool = () => {
     // Income Information
     monthlyIncome: '',
     additionalIncome: '',
-    incomeFrequency: 'monthly',
     
     // Housing Expenses
+    housingType: 'neither',
     rent: '',
     mortgage: '',
     propertyTax: '',
@@ -58,11 +63,11 @@ const BudgetTool = () => {
     otherDebt: '',
     
     // 6-Month Projection
-    incomeChange: 'yes',
+    incomeChange: 'no',
     incomeChangeMonth: '',
-    needsChange: 'yes',
+    needsChange: 'no',
     needsChangeMonth: '',
-    wantsChange: 'yes',
+    wantsChange: 'no',
     wantsChangeMonth: '',
     monthlyProjections: Array(6).fill().map(() => ({
       income: '',
@@ -88,50 +93,134 @@ const BudgetTool = () => {
           label: 'Do you have any additional income?',
           type: 'number',
           placeholder: 'Enter amount',
-        },
-        {
-          id: 'incomeFrequency',
-          label: 'How often do you receive your income?',
-          type: 'select',
-          options: [
-            { value: 'weekly', label: 'Weekly' },
-            { value: 'biweekly', label: 'Bi-weekly' },
-            { value: 'monthly', label: 'Monthly' },
-            { value: 'annually', label: 'Annually' },
-          ],
-        },
+        }
       ],
     },
     {
       category: 'Housing',
       questions: [
         {
+          id: 'housingType',
+          label: 'Do you pay rent or have a mortgage?',
+          type: 'select',
+          options: [
+            { value: 'rent', label: 'Rent' },
+            { value: 'mortgage', label: 'Mortgage' },
+            { value: 'neither', label: 'Neither' }
+          ],
+        },
+        {
           id: 'rent',
           label: 'How much do you pay in rent?',
           type: 'number',
           placeholder: 'Enter amount',
+          showIf: (data) => data.housingType === 'rent',
         },
         {
           id: 'mortgage',
           label: 'How much is your mortgage payment?',
           type: 'number',
           placeholder: 'Enter amount',
+          showIf: (data) => data.housingType === 'mortgage',
         },
         {
           id: 'propertyTax',
           label: 'How much do you pay in property tax?',
           type: 'number',
           placeholder: 'Enter amount',
+          showIf: (data) => data.housingType === 'mortgage',
         },
         {
           id: 'homeInsurance',
           label: 'How much is your home insurance?',
           type: 'number',
           placeholder: 'Enter amount',
+          showIf: (data) => data.housingType === 'mortgage',
         },
         {
           id: 'utilities',
           label: 'How much do you pay in utilities (electric, water, gas)?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+      ],
+    },
+    {
+      category: 'Transportation',
+      questions: [
+        {
+          id: 'carPayment',
+          label: 'Do you have a car payment?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'carInsurance',
+          label: 'How much do you pay for car insurance?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'gas',
+          label: 'How much do you spend on gas per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'publicTransportation',
+          label: 'How much do you spend on public transportation (buses, trains, etc.)?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        }
+      ],
+    },
+    {
+      category: 'Food & Dining',
+      questions: [
+        {
+          id: 'groceries',
+          label: 'How much do you spend on groceries per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'diningOut',
+          label: 'How much do you spend on dining out per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'takeout',
+          label: 'How much do you spend on takeout per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        }
+      ],
+    },
+    {
+      category: 'Personal Care',
+      questions: [
+        {
+          id: 'healthInsurance',
+          label: 'How much do you pay for health insurance?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'medicalExpenses',
+          label: 'How much do you spend on medical expenses per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'gymMembership',
+          label: 'How much do you spend on gym membership per month?',
+          type: 'number',
+          placeholder: 'Enter amount',
+        },
+        {
+          id: 'personalCare',
+          label: 'How much do you spend on personal care (haircuts, skincare, etc.)?',
           type: 'number',
           placeholder: 'Enter amount',
         },
@@ -218,6 +307,153 @@ const BudgetTool = () => {
       ],
     },
     {
+      category: 'Budget Analysis',
+      questions: [],
+      renderCustomContent: (formData) => {
+        const summary = calculateBudgetSummary();
+        const totalIncome = summary.totalIncome;
+        const needs = summary.needs;
+        const wants = summary.wants;
+        const needsPercentage = summary.needsPercentage;
+        const wantsPercentage = summary.wantsPercentage;
+        const remainingPercentage = summary.remainingPercentage;
+        
+        const recommendedSavings = (totalIncome - needs) * 0.33; // 1/3 of remaining after needs
+        const recommendedWants = (totalIncome - needs) * 0.67; // 2/3 of remaining after needs
+        const currentWants = wants;
+        const wantsReduction = Math.max(0, currentWants - recommendedWants);
+        
+        const recommendedEmergencyFund = needs * 6; // 6 months of needs
+        const minimumEmergencyFund = needs * 3; // 3 months of needs
+        const currentEmergencyFund = Number(formData.emergencyFund) || 0;
+        const emergencyFundGap = Math.max(0, minimumEmergencyFund - currentEmergencyFund);
+
+        return (
+          <div className="budgettool-analysis">
+            <h3 className="budgettool-analysis-title">Your Budget Breakdown</h3>
+            
+            <div className="budgettool-analysis-chart">
+              <Pie
+                data={{
+                  labels: ['Needs', 'Wants', 'Savings'],
+                  datasets: [
+                    {
+                      data: [
+                        Math.max(0, summary.needs || 0),
+                        Math.max(0, summary.wants || 0),
+                        Math.max(0, (summary.totalIncome || 0) - (summary.needs || 0) - (summary.wants || 0))
+                      ],
+                      backgroundColor: [
+                        'rgba(76, 175, 80, 0.85)',  // Green for needs
+                        'rgba(33, 150, 243, 0.85)', // Blue for wants
+                        'rgba(255, 193, 7, 0.85)'   // Yellow for savings
+                      ],
+                      borderColor: [
+                        'rgba(76, 175, 80, 1)',
+                        'rgba(33, 150, 243, 1)',
+                        'rgba(255, 193, 7, 1)'
+                      ],
+                      borderWidth: 2,
+                      hoverOffset: 15,
+                      hoverBorderWidth: 3
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                  },
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        color: '#ffffff',
+                        font: {
+                          size: 14,
+                          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                        },
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                      }
+                    },
+                    tooltip: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      titleColor: '#ffffff',
+                      bodyColor: '#ffffff',
+                      padding: 12,
+                      cornerRadius: 8,
+                      displayColors: false,
+                      callbacks: {
+                        label: function(context) {
+                          const value = context.raw || 0;
+                          const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                          const percentage = ((value / total) * 100).toFixed(1);
+                          return `${context.label}: $${value.toFixed(2)} (${percentage}%)`;
+                        }
+                      }
+                    }
+                  },
+                  cutout: '60%',
+                  radius: '80%'
+                }}
+              />
+            </div>
+            
+            <div className="budgettool-analysis-content">
+              <p className="budgettool-analysis-text">
+                Based on your spending, you're currently using:
+              </p>
+              <ul className="budgettool-analysis-list">
+                <li>{needsPercentage.toFixed(1)}% on necessities</li>
+                <li>{wantsPercentage.toFixed(1)}% on wants</li>
+                <li>{remainingPercentage.toFixed(1)}% remaining</li>
+              </ul>
+              
+              <p className="budgettool-analysis-text">
+                With your necessities fixed at ${needs.toFixed(2)} ({needsPercentage.toFixed(1)}%), 
+                from the remaining ${(totalIncome - needs).toFixed(2)}, we recommend:
+              </p>
+              <ul className="budgettool-analysis-list">
+                <li>Putting ${recommendedSavings.toFixed(2)} (33%) into savings</li>
+                <li>Using ${recommendedWants.toFixed(2)} (67%) for wants</li>
+              </ul>
+              
+              {wantsReduction > 0 && (
+                <p className="budgettool-analysis-warning">
+                  To achieve this balance, you'll need to reduce your wants spending by ${wantsReduction.toFixed(2)} per month.
+                </p>
+              )}
+              
+              <div className="budgettool-analysis-savings">
+                <h4>Savings Recommendations</h4>
+                <p>Emergency Fund:</p>
+                <ul className="budgettool-analysis-list">
+                  <li>Minimum target: ${minimumEmergencyFund.toFixed(2)} (3 months of needs)</li>
+                  <li>Ideal target: ${recommendedEmergencyFund.toFixed(2)} (6 months of needs)</li>
+                  <li>Current amount: ${currentEmergencyFund.toFixed(2)}</li>
+                  {emergencyFundGap > 0 && (
+                    <li className="budgettool-analysis-warning">
+                      You need ${emergencyFundGap.toFixed(2)} more to reach the minimum target
+                    </li>
+                  )}
+                </ul>
+                
+                <p>Sinking Fund and Goal Fund:</p>
+                <p className="budgettool-analysis-text">
+                  These funds are flexible and should be based on your personal goals. 
+                  Consider setting specific targets for major purchases, holidays, or long-term investments.
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    },
+    {
       category: '6-Month Projection',
       questions: [
         {
@@ -226,22 +462,8 @@ const BudgetTool = () => {
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
-            { value: 'no', label: 'No' },
+            { value: 'no', label: 'No' }
           ],
-        },
-        {
-          id: 'incomeChangeMonth',
-          label: 'Which month do you expect your income to change?',
-          type: 'select',
-          options: [
-            { value: '1', label: 'Month 1' },
-            { value: '2', label: 'Month 2' },
-            { value: '3', label: 'Month 3' },
-            { value: '4', label: 'Month 4' },
-            { value: '5', label: 'Month 5' },
-            { value: '6', label: 'Month 6' },
-          ],
-          showIf: (data) => data.incomeChange === 'no',
         },
         {
           id: 'needsChange',
@@ -249,64 +471,373 @@ const BudgetTool = () => {
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
-            { value: 'no', label: 'No' },
+            { value: 'no', label: 'No' }
           ],
-        },
-        {
-          id: 'needsChangeMonth',
-          label: 'Which month do you expect your needs spending to change?',
-          type: 'select',
-          options: [
-            { value: '1', label: 'Month 1' },
-            { value: '2', label: 'Month 2' },
-            { value: '3', label: 'Month 3' },
-            { value: '4', label: 'Month 4' },
-            { value: '5', label: 'Month 5' },
-            { value: '6', label: 'Month 6' },
-          ],
-          showIf: (data) => data.needsChange === 'no',
         },
         {
           id: 'wantsChange',
-          label: 'Do you expect your wants spending to be the same for the next 6 months?',
+          label: 'Do you think you can change your wants spending over the next 6 months?',
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
-            { value: 'no', label: 'No' },
+            { value: 'no', label: 'No' }
           ],
-        },
-        {
-          id: 'wantsChangeMonth',
-          label: 'Which month do you expect your wants spending to change?',
-          type: 'select',
-          options: [
-            { value: '1', label: 'Month 1' },
-            { value: '2', label: 'Month 2' },
-            { value: '3', label: 'Month 3' },
-            { value: '4', label: 'Month 4' },
-            { value: '5', label: 'Month 5' },
-            { value: '6', label: 'Month 6' },
-          ],
-          showIf: (data) => data.wantsChange === 'no',
-        },
+        }
       ],
+      renderCustomContent: (formData) => {
+        const summary = calculateBudgetSummary();
+        
+        // Get next 6 months from today
+        const getNextMonths = () => {
+          const months = [];
+          const today = new Date();
+          for (let i = 0; i < 6; i++) {
+            const nextMonth = new Date(today.getFullYear(), today.getMonth() + i, 1);
+            months.push(nextMonth.toLocaleString('default', { month: 'long', year: 'numeric' }));
+          }
+          return months;
+        };
+
+        const nextMonths = getNextMonths();
+
+        // Calculate cumulative changes for a specific month
+        const calculateCumulativeChanges = (monthIndex) => {
+          const currentProjections = formData.monthlyProjections[monthIndex];
+          const income = Number(currentProjections.income) || summary.totalIncome;
+          const needs = Number(currentProjections.needs) || summary.needs;
+          const wants = Number(currentProjections.wants) || summary.wants;
+          const savings = income - needs - wants;
+          
+          const needsPercentage = (needs / income) * 100;
+          const wantsPercentage = (wants / income) * 100;
+          const savingsPercentage = (savings / income) * 100;
+
+          const changeFromBase = {
+            income: ((income - summary.totalIncome) / summary.totalIncome) * 100,
+            needs: ((needs - summary.needs) / summary.needs) * 100,
+            wants: ((wants - summary.wants) / summary.wants) * 100,
+            savings: savings > 0 ? ((savings - (summary.totalIncome - summary.needs - summary.wants)) / 
+                      (summary.totalIncome - summary.needs - summary.wants)) * 100 : 0
+          };
+
+          return {
+            income,
+            needs,
+            wants,
+            savings,
+            needsPercentage,
+            wantsPercentage,
+            savingsPercentage,
+            changeFromBase
+          };
+        };
+
+        const handlePercentageChange = (index, field, percentageValue) => {
+          const baseValue = index === 0 ? summary[field] : Number(formData.monthlyProjections[index - 1][field]);
+          const percentage = parseFloat(percentageValue) || 0;
+          const newValue = baseValue * (1 + percentage / 100);
+          
+          const newProjections = [...formData.monthlyProjections];
+          newProjections[index] = {
+            ...newProjections[index],
+            [field]: newValue.toFixed(2),
+            [`${field}Percentage`]: percentage  // Store the percentage value
+          };
+
+          // Update subsequent months to maintain their percentage changes relative to their previous month
+          for (let i = index + 1; i < 6; i++) {
+            const prevValue = Number(newProjections[i - 1][field]);
+            const currentPercentage = Number(formData.monthlyProjections[i][`${field}Percentage`]) || 0;
+            newProjections[i] = {
+              ...newProjections[i],
+              [field]: (prevValue * (1 + currentPercentage / 100)).toFixed(2),
+              [`${field}Percentage`]: currentPercentage
+            };
+          }
+          
+          setFormData(prev => ({
+            ...prev,
+            monthlyProjections: newProjections
+          }));
+        };
+
+        const handleAmountChange = (index, field, amount) => {
+          const baseValue = index === 0 ? summary[field] : Number(formData.monthlyProjections[index - 1][field]);
+          const newValue = parseFloat(amount) || 0;
+          const percentageChange = ((newValue - baseValue) / baseValue) * 100;
+          
+          const newProjections = [...formData.monthlyProjections];
+          newProjections[index] = {
+            ...newProjections[index],
+            [field]: newValue.toFixed(2),
+            [`${field}Percentage`]: percentageChange.toFixed(2)
+          };
+
+          // Update subsequent months to maintain their percentage changes relative to their previous month
+          for (let i = index + 1; i < 6; i++) {
+            const prevValue = Number(newProjections[i - 1][field]);
+            const currentPercentage = Number(formData.monthlyProjections[i][`${field}Percentage`]) || 0;
+            newProjections[i] = {
+              ...newProjections[i],
+              [field]: (prevValue * (1 + currentPercentage / 100)).toFixed(2),
+              [`${field}Percentage`]: currentPercentage
+            };
+          }
+          
+          setFormData(prev => ({
+            ...prev,
+            monthlyProjections: newProjections
+          }));
+        };
+
+        const generateRandomData = (index) => {
+          // Generate random percentage changes between -20% and +20%
+          const getRandomPercentage = () => (Math.random() * 40 - 20).toFixed(2);
+          
+          const incomeChange = getRandomPercentage();
+          const needsChange = getRandomPercentage();
+          const wantsChange = getRandomPercentage();
+          
+          const baseIncome = index === 0 ? summary.totalIncome : Number(formData.monthlyProjections[index - 1].income);
+          const baseNeeds = index === 0 ? summary.needs : Number(formData.monthlyProjections[index - 1].needs);
+          const baseWants = index === 0 ? summary.wants : Number(formData.monthlyProjections[index - 1].wants);
+          
+          const newIncome = baseIncome * (1 + parseFloat(incomeChange) / 100);
+          const newNeeds = baseNeeds * (1 + parseFloat(needsChange) / 100);
+          const newWants = baseWants * (1 + parseFloat(wantsChange) / 100);
+          
+          const newProjections = [...formData.monthlyProjections];
+          newProjections[index] = {
+            income: newIncome.toFixed(2),
+            needs: newNeeds.toFixed(2),
+            wants: newWants.toFixed(2),
+            savings: (newIncome - newNeeds - newWants).toFixed(2),
+            totalIncomePercentage: incomeChange,
+            needsPercentage: needsChange,
+            wantsPercentage: wantsChange
+          };
+          
+          // Update subsequent months to maintain their percentage changes relative to their previous month
+          for (let i = index + 1; i < 6; i++) {
+            const prevIncome = Number(newProjections[i - 1].income);
+            const prevNeeds = Number(newProjections[i - 1].needs);
+            const prevWants = Number(newProjections[i - 1].wants);
+            
+            const currentIncomePercentage = Number(formData.monthlyProjections[i].totalIncomePercentage) || 0;
+            const currentNeedsPercentage = Number(formData.monthlyProjections[i].needsPercentage) || 0;
+            const currentWantsPercentage = Number(formData.monthlyProjections[i].wantsPercentage) || 0;
+            
+            const nextIncome = prevIncome * (1 + currentIncomePercentage / 100);
+            const nextNeeds = prevNeeds * (1 + currentNeedsPercentage / 100);
+            const nextWants = prevWants * (1 + currentWantsPercentage / 100);
+            
+            newProjections[i] = {
+              income: nextIncome.toFixed(2),
+              needs: nextNeeds.toFixed(2),
+              wants: nextWants.toFixed(2),
+              savings: (nextIncome - nextNeeds - nextWants).toFixed(2),
+              totalIncomePercentage: currentIncomePercentage,
+              needsPercentage: currentNeedsPercentage,
+              wantsPercentage: currentWantsPercentage
+            };
+          }
+          
+          setFormData(prev => ({
+            ...prev,
+            monthlyProjections: newProjections
+          }));
+        };
+        
+        return (
+          <div className="budgettool-monthly-inputs">
+            <h3 className="budgettool-monthly-inputs-title">Monthly Projections</h3>
+            <p className="budgettool-monthly-inputs-text">
+              Enter your expected changes for each month. You can either enter the exact amount or a percentage change.
+              For percentage, use positive numbers for increase (e.g., 10 for 10% increase) and negative for decrease (e.g., -10 for 10% decrease).
+            </p>
+            
+            <div className="budgettool-monthly-grid">
+              {nextMonths.map((monthYear, index) => {
+                const monthSummary = calculateCumulativeChanges(index);
+                
+                return (
+                  <div key={index} className="budgettool-monthly-item">
+                    <div className="budgettool-monthly-header">
+                      <h4>{monthYear}</h4>
+                      <button
+                        onClick={() => generateRandomData(index)}
+                        className="budgettool-button budgettool-button-secondary budgettool-button-small"
+                      >
+                        Generate Random Data
+                      </button>
+                    </div>
+                    <div className="budgettool-monthly-fields">
+                      <div className="budgettool-monthly-field">
+                        <label>Income</label>
+                        <div className="budgettool-input-group">
+                          <input
+                            type="number"
+                            name={`monthlyProjections.${index}.income`}
+                            value={formData.monthlyProjections[index].income}
+                            onChange={(e) => handleAmountChange(index, 'totalIncome', e.target.value)}
+                            placeholder={`Current: $${summary.totalIncome.toFixed(2)}`}
+                            className="budgettool-input"
+                          />
+                          <div className="budgettool-percentage-input">
+                            <input
+                              type="number"
+                              placeholder="% change"
+                              value={formData.monthlyProjections[index].totalIncomePercentage || ''}
+                              onChange={(e) => handlePercentageChange(index, 'totalIncome', e.target.value)}
+                              className="budgettool-input"
+                            />
+                            <span>%</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="budgettool-monthly-field">
+                        <label>Needs</label>
+                        <div className="budgettool-input-group">
+                          <input
+                            type="number"
+                            name={`monthlyProjections.${index}.needs`}
+                            value={formData.monthlyProjections[index].needs}
+                            onChange={(e) => handleAmountChange(index, 'needs', e.target.value)}
+                            placeholder={`Current: $${summary.needs.toFixed(2)}`}
+                            className="budgettool-input"
+                          />
+                          <div className="budgettool-percentage-input">
+                            <input
+                              type="number"
+                              placeholder="% change"
+                              value={formData.monthlyProjections[index].needsPercentage || ''}
+                              onChange={(e) => handlePercentageChange(index, 'needs', e.target.value)}
+                              className="budgettool-input"
+                            />
+                            <span>%</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="budgettool-monthly-field">
+                        <label>Wants</label>
+                        <div className="budgettool-input-group">
+                          <input
+                            type="number"
+                            name={`monthlyProjections.${index}.wants`}
+                            value={formData.monthlyProjections[index].wants}
+                            onChange={(e) => handleAmountChange(index, 'wants', e.target.value)}
+                            placeholder={`Current: $${summary.wants.toFixed(2)}`}
+                            className="budgettool-input"
+                          />
+                          <div className="budgettool-percentage-input">
+                            <input
+                              type="number"
+                              placeholder="% change"
+                              value={formData.monthlyProjections[index].wantsPercentage || ''}
+                              onChange={(e) => handlePercentageChange(index, 'wants', e.target.value)}
+                              className="budgettool-input"
+                            />
+                            <span>%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="budgettool-monthly-summary">
+                        <h5>Month Summary</h5>
+                        <div className="budgettool-monthly-summary-grid">
+                          <div className="budgettool-monthly-summary-item">
+                            <span>Income:</span>
+                            <span>${monthSummary.income.toFixed(2)}</span>
+                            <span className={monthSummary.changeFromBase.income >= 0 ? 'positive' : 'negative'}>
+                              ({monthSummary.changeFromBase.income.toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div className="budgettool-monthly-summary-item">
+                            <span>Needs:</span>
+                            <span>${monthSummary.needs.toFixed(2)}</span>
+                            <span className={monthSummary.changeFromBase.needs >= 0 ? 'positive' : 'negative'}>
+                              ({monthSummary.changeFromBase.needs.toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div className="budgettool-monthly-summary-item">
+                            <span>Wants:</span>
+                            <span>${monthSummary.wants.toFixed(2)}</span>
+                            <span className={monthSummary.changeFromBase.wants >= 0 ? 'positive' : 'negative'}>
+                              ({monthSummary.changeFromBase.wants.toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div className="budgettool-monthly-summary-item">
+                            <span>Savings:</span>
+                            <span>${monthSummary.savings.toFixed(2)}</span>
+                            <span className={monthSummary.changeFromBase.savings >= 0 ? 'positive' : 'negative'}>
+                              ({monthSummary.changeFromBase.savings.toFixed(1)}%)
+                            </span>
+                          </div>
+                        </div>
+                        <div className="budgettool-monthly-distribution">
+                          <div className="budgettool-monthly-distribution-item">
+                            <span>Distribution:</span>
+                            <span>Needs: {monthSummary.needsPercentage.toFixed(1)}%</span>
+                            <span>Wants: {monthSummary.wantsPercentage.toFixed(1)}%</span>
+                            <span>Savings: {monthSummary.savingsPercentage.toFixed(1)}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
     },
   ];
 
   const calculateBudgetSummary = () => {
-    const totalIncome = Number(formData.monthlyIncome) + Number(formData.additionalIncome);
-    const needs = Number(formData.rent) + Number(formData.mortgage) + 
-                 Number(formData.utilities) + Number(formData.groceries) +
-                 Number(formData.carPayment) + Number(formData.carInsurance) +
-                 Number(formData.healthInsurance) + Number(formData.medicalExpenses);
+    // Calculate total income
+    const totalIncome = Number(formData.monthlyIncome || 0) + Number(formData.additionalIncome || 0);
     
-    const wants = Number(formData.entertainment) + Number(formData.shopping) +
-                 Number(formData.subscriptions) + Number(formData.personalCareBudget) +
-                 Number(formData.travel) + Number(formData.diningOut);
+    // Calculate total needs
+    const needs = 
+      // Housing
+      Number(formData.rent || 0) + 
+      Number(formData.mortgage || 0) + 
+      Number(formData.propertyTax || 0) + 
+      Number(formData.homeInsurance || 0) + 
+      Number(formData.utilities || 0) +
+      // Transportation
+      Number(formData.carPayment || 0) + 
+      Number(formData.carInsurance || 0) + 
+      Number(formData.gas || 0) + 
+      Number(formData.publicTransportation || 0) +
+      // Food & Dining (groceries are needs)
+      Number(formData.groceries || 0) +
+      // Personal Care (health related)
+      Number(formData.healthInsurance || 0) + 
+      Number(formData.medicalExpenses || 0);
     
-    const needsPercentage = (needs / totalIncome) * 100;
-    const wantsPercentage = (wants / totalIncome) * 100;
-    const remainingPercentage = 100 - needsPercentage - wantsPercentage;
+    // Calculate total wants
+    const wants = 
+      // Food & Dining (dining out and takeout are wants)
+      Number(formData.diningOut || 0) + 
+      Number(formData.takeout || 0) +
+      // Personal Care (non-health related)
+      Number(formData.gymMembership || 0) + 
+      Number(formData.personalCare || 0) +
+      // Entertainment & Leisure
+      Number(formData.entertainment || 0) + 
+      Number(formData.shopping || 0) + 
+      Number(formData.subscriptions || 0) + 
+      Number(formData.personalCareBudget || 0) + 
+      Number(formData.travel || 0);
+    
+    // Calculate percentages
+    const needsPercentage = totalIncome > 0 ? (needs / totalIncome) * 100 : 0;
+    const wantsPercentage = totalIncome > 0 ? (wants / totalIncome) * 100 : 0;
+    const remainingPercentage = Math.max(0, 100 - needsPercentage - wantsPercentage);
 
     return {
       totalIncome,
@@ -610,7 +1141,7 @@ const BudgetTool = () => {
 
   const downloadBudgetSpreadsheet = () => {
     const summary = calculateBudgetSummary();
-    const projections = calculateMonthlyProjections();
+    const monthlyProjections = formData.monthlyProjections;
     
     // Create workbook
     const wb = XLSX.utils.book_new();
@@ -619,7 +1150,7 @@ const BudgetTool = () => {
     const allData = [
       ['INCOME INFORMATION', '', ''],
       ['Category', 'Amount', 'Frequency/Type'],
-      ['Monthly Income', Number(formData.monthlyIncome) || 0, formData.incomeFrequency],
+      ['Monthly Income', Number(formData.monthlyIncome) || 0, 'Monthly'],
       ['Additional Income', Number(formData.additionalIncome) || 0, 'Monthly'],
       ['Total Monthly Income', summary.totalIncome, 'Monthly'],
       ['', '', ''],
@@ -743,25 +1274,25 @@ const BudgetTool = () => {
       ['Savings', '', '20%'],
       ['', '', ''],
       
-      ['6-MONTH PROJECTION', '', '', '', ''],
-      ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Changes Expected'],
-      ...projections.map((month, index) => [
+      ['6-MONTH PROJECTION', '', '', '', '', ''],
+      ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Percentage Changes'],
+      ...monthlyProjections.map((month, index) => [
         `Month ${index + 1}`,
-        month.income.toFixed(2),
-        month.needs.toFixed(2),
-        month.wants.toFixed(2),
-        month.savings.toFixed(2),
-        getMonthChanges(index + 1)
+        Number(month.income).toFixed(2),
+        Number(month.needs).toFixed(2),
+        Number(month.wants).toFixed(2),
+        Number(month.savings).toFixed(2),
+        `Income: ${month.totalIncomePercentage || 0}%, Needs: ${month.needsPercentage || 0}%, Wants: ${month.wantsPercentage || 0}%`
       ]),
-      ['', '', '', '', ''],
-      ['Projection Settings', '', '', '', ''],
-      ['Income Change Expected', formData.incomeChange === 'no' ? 'Yes' : 'No', '', '', ''],
-      ['Income Change Month', formData.incomeChangeMonth || 'N/A', '', '', ''],
-      ['Needs Change Expected', formData.needsChange === 'no' ? 'Yes' : 'No', '', '', ''],
-      ['Needs Change Month', formData.needsChangeMonth || 'N/A', '', '', ''],
-      ['Wants Change Expected', formData.wantsChange === 'no' ? 'Yes' : 'No', '', '', ''],
-      ['Wants Change Month', formData.wantsChangeMonth || 'N/A', '', '', ''],
-      ['Can Reduce Wants', formData.canReduceWants || 'N/A', '', '', '']
+      ['', '', '', '', '', ''],
+      ['Projection Settings', '', '', '', '', ''],
+      ['Income Change Expected', formData.incomeChange === 'no' ? 'Yes' : 'No', '', '', '', ''],
+      ['Income Change Month', formData.incomeChangeMonth || 'N/A', '', '', '', ''],
+      ['Needs Change Expected', formData.needsChange === 'no' ? 'Yes' : 'No', '', '', '', ''],
+      ['Needs Change Month', formData.needsChangeMonth || 'N/A', '', '', '', ''],
+      ['Wants Change Expected', formData.wantsChange === 'no' ? 'Yes' : 'No', '', '', '', ''],
+      ['Wants Change Month', formData.wantsChangeMonth || 'N/A', '', '', '', ''],
+      ['Can Reduce Wants', formData.canReduceWants || 'N/A', '', '', '', '']
     ];
 
     // Create the worksheet
@@ -919,15 +1450,25 @@ const BudgetTool = () => {
             {questions[currentStep].category}
           </h2>
           
-          {questions[currentStep].questions.map((question, index) => (
-            <div key={index} className="budgettool-question">
-              <label className="budgettool-label">{question.label}</label>
-              {renderQuestion(question)}
-            </div>
-          ))}
+          {questions[currentStep].renderCustomContent ? (
+            questions[currentStep].renderCustomContent(formData)
+          ) : (
+            questions[currentStep].questions.map((question, index) => {
+              if (question.showIf && !question.showIf(formData)) {
+                return null;
+              }
+
+              return (
+                <div key={index} className="budgettool-question">
+                  <label className="budgettool-label">{question.label}</label>
+                  {renderQuestion(question)}
+                </div>
+              );
+            })
+          )}
 
           {currentStep === questions.length - 1 && renderSavingsInfo()}
-          {currentStep === questions.length - 1 && renderMonthlyProjections()}
+          {/* {currentStep === questions.length - 1 && renderMonthlyProjections()} */}
         </div>
 
         {currentStep === questions.length - 1 && renderSummary()}
