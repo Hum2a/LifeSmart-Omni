@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Question4.css';
+import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
+import moneyBars from '../../../../assets/icons/moneybars.png';
 
 const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
@@ -116,7 +118,7 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div className="top-layer">
           <div className="points-section">
             <h3>Challenge 4</h3>
-            <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
             <p className="points">2 points</p>
           </div>
           <div className="button-container">
@@ -138,7 +140,7 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
               <strong>S&P500 Fund</strong>
             </span>' because it is predicted to return 8%.
           </p>
-          <img src="/assets/icons/moneybars.png" alt="Task 4 Image" className="task-image" />
+          <img src={moneyBars} alt="Task 4 Image" className="task-image" />
         </div>
       </div>
 

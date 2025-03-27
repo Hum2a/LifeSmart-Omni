@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Question6.css';
+import equitiesIcon from '../../../../assets/icons/equities.png';
+import bondsIcon from '../../../../assets/icons/bonds.png';
+import realEstateIcon from '../../../../assets/icons/real_estate.png';
+import commoditiesIcon from '../../../../assets/icons/commodities.png';
+import otherIcon from '../../../../assets/icons/other.png';
+import graphImage from '../../../../assets/icons/graphimage.png';
 
 const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [timer, setTimer] = useState(600); // 10-minute timer
@@ -11,31 +17,31 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     {
       name: "Equities",
       icon: "📈",
-      image: "equities",
+      image: equitiesIcon,
       definition: "Equities are shares of ownership in a company. Investing in equities can offer high returns but comes with higher risk.",
     },
     {
       name: "Bonds",
       icon: "💵",
-      image: "bonds",
+      image: bondsIcon,
       definition: "Bonds are loans to a company or government. They provide lower returns compared to stocks but are considered safer.",
     },
     {
       name: "Real Estate",
       icon: "🏠",
-      image: "real_estate",
+      image: realEstateIcon,
       definition: "Real estate involves investing in property. It can provide steady income through rent and long-term appreciation.",
     },
     {
       name: "Commodities",
       icon: "⛏️",
-      image: "commodities",
+      image: commoditiesIcon,
       definition: "Commodities include raw materials like gold, oil, and agricultural products. These are often used as a hedge against inflation.",
     },
     {
       name: "Alternative Investments",
       icon: "📊",
-      image: "other",
+      image: otherIcon,
       definition: "Alternative investments include assets like hedge funds, private equity, and cryptocurrencies. They are less traditional but can offer diversification.",
     },
   ];
@@ -146,7 +152,7 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         {assets.map((asset, index) => (
           <div key={asset.name} className="asset-class">
             <button className="asset-button" onClick={() => toggleAsset(index)}>
-              <img src={`/assets/icons/${asset.image}.png`} alt={asset.name} className="asset-icon" />
+              <img src={asset.image} alt={asset.name} className="asset-icon" />
               <span>{asset.name}</span>
             </button>
             {expandedAssets[index] && (
@@ -159,7 +165,7 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Asset Classes Breakdown Graph */}
-      <img src="/assets/icons/graphimage.png" alt="Asset Allocation Graph" className="allocation-graph" />
+      <img src={graphImage} alt="Asset Allocation Graph" className="allocation-graph" />
 
       {/* Next Button */}
       <button className="submit-button" onClick={nextQuestion}>Next</button>

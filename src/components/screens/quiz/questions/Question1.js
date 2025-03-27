@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Question1.css';
+import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
+import q1Image from '../../../../assets/icons/q1image.png';
 
 const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -122,14 +124,14 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div className="header-content">
           <div className="points-section">
             <h3>Challenge 1</h3>
-            <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
             <p className="points">3 points</p>
           </div>
           <div className="button-container">
             <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
-        <img src="/assets/icons/q1image.png" alt="Task 1 Image" className="task-image" />
+        <img src={q1Image} alt="Task 1 Image" className="task-image" />
         <p>
           Ben is a 30 year old engineer. He has the following
           <span

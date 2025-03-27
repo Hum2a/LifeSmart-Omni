@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Question3.css';
+import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
+import blueCash from '../../../../assets/icons/bluecash.png';
 
 const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
@@ -147,7 +149,7 @@ const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div className="top-layer">
           <div className="points-section">
             <h3>Challenge 3</h3>
-            <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
             <p className="points">10 points</p>
           </div>
           <div className="button-container">
@@ -156,7 +158,7 @@ const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
         <div className="task-header-question">
           <p>Ben inherits a £20,000 gift from an old uncle. He has several options on what to do with the money.</p>
-          <img src="/assets/icons/bluecash.png" alt="Task 3 Image" className="task-image" />
+          <img src={blueCash} alt="Task 3 Image" className="task-image" />
         </div>
       </div>
 
@@ -326,7 +328,7 @@ const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                       {option === 'E' && 'E. Put the money in a savings account (paying 3% interest)'}
                     </span>
                     <span className="points-display">
-                      <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+                      <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
                       {pointsMapping[option]} points
                     </span>
                   </div>

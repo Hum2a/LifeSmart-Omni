@@ -83,10 +83,6 @@ const FinancialQuiz = () => {
     });
   };
 
-  const showResultsAfterQuestion = () => {
-    setShowResults(true);
-  };
-
   const nextQuestion = () => {
     setShowResults(false);
     if (currentQuestionIndex < questions.length - 1) {
@@ -148,23 +144,18 @@ const FinancialQuiz = () => {
   return (
     <div className="financial-quiz">
       <main className="main-content">
-        {showResults && !quizComplete ? (
+        {showResults ? (
           <ResultsScreen
             teams={sortedTeams}
-            onNext={nextQuestion}
-          />
-        ) : quizComplete ? (
-          <ResultsScreen
-            teams={teams}
             quizComplete={quizComplete}
-            onNext={saveResultsAndNavigate}
+            onNextQuestion={nextQuestion}
           />
         ) : (
           <CurrentQuestionComponent
             teams={teams}
-            handleAnswer={handleAnswer}
-            handleNextQuestion={showResultsAfterQuestion}
-            handleAwardPoints={updateScores}
+            onAnswer={handleAnswer}
+            onNextQuestion={() => setShowResults(true)}
+            onAwardPoints={updateScores}
           />
         )}
       </main>

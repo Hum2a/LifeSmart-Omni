@@ -1,21 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ResultsScreen.css';
+import crownIcon from '../../../assets/icons/crown.png';
 
 const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
   const [barWidths, setBarWidths] = useState({});
   const [expandedTeam, setExpandedTeam] = useState(null);
+  const [rankedTeams, setRankedTeams] = useState([]);
   const navigate = useNavigate();
   const maxPoints = 23;
 
   // Calculate sorted and ranked teams
-  const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
-  const rankedTeams = sortedTeams.map((team, index) => {
-    const rank = index > 0 && team.points === sortedTeams[index - 1].points
-      ? rankedTeams[index - 1].rank
-      : index + 1;
-    return { ...team, rank };
-  });
+  useEffect(() => {
+    if (!teams || teams.length === 0) return;
+
+    // First sort the teams
+    const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
+    
+    // Then calculate ranks
+    const ranked = sortedTeams.map((team, index) => {
+      // If it's the first team or has different points than the previous team
+      if (index === 0 || team.points !== sortedTeams[index - 1].points) {
+        return { ...team, rank: index + 1 };
+      }
+      // If it has the same points as the previous team, use the same rank
+      return { ...team, rank: sortedTeams[index - 1].rank };
+    });
+
+    setRankedTeams(ranked);
+  }, [teams]);
 
   const calculateBarWidth = (points) => {
     return (points / maxPoints) * 100;
@@ -38,16 +51,18 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
   };
 
   useEffect(() => {
+    if (!rankedTeams || rankedTeams.length === 0) return;
+
     // Set initial widths to 0 for animation
     const initialWidths = {};
-    sortedTeams.forEach(team => {
+    rankedTeams.forEach(team => {
       initialWidths[team.name] = 0;
     });
     setBarWidths(initialWidths);
 
     // Animate bar widths with cascading delays
     setTimeout(() => {
-      sortedTeams.forEach((team, index) => {
+      rankedTeams.forEach((team, index) => {
         setTimeout(() => {
           setBarWidths(prev => ({
             ...prev,
@@ -56,7 +71,7 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
         }, index * 300);
       });
     }, 200);
-  }, [sortedTeams]);
+  }, [rankedTeams]);
 
   return (
     <div className="results-container">
@@ -83,7 +98,7 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
                 <p className="team-name">
                   {team.rank}. {team.name}
                   {team.rank === 1 && (
-                    <img src="/assets/icons/crown.png" alt="Crown" className="crown-icon" />
+                    <img src={crownIcon} alt="Crown" className="crown-icon" />
                   )}
                 </p>
                 <div className="bar-wrapper">

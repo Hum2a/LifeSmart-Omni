@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Question2.css';
+import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 
 const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
@@ -113,7 +114,7 @@ const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div className="header-content">
           <div className="points-section">
             <h3>Challenge 2</h3>
-            <img src="/assets/icons/Lightning Bolt.png" alt="Lightning Bolt" className="lightning-bolt" />
+            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
             <p className="points">3 points</p>
           </div>
           <div className="button-container">
