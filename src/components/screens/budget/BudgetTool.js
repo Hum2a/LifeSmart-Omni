@@ -1303,106 +1303,246 @@ const BudgetTool = () => {
       headerSection: {
         font: { bold: true, color: { rgb: "FFFFFF" } },
         fill: { fgColor: { rgb: "4CAF50" } },
-        alignment: { horizontal: "center" }
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "medium", color: { rgb: "FFFFFF" } },
+          bottom: { style: "medium", color: { rgb: "FFFFFF" } },
+          left: { style: "medium", color: { rgb: "FFFFFF" } },
+          right: { style: "medium", color: { rgb: "FFFFFF" } }
+        }
       },
       subHeader: {
-        font: { bold: true },
+        font: { bold: true, color: { rgb: "000000" } },
         fill: { fgColor: { rgb: "E8F5E9" } },
-        alignment: { horizontal: "center" }
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "4CAF50" } },
+          bottom: { style: "thin", color: { rgb: "4CAF50" } },
+          left: { style: "thin", color: { rgb: "4CAF50" } },
+          right: { style: "thin", color: { rgb: "4CAF50" } }
+        }
       },
       totalRow: {
-        font: { bold: true },
-        fill: { fgColor: { rgb: "C8E6C9" } }
+        font: { bold: true, color: { rgb: "000000" } },
+        fill: { fgColor: { rgb: "C8E6C9" } },
+        alignment: { horizontal: "left", vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "4CAF50" } },
+          bottom: { style: "thin", color: { rgb: "4CAF50" } },
+          left: { style: "thin", color: { rgb: "4CAF50" } },
+          right: { style: "thin", color: { rgb: "4CAF50" } }
+        }
       },
       currency: {
-        numFmt: '"$"#,##0.00'
+        numFmt: '"$"#,##0.00',
+        font: { color: { rgb: "1B5E20" } }
       },
       percentage: {
-        numFmt: '0.0"%"'
+        numFmt: '0.0"%"',
+        font: { color: { rgb: "0277BD" } }
       },
       defaultCell: {
-        alignment: { horizontal: "left" },
+        alignment: { horizontal: "left", vertical: "center" },
         border: {
-          top: { style: "thin" },
-          bottom: { style: "thin" },
-          left: { style: "thin" },
-          right: { style: "thin" }
+          top: { style: "thin", color: { rgb: "B0BEC5" } },
+          bottom: { style: "thin", color: { rgb: "B0BEC5" } },
+          left: { style: "thin", color: { rgb: "B0BEC5" } },
+          right: { style: "thin", color: { rgb: "B0BEC5" } }
+        },
+        fill: { fgColor: { rgb: "FFFFFF" } }
+      },
+      projectionHeader: {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "2196F3" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "medium", color: { rgb: "FFFFFF" } },
+          bottom: { style: "medium", color: { rgb: "FFFFFF" } },
+          left: { style: "medium", color: { rgb: "FFFFFF" } },
+          right: { style: "medium", color: { rgb: "FFFFFF" } }
         }
+      },
+      savingsHeader: {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "FFC107" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "medium", color: { rgb: "FFFFFF" } },
+          bottom: { style: "medium", color: { rgb: "FFFFFF" } },
+          left: { style: "medium", color: { rgb: "FFFFFF" } },
+          right: { style: "medium", color: { rgb: "FFFFFF" } }
+        }
+      },
+      positiveChange: {
+        font: { color: { rgb: "4CAF50" } }
+      },
+      negativeChange: {
+        font: { color: { rgb: "F44336" } }
       }
     };
 
     // Apply column widths
     ws['!cols'] = [
-      { wch: 25 }, // Category column
+      { wch: 30 }, // Category column
       { wch: 15 }, // Amount column
-      { wch: 15 }, // Frequency/Type column
+      { wch: 20 }, // Frequency/Type column
       { wch: 15 }, // Extra column for projections
-      { wch: 20 }  // Changes Expected column
+      { wch: 25 }  // Changes Expected column
     ];
 
     // Apply styles to section headers
     const sectionHeaders = {
-      'A1': 'INCOME INFORMATION',
-      'A8': 'HOUSING EXPENSES',
-      'A19': 'TRANSPORTATION EXPENSES',
-      'A27': 'FOOD & DINING EXPENSES',
-      'A34': 'PERSONAL CARE EXPENSES',
-      'A42': 'ENTERTAINMENT & LEISURE EXPENSES',
-      'A51': 'DEBT INFORMATION',
-      'A59': 'SAVINGS INFORMATION',
-      'A69': 'BUDGET SUMMARY',
-      'A79': '6-MONTH PROJECTION'
+      'A1': { text: 'INCOME INFORMATION', style: styles.headerSection },
+      'A8': { text: 'HOUSING EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "009688" } } } },
+      'A19': { text: 'TRANSPORTATION EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "673AB7" } } } },
+      'A27': { text: 'FOOD & DINING EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "FF5722" } } } },
+      'A34': { text: 'PERSONAL CARE EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "795548" } } } },
+      'A42': { text: 'ENTERTAINMENT & LEISURE EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "E91E63" } } } },
+      'A51': { text: 'DEBT INFORMATION', style: { ...styles.headerSection, fill: { fgColor: { rgb: "F44336" } } } },
+      'A59': { text: 'SAVINGS INFORMATION', style: styles.savingsHeader },
+      'A69': { text: 'BUDGET SUMMARY', style: { ...styles.headerSection, fill: { fgColor: { rgb: "3F51B5" } } } },
+      'A79': { text: '6-MONTH PROJECTION', style: styles.projectionHeader }
     };
 
-    // Apply header styles
+    // Apply styles to section headers
     Object.keys(sectionHeaders).forEach(cell => {
       if (!ws[cell]) ws[cell] = {};
-      ws[cell].s = styles.headerSection;
+      ws[cell].s = {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: {
+          patternType: 'solid',
+          fgColor: { rgb: cell === 'A1' ? "4CAF50" : 
+                           cell === 'A8' ? "009688" :
+                           cell === 'A19' ? "673AB7" :
+                           cell === 'A27' ? "FF5722" :
+                           cell === 'A34' ? "795548" :
+                           cell === 'A42' ? "E91E63" :
+                           cell === 'A51' ? "F44336" :
+                           cell === 'A59' ? "FFC107" :
+                           cell === 'A69' ? "3F51B5" :
+                           "2196F3" }
+        },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "medium", color: { rgb: "FFFFFF" } },
+          bottom: { style: "medium", color: { rgb: "FFFFFF" } },
+          left: { style: "medium", color: { rgb: "FFFFFF" } },
+          right: { style: "medium", color: { rgb: "FFFFFF" } }
+        }
+      };
+      
       // Merge cells for section headers
       const mergeCell = cell.replace('A', '');
       ws['!merges'] = ws['!merges'] || [];
       ws['!merges'].push({ s: { r: parseInt(mergeCell) - 1, c: 0 }, e: { r: parseInt(mergeCell) - 1, c: 2 } });
     });
 
-    // Apply subheader styles (Category, Amount, Frequency rows)
-    const subHeaders = ['A2', 'A9', 'A20', 'A28', 'A35', 'A43', 'A52', 'A60', 'A70', 'A80'];
-    subHeaders.forEach(cell => {
-      if (!ws[cell]) ws[cell] = {};
-      ws[cell].s = styles.subHeader;
-    });
-
-    // Apply total row styles
-    const totalRows = ['A5', 'A14', 'A24', 'A31', 'A38', 'A47', 'A54', 'A66', 'A73'];
-    totalRows.forEach(cell => {
-      if (!ws[cell]) ws[cell] = {};
-      ws[cell].s = styles.totalRow;
-    });
-
-    // Apply currency format to amount columns
-    for (let i = 1; i < 100; i++) {
-      const cell = `B${i}`;
-      if (ws[cell] && typeof ws[cell].v === 'number') {
-        if (!ws[cell].s) ws[cell].s = {};
-        ws[cell].s = { ...ws[cell].s, ...styles.currency };
-      }
-    }
-
-    // Apply percentage format to percentage cells
-    const percentageCells = ['C71', 'C72', 'C73', 'C74', 'C77', 'C78', 'C79'];
-    percentageCells.forEach(cell => {
-      if (ws[cell]) {
-        if (!ws[cell].s) ws[cell].s = {};
-        ws[cell].s = { ...ws[cell].s, ...styles.percentage };
-      }
-    });
-
-    // Apply default cell style to all cells
+    // Apply alternating row colors to data rows
     for (let i = 1; i < 100; i++) {
       for (let j = 0; j < 5; j++) {
         const cell = XLSX.utils.encode_cell({ r: i, c: j });
         if (ws[cell]) {
           if (!ws[cell].s) ws[cell].s = {};
-          ws[cell].s = { ...ws[cell].s, ...styles.defaultCell };
+          ws[cell].s = {
+            fill: {
+              patternType: 'solid',
+              fgColor: { rgb: i % 2 === 0 ? "F5F5F5" : "FFFFFF" }
+            },
+            border: {
+              top: { style: "thin", color: { rgb: "B0BEC5" } },
+              bottom: { style: "thin", color: { rgb: "B0BEC5" } },
+              left: { style: "thin", color: { rgb: "B0BEC5" } },
+              right: { style: "thin", color: { rgb: "B0BEC5" } }
+            }
+          };
+        }
+      }
+    }
+
+    // Apply currency format with green color to amount columns
+    for (let i = 1; i < 100; i++) {
+      const cell = `B${i}`;
+      if (ws[cell] && typeof ws[cell].v === 'number') {
+        if (!ws[cell].s) ws[cell].s = {};
+        ws[cell].s = {
+          numFmt: '"$"#,##0.00',
+          font: { color: { rgb: "1B5E20" } },
+          fill: {
+            patternType: 'solid',
+            fgColor: { rgb: "E8F5E9" }
+          }
+        };
+      }
+    }
+
+    // Apply special formatting for total rows
+    const totalRows = ['A5', 'A13', 'A18', 'A24', 'A31', 'A39', 'A47', 'A55', 'A66'];
+    totalRows.forEach(cell => {
+      const row = cell.substring(1);
+      for (let col = 0; col < 3; col++) {
+        const totalCell = XLSX.utils.encode_cell({ r: parseInt(row) - 1, c: col });
+        if (ws[totalCell]) {
+          if (!ws[totalCell].s) ws[totalCell].s = {};
+          ws[totalCell].s = {
+            font: { bold: true, color: { rgb: "1B5E20" } },
+            fill: {
+              patternType: 'solid',
+              fgColor: { rgb: "C8E6C9" }
+            }
+          };
+        }
+      }
+    });
+
+    // Apply special formatting for the budget summary section
+    for (let i = 69; i < 74; i++) {
+      for (let j = 0; j < 3; j++) {
+        const cell = XLSX.utils.encode_cell({ r: i, c: j });
+        if (ws[cell]) {
+          if (!ws[cell].s) ws[cell].s = {};
+          ws[cell].s = {
+            font: { bold: true },
+            fill: {
+              patternType: 'solid',
+              fgColor: { rgb: "E3F2FD" }
+            }
+          };
+        }
+      }
+    }
+
+    // Apply special formatting for the 6-month projection section
+    for (let i = 79; i < 87; i++) {
+      for (let j = 0; j < 6; j++) {
+        const cell = XLSX.utils.encode_cell({ r: i, c: j });
+        if (ws[cell]) {
+          if (!ws[cell].s) ws[cell].s = {};
+          ws[cell].s = {
+            fill: {
+              patternType: 'solid',
+              fgColor: { rgb: "E1F5FE" }
+            }
+          };
+          
+          // Add special styling for change percentages
+          if (j === 5 && i > 80) {
+            const value = ws[cell].v;
+            if (typeof value === 'string' && value.includes('%')) {
+              const percentages = value.match(/-?\d+\.?\d*%/g);
+              if (percentages) {
+                const allPositive = percentages.every(p => !p.startsWith('-'));
+                ws[cell].s = {
+                  fill: {
+                    patternType: 'solid',
+                    fgColor: { rgb: allPositive ? "E8F5E9" : "FFEBEE" }
+                  },
+                  font: {
+                    color: { rgb: allPositive ? "1B5E20" : "C62828" }
+                  }
+                };
+              }
+            }
+          }
         }
       }
     }
