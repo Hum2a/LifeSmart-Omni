@@ -17,7 +17,7 @@ const TOOL_CONFIG = {
     text: 'Financial Quiz'
   },
   simulation: {
-    enabled: false,
+    enabled: true,
     path: '/simulation',
     icon: '🎮',
     text: 'Simulation'
