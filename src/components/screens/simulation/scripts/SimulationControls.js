@@ -289,20 +289,21 @@ const SimulationControls = () => {
   };
 
   return (
-    <div className="simulation-controls">
+    <div className="simulationcontrols-container">
       <h2>Simulation Controls</h2>
       <form onSubmit={onSubmit}>
-        <div className="input-group">
+        <div className="simulationcontrols-input-group">
           <label htmlFor="years">Years:</label>
           <input
             type="number"
             id="years"
+            className="simulationcontrols-input"
             value={years}
             onChange={(e) => setYears(Number(e.target.value))}
             min="1"
           />
         </div>
-        <div className="quarterly-changes">
+        <div className="simulationcontrols-quarterly-changes">
           <h3>Quarterly Asset Changes</h3>
           <table>
             <thead>
@@ -319,7 +320,7 @@ const SimulationControls = () => {
                 quarters.map((quarter, qIndex) => (
                   <tr
                     key={`${yearIndex}-${quarter}`}
-                    className={`year-${yearIndex}`}
+                    className={`simulationcontrols-year-${yearIndex}`}
                     style={{ backgroundColor: getColorForYear(yearIndex) }}
                   >
                     {qIndex === 0 && (
@@ -328,7 +329,7 @@ const SimulationControls = () => {
                     <td>
                       <button
                         type="button"
-                        className="quarter-button"
+                        className="simulationcontrols-quarter-button"
                         onClick={() => quarterClicked(yearIndex, quarter)}
                       >
                         {quarter}
@@ -338,6 +339,7 @@ const SimulationControls = () => {
                       <td key={`${yearIndex}-${quarter}-${asset}`}>
                         <input
                           type="number"
+                          className="simulationcontrols-input"
                           value={assetChanges[yearIndex - 1]?.[quarter]?.[asset] || 0}
                           onChange={(e) => {
                             const newAssetChanges = [...assetChanges];
@@ -354,25 +356,27 @@ const SimulationControls = () => {
             </tbody>
           </table>
         </div>
-        <button onClick={toggleEventList} className="toggle-event-list-button">
+        <button onClick={toggleEventList} className="simulationcontrols-toggle-event-list-button">
           {showEventList ? 'Hide Events' : 'Show Events'}
         </button>
-        <button type="submit" className="save-button">Save</button>
-        <button type="button" className="modern-button" onClick={generateRandomValues}>
+        <button type="submit" className="simulationcontrols-save-button">Save</button>
+        <button type="button" className="simulationcontrols-modern-button" onClick={generateRandomValues}>
           Generate Random Values
         </button>
-        <label className="custom-file-upload">
+        <label className="simulationcontrols-custom-file-upload">
           <input
             type="file"
+            className="simulationcontrols-input"
             onChange={handleFileUpload}
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             style={{ display: 'none' }}
           />
           <span>Upload File</span>
         </label>
-        <label className="custom-file-upload">
+        <label className="simulationcontrols-custom-file-upload">
           <input
             type="file"
+            className="simulationcontrols-input"
             onChange={handleEventFileUpload}
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             style={{ display: 'none' }}
@@ -382,8 +386,8 @@ const SimulationControls = () => {
       </form>
 
       {showConfirmationModal && (
-        <div className="modal-overlay" onClick={closeConfirmationModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="simulationcontrols-modal-overlay" onClick={closeConfirmationModal}>
+          <div className="simulationcontrols-modal-content" onClick={e => e.stopPropagation()}>
             <h3>{confirmationMessage}</h3>
             <button onClick={closeConfirmationModal}>Close</button>
           </div>
@@ -391,13 +395,14 @@ const SimulationControls = () => {
       )}
 
       {showEventModal && (
-        <div className="event-modal-overlay" onClick={closeEventModal}>
-          <div className="event-modal" onClick={e => e.stopPropagation()}>
+        <div className="simulationcontrols-event-modal-overlay" onClick={closeEventModal}>
+          <div className="simulationcontrols-event-modal" onClick={e => e.stopPropagation()}>
             <h3>Add Event for {selectedYear} - {selectedQuarter}</h3>
             <label htmlFor="eventName">Event Name:</label>
             <input
               type="text"
               id="eventName"
+              className="simulationcontrols-input"
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
             />
@@ -416,9 +421,9 @@ const SimulationControls = () => {
       )}
 
       {showEventList && (
-        <div className="event-list-container">
+        <div className="simulationcontrols-event-list-container">
           <h3>Active Events</h3>
-          <ul className="event-list">
+          <ul className="simulationcontrols-event-list">
             {Object.entries(events).map(([year, yearEvents]) => (
               <li key={year}>
                 <h4>Year {year}</h4>
@@ -426,9 +431,9 @@ const SimulationControls = () => {
                   {Object.entries(yearEvents).map(([quarter, event]) => (
                     <li key={quarter}>
                       {quarter}: {event.name}
-                      <span className="event-description"> - {event.description}</span>
-                      <button className="edit-button" onClick={() => editEvent(year, quarter)}>Edit</button>
-                      <button className="delete-button" onClick={() => deleteEvent(year, quarter)}>Delete</button>
+                      <span className="simulationcontrols-event-description"> - {event.description}</span>
+                      <button className="simulationcontrols-edit-button" onClick={() => editEvent(year, quarter)}>Edit</button>
+                      <button className="simulationcontrols-delete-button" onClick={() => deleteEvent(year, quarter)}>Delete</button>
                     </li>
                   ))}
                 </ul>
@@ -439,12 +444,12 @@ const SimulationControls = () => {
       )}
 
       {showDeleteConfirmation && (
-        <div className="modal-overlay" onClick={handleCancelDelete}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="simulationcontrols-modal-overlay" onClick={handleCancelDelete}>
+          <div className="simulationcontrols-modal-content" onClick={e => e.stopPropagation()}>
             <h3>Delete Event</h3>
             <p>Are you sure you want to delete the event for {eventToDelete?.quarter} of year {eventToDelete?.year}?</p>
-            <div className="modal-actions">
-              <button onClick={handleConfirmDelete} className="delete-button">Delete</button>
+            <div className="simulationcontrols-modal-actions">
+              <button onClick={handleConfirmDelete} className="simulationcontrols-delete-button">Delete</button>
               <button onClick={handleCancelDelete}>Cancel</button>
             </div>
           </div>

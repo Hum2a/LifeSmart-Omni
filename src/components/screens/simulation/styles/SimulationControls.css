@@ -19,7 +19,7 @@ th {
   color: #FFD700; /* Yellow color */
 }
 
-.simulation-controls {
+.simulationcontrols-container {
   margin: 0 auto;
   padding: 30px;
   background: #f9f9f9;
@@ -27,7 +27,7 @@ th {
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.input-group, .quarterly-changes {
+.simulationcontrols-input-group, .simulationcontrols-quarterly-changes {
   margin-bottom: 20px;
 }
 
@@ -49,7 +49,7 @@ th {
   background-color: #e3f2fd;
 }
 
-input[type=number] {
+.simulationcontrols-input[type=number] {
   width: 100px;
   padding: 8px;
   border: none;
@@ -57,8 +57,8 @@ input[type=number] {
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
-input[type=number]::before,
-input[type=number]::after {
+.simulationcontrols-input[type=number]::before,
+.simulationcontrols-input[type=number]::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -67,25 +67,47 @@ input[type=number]::after {
   transform: translateY(-50%);
 }
 
-input[type=number]::before {
+.simulationcontrols-input[type=number]::before {
   left: -10px;
 }
 
-input[type=number]::after {
+.simulationcontrols-input[type=number]::after {
   right: -10px;
 }
 
-input[type=number]::placeholder {
+.simulationcontrols-input[type=number]::placeholder {
   color: #0ac9d6;
   opacity: 1;
 }
 
-input[type=number]:focus {
+.simulationcontrols-input[type=number]:focus {
   outline: none;
 }
 
-input[type=number]:hover {
+.simulationcontrols-input[type=number]:hover {
   background-color: #8d8d8d;
+}
+
+.simulationcontrols-input[type="file"] {
+  display: none;
+}
+
+.simulationcontrols-input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.simulationcontrols-input[type="text"]:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+.simulationcontrols-input[type="text"]:hover {
+  border-color: #E6C300;
 }
 
 button {
@@ -108,21 +130,21 @@ button:active {
   transform: translateY(1px);
 }
 
-.save-button, .generate-random-button {
+.simulationcontrols-save-button, .simulationcontrols-generate-random-button {
   width: calc(50% - 10px);
   display: inline-block;
   margin-right: 20px;
 }
 
-.generate-random-button {
+.simulationcontrols-generate-random-button {
   background-color: #28a745;
 }
 
-.generate-random-button:hover {
+.simulationcontrols-generate-random-button:hover {
   background-color: #218838;
 }
 
-.save-button {
+.simulationcontrols-save-button {
   background-color: #FFD700;
   color: #000000;
   border: none;
@@ -133,48 +155,48 @@ button:active {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.save-button:hover {
+.simulationcontrols-save-button:hover {
   background-color: #E6C300;
   transform: scale(1.05);
 }
 
-.save-button:focus {
+.simulationcontrols-save-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff0000;
 }
 
-.save-button:active {
+.simulationcontrols-save-button:active {
   background-color: #cc0000;
   transform: scale(0.95);
 }
 
-.edit-button {
+.simulationcontrols-edit-button {
   background-color: transparent;
 }
 
-.edit-button:hover {
+.simulationcontrols-edit-button:hover {
   transform: scale(1.05);
   background-color: #000;
 }
 
-.edit-button:active {
+.simulationcontrols-edit-button:active {
   transform: scale(0.95);
 }
 
-.delete-button {
+.simulationcontrols-delete-button {
   background-color: transparent;
 }
 
-.delete-button:hover {
+.simulationcontrols-delete-button:hover {
   transform: scale(1.05);
   background-color: #000;
 }
 
-.delete-button:active {
+.simulationcontrols-delete-button:active {
   transform: scale(0.95);
 }
 
-.quarter-button {
+.simulationcontrols-quarter-button {
   background: none;
   border: none;
   padding: 0;
@@ -185,11 +207,11 @@ button:active {
   cursor: pointer;
 }
 
-.quarter-button:hover {
+.simulationcontrols-quarter-button:hover {
   text-decoration: underline;
 }
 
-.event-modal-overlay {
+.simulationcontrols-event-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -202,7 +224,7 @@ button:active {
   z-index: 10;
 }
 
-.event-modal {
+.simulationcontrols-event-modal {
   background: white;
   padding: 20px;
   border-radius: 5px;
@@ -212,17 +234,17 @@ button:active {
   z-index: 11;
 }
 
-.event-modal h3 {
+.simulationcontrols-event-modal h3 {
   margin: 0 0 20px 0;
 }
 
-.event-modal label {
+.simulationcontrols-event-modal label {
   display: block;
   margin: 10px 0;
 }
 
-.event-modal input,
-.event-modal textarea {
+.simulationcontrols-event-modal input,
+.simulationcontrols-event-modal textarea {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
@@ -230,12 +252,12 @@ button:active {
   border-radius: 4px;
 }
 
-.event-modal textarea {
+.simulationcontrols-event-modal textarea {
   resize: vertical;
   height: 100px;
 }
 
-.event-modal button {
+.simulationcontrols-event-modal button {
   padding: 10px 20px;
   margin-right: 10px;
   border: none;
@@ -246,16 +268,16 @@ button:active {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.event-modal button:hover {
+.simulationcontrols-event-modal button:hover {
   background-color: #E6C300;
   transform: scale(1.05);
 }
 
-.event-modal button:active {
+.simulationcontrols-event-modal button:active {
   transform: scale(0.95);
 }
 
-.event-list-container {
+.simulationcontrols-event-list-container {
   background-color: #001f3f;
   border-left: 3px solid #FFD700;
   padding: 15px;
@@ -271,12 +293,12 @@ button:active {
   z-index: 1000;
 }
 
-.event-list {
+.simulationcontrols-event-list {
   list-style-type: none;
   padding: 20px;
 }
 
-.event-list h4 {
+.simulationcontrols-event-list h4 {
   margin-top: 15px;
   margin-bottom: 10px;
   font-size: 1.2em;
@@ -284,7 +306,7 @@ button:active {
   padding-bottom: 5px;
 }
 
-.event-list li {
+.simulationcontrols-event-list li {
   margin-bottom: 10px;
   font-size: 1em;
   padding: 10px 0;
@@ -293,33 +315,33 @@ button:active {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.event-list li:hover {
+.simulationcontrols-event-list li:hover {
   background-color: #FFD700;
   color: #001f3f;
   transform: scale(1.02);
 }
 
-.event-description {
+.simulationcontrols-event-description {
   display: block;
   font-size: 0.9em;
   color: #f8f8f8;
   margin-top: 4px;
 }
 
-.event-list-container::-webkit-scrollbar {
+.simulationcontrols-event-list-container::-webkit-scrollbar {
   width: 5px;
 }
 
-.event-list-container::-webkit-scrollbar-thumb {
+.simulationcontrols-event-list-container::-webkit-scrollbar-thumb {
   background-color: #FFD700;
   border-radius: 5px;
 }
 
-.event-list-container::-webkit-scrollbar-track {
+.simulationcontrols-event-list-container::-webkit-scrollbar-track {
   background-color: #001f3f;
 }
 
-.toggle-event-list-button {
+.simulationcontrols-toggle-event-list-button {
   background-color: #ffc107;
   color: #000080;
   border: none;
@@ -331,22 +353,22 @@ button:active {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.toggle-event-list-button:hover {
+.simulationcontrols-toggle-event-list-button:hover {
   background-color: #e0a800;
   transform: scale(1.05);
 }
 
-.toggle-event-list-button:focus {
+.simulationcontrols-toggle-event-list-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff0000;
 }
 
-.toggle-event-list-button:active {
+.simulationcontrols-toggle-event-list-button:active {
   background-color: #cc0000;
   transform: scale(0.95);
 }
 
-.custom-file-upload {
+.simulationcontrols-custom-file-upload {
   display: inline-block;
   padding: 10px 20px;
   background-color: navy;
@@ -356,20 +378,16 @@ button:active {
   transition: background-color 0.3s ease, transform 0.2s;
 }
 
-.custom-file-upload span {
+.simulationcontrols-custom-file-upload span {
   font-size: 16px;
 }
 
-.custom-file-upload:hover {
+.simulationcontrols-custom-file-upload:hover {
   background-color: #45a049;
   transform: translateY(-2px);
 }
 
-input[type="file"] {
-  display: none;
-}
-
-.modal-overlay {
+.simulationcontrols-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -382,7 +400,7 @@ input[type="file"] {
   z-index: 1000;
 }
 
-.modal-content {
+.simulationcontrols-modal-content {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -391,18 +409,18 @@ input[type="file"] {
   width: 100%;
 }
 
-.modal-actions {
+.simulationcontrols-modal-actions {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
 }
 
-.modal-actions button {
+.simulationcontrols-modal-actions button {
   min-width: 100px;
 }
 
-.modal-content p {
+.simulationcontrols-modal-content p {
   margin: 15px 0;
   text-align: center;
   color: #333;

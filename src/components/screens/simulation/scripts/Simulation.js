@@ -408,36 +408,36 @@ const Simulation = () => {
 
   return (
     <div>
-      <header className="header">
-        <img src="/images/LifeSmartLogo.png" alt="Logo" className="logo" />
+      <header className="simulationpage-header">
+        <img src="/images/LifeSmartLogo.png" alt="Logo" className="simulationpage-logo" />
       </header>
 
-      <div className="sim-chart-container">
+      <div className="simulationpage-sim-chart-container">
         <canvas id="portfolioChart" ref={chartRef}></canvas>
         <button 
           onClick={nextQuarter} 
-          className="modern-button"
+          className="simulationpage-modern-button"
           disabled={currentQuarterIndex >= simulationYears * 4}
         >
           Next Quarter
         </button>
         <button 
           onClick={runFullSimulation} 
-          className="modern-button"
+          className="simulationpage-modern-button"
           disabled={isSimulating}
         >
           Run Full Simulation
         </button>
         <button 
           onClick={() => setIsSimulating(false)} 
-          className="modern-button" 
+          className="simulationpage-modern-button" 
           style={{ display: isSimulating ? 'block' : 'none' }}
         >
           Pause Simulation
         </button>
         <button 
           onClick={runFullSimulation} 
-          className="modern-button" 
+          className="simulationpage-modern-button" 
           style={{ display: isSimulating ? 'none' : 'block' }}
         >
           Resume Simulation
@@ -449,10 +449,11 @@ const Simulation = () => {
           min="100" 
           step="100" 
           title="Simulation Speed (ms)"
+          className="simulationpage-input"
         />
       </div>
 
-      <button onClick={finishSimulation} className="modern-button">
+      <button onClick={finishSimulation} className="simulationpage-modern-button">
         Finish Simulation
       </button>
     </div>
