@@ -58,9 +58,11 @@ const BudgetTool = () => {
     goalFund: '',
     
     // Debt
+    debtTypes: [],
     creditCardDebt: '',
-    studentLoans: '',
-    otherDebt: '',
+    studentLoanPayment: '',
+    carLoanPayment: '',
+    personalLoanPayment: '',
     
     // 6-Month Projection
     incomeChange: 'no',
@@ -97,7 +99,7 @@ const BudgetTool = () => {
       ],
     },
     {
-      category: 'Housing',
+      category: 'Needs',
       questions: [
         {
           id: 'housingType',
@@ -111,72 +113,24 @@ const BudgetTool = () => {
         },
         {
           id: 'rent',
-          label: 'How much do you pay in rent?',
+          label: 'What is your current monthly rent or mortgage payment?',
           type: 'number',
           placeholder: 'Enter amount',
           showIf: (data) => data.housingType === 'rent',
         },
         {
           id: 'mortgage',
-          label: 'How much is your mortgage payment?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.housingType === 'mortgage',
-        },
-        {
-          id: 'propertyTax',
-          label: 'How much do you pay in property tax?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.housingType === 'mortgage',
-        },
-        {
-          id: 'homeInsurance',
-          label: 'How much is your home insurance?',
+          label: 'What is your current monthly rent or mortgage payment?',
           type: 'number',
           placeholder: 'Enter amount',
           showIf: (data) => data.housingType === 'mortgage',
         },
         {
           id: 'utilities',
-          label: 'How much do you pay in utilities (electric, water, gas)?',
+          label: 'How much do you spend on utilities (electricity, water, internet, gas)?',
           type: 'number',
           placeholder: 'Enter amount',
         },
-      ],
-    },
-    {
-      category: 'Transportation',
-      questions: [
-        {
-          id: 'carPayment',
-          label: 'Do you have a car payment?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'carInsurance',
-          label: 'How much do you pay for car insurance?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'gas',
-          label: 'How much do you spend on gas per month?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'publicTransportation',
-          label: 'How much do you spend on public transportation (buses, trains, etc.)?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        }
-      ],
-    },
-    {
-      category: 'Food & Dining',
-      questions: [
         {
           id: 'groceries',
           label: 'How much do you spend on groceries per month?',
@@ -184,37 +138,91 @@ const BudgetTool = () => {
           placeholder: 'Enter amount',
         },
         {
-          id: 'diningOut',
-          label: 'How much do you spend on dining out per month?',
+          id: 'transportation',
+          label: 'What is your monthly transportation cost?',
+          type: 'number',
+          placeholder: 'Enter amount for public transport, fuel, and car insurance/tax combined',
+        },
+        {
+          id: 'insurance',
+          label: 'Do you have any monthly insurance costs (health, home, car, etc.)?',
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
-          id: 'takeout',
-          label: 'How much do you spend on takeout per month?',
+          id: 'childcare',
+          label: 'Do you have any childcare or education expenses?',
           type: 'number',
           placeholder: 'Enter amount',
+        },
+        {
+          id: 'debtTypes',
+          label: 'Do you have any outstanding debts? (Select all that apply)',
+          type: 'multiselect',
+          options: [
+            { value: 'credit', label: 'Credit card balance' },
+            { value: 'student', label: 'Student loan' },
+            { value: 'car', label: 'Car loan' },
+            { value: 'personal', label: 'Personal loan' },
+            { value: 'none', label: 'No debt' }
+          ],
+        },
+        {
+          id: 'creditCardDebt',
+          label: 'How much is your monthly credit card payment?',
+          type: 'number',
+          placeholder: 'Enter amount',
+          showIf: (data) => data.debtTypes && data.debtTypes.includes('credit'),
+        },
+        {
+          id: 'studentLoanPayment',
+          label: 'How much is your monthly student loan payment?',
+          type: 'number',
+          placeholder: 'Enter amount',
+          showIf: (data) => data.debtTypes && data.debtTypes.includes('student'),
+        },
+        {
+          id: 'carLoanPayment',
+          label: 'How much is your monthly car loan payment?',
+          type: 'number',
+          placeholder: 'Enter amount',
+          showIf: (data) => data.debtTypes && data.debtTypes.includes('car'),
+        },
+        {
+          id: 'personalLoanPayment',
+          label: 'How much is your monthly personal loan payment?',
+          type: 'number',
+          placeholder: 'Enter amount',
+          showIf: (data) => data.debtTypes && data.debtTypes.includes('personal'),
+        },
+        {
+          id: 'totalDebtPayment',
+          label: 'Total Monthly Debt Payments',
+          type: 'display',
+          getValue: (data) => {
+            const total = 
+              (data.debtTypes?.includes('credit') ? Number(data.creditCardDebt) || 0 : 0) +
+              (data.debtTypes?.includes('student') ? Number(data.studentLoanPayment) || 0 : 0) +
+              (data.debtTypes?.includes('car') ? Number(data.carLoanPayment) || 0 : 0) +
+              (data.debtTypes?.includes('personal') ? Number(data.personalLoanPayment) || 0 : 0);
+            return `£${total.toFixed(2)}`;
+          },
+          showIf: (data) => data.debtTypes && !data.debtTypes.includes('none') && data.debtTypes.length > 0,
         }
       ],
     },
     {
-      category: 'Personal Care',
+      category: 'Wants',
       questions: [
         {
-          id: 'healthInsurance',
-          label: 'How much do you pay for health insurance?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'medicalExpenses',
-          label: 'How much do you spend on medical expenses per month?',
+          id: 'diningOut',
+          label: 'How much do you spend on dining out and takeout?',
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'gymMembership',
-          label: 'How much do you spend on gym membership per month?',
+          label: 'How much do you spend on gym membership?',
           type: 'number',
           placeholder: 'Enter amount',
         },
@@ -224,14 +232,9 @@ const BudgetTool = () => {
           type: 'number',
           placeholder: 'Enter amount',
         },
-      ],
-    },
-    {
-      category: 'Entertainment & Personal Expenses',
-      questions: [
         {
           id: 'entertainment',
-          label: 'How much do you spend per month on entertainment (Going out, eating out, hobbies)?',
+          label: 'How much do you spend on entertainment (going out, hobbies)?',
           type: 'number',
           placeholder: 'Enter amount',
         },
@@ -243,22 +246,16 @@ const BudgetTool = () => {
         },
         {
           id: 'subscriptions',
-          label: 'Do you have any monthly subscription services (Netflix, Spotify, etc)?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'personalCareBudget',
-          label: 'What is your monthly budget for personal care (sport, salon, skincare, etc.)?',
+          label: 'How much do you spend on subscription services (Netflix, Spotify, etc.)?',
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'travel',
-          label: 'What do you spend on trips or holidays?',
+          label: 'How much do you spend on trips or holidays?',
           type: 'number',
           placeholder: 'Enter amount',
-        },
+        }
       ],
     },
     {
@@ -305,6 +302,93 @@ const BudgetTool = () => {
           showIf: (data) => data.hasSavingsPot === 'yes',
         },
       ],
+      renderCustomContent: (formData) => {
+        if (formData.hasSavingsPot === 'no') {
+          return (
+            <div className="budgettool-savings-info">
+              <h3 className="budgettool-savings-title">Understanding Savings Pots</h3>
+              <p className="budgettool-savings-text">
+                Having a structured approach to savings is crucial for financial stability. We recommend setting up three distinct savings pots:
+              </p>
+              <div className="budgettool-savings-pots">
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🛡️</div>
+                  <h4>Emergency Fund</h4>
+                  <p>3-6 months of essential expenses for unexpected situations</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🎯</div>
+                  <h4>Sinking Fund</h4>
+                  <p>For planned future expenses like holidays or home repairs</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">💎</div>
+                  <h4>Goal/Investment Fund</h4>
+                  <p>For long-term goals and wealth building</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (formData.savingsPotType === 'one') {
+          return (
+            <div className="budgettool-savings-info">
+              <h3 className="budgettool-savings-title">Multiple Savings Pots</h3>
+              <p className="budgettool-savings-text">
+                While having a single savings pot is a good start, it's important to build up multiple savings pots that have different roles. Here's how we suggest you structure your savings:
+              </p>
+              <div className="budgettool-savings-pots">
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🛡️</div>
+                  <h4>Emergency Fund</h4>
+                  <p>3-6 months of essential expenses for unexpected situations</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🎯</div>
+                  <h4>Sinking Fund</h4>
+                  <p>For planned future expenses like holidays or home repairs</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">💎</div>
+                  <h4>Goal/Investment Fund</h4>
+                  <p>For long-term goals and wealth building</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (formData.savingsPotType === 'multiple') {
+          return (
+            <div className="budgettool-savings-info">
+              <h3 className="budgettool-savings-title">Great Job!</h3>
+              <p className="budgettool-savings-text">
+                You're on the right track with multiple savings pots. Let's review your current savings structure:
+              </p>
+              <div className="budgettool-savings-pots">
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🛡️</div>
+                  <h4>Emergency Fund</h4>
+                  <p>3-6 months of essential expenses for unexpected situations</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🎯</div>
+                  <h4>Sinking Fund</h4>
+                  <p>For planned future expenses like holidays or home repairs</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">💎</div>
+                  <h4>Goal/Investment Fund</h4>
+                  <p>For long-term goals and wealth building</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      }
     },
     {
       category: 'Budget Analysis',
@@ -392,7 +476,7 @@ const BudgetTool = () => {
                           const value = context.raw || 0;
                           const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
                           const percentage = ((value / total) * 100).toFixed(1);
-                          return `${context.label}: $${value.toFixed(2)} (${percentage}%)`;
+                          return `${context.label}: £${value.toFixed(2)} (${percentage}%)`;
                         }
                       }
                     }
@@ -432,12 +516,12 @@ const BudgetTool = () => {
                 <h4>Savings Recommendations</h4>
                 <p>Emergency Fund:</p>
                 <ul className="budgettool-analysis-list">
-                  <li>Minimum target: ${minimumEmergencyFund.toFixed(2)} (3 months of needs)</li>
-                  <li>Ideal target: ${recommendedEmergencyFund.toFixed(2)} (6 months of needs)</li>
-                  <li>Current amount: ${currentEmergencyFund.toFixed(2)}</li>
+                  <li>Minimum target: £{minimumEmergencyFund.toFixed(2)} (3 months of needs)</li>
+                  <li>Ideal target: £{recommendedEmergencyFund.toFixed(2)} (6 months of needs)</li>
+                  <li>Current amount: £{currentEmergencyFund.toFixed(2)}</li>
                   {emergencyFundGap > 0 && (
                     <li className="budgettool-analysis-warning">
-                      You need ${emergencyFundGap.toFixed(2)} more to reach the minimum target
+                      You need £{emergencyFundGap.toFixed(2)} more to reach the minimum target
                     </li>
                   )}
                 </ul>
@@ -458,7 +542,7 @@ const BudgetTool = () => {
       questions: [
         {
           id: 'incomeChange',
-          label: 'Do you expect your income to be the same for the next 6 months?',
+          label: 'Do you expect your income to change over the next 6 months?',
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
@@ -467,12 +551,12 @@ const BudgetTool = () => {
         },
         {
           id: 'needsChange',
-          label: 'Do you expect your needs spending to be the same for the next 6 months?',
+          label: 'Do you expect your needs spending to change over the next 6 months?',
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
             { value: 'no', label: 'No' }
-          ],
+          ]
         },
         {
           id: 'wantsChange',
@@ -481,13 +565,10 @@ const BudgetTool = () => {
           options: [
             { value: 'yes', label: 'Yes' },
             { value: 'no', label: 'No' }
-          ],
+          ]
         }
       ],
       renderCustomContent: (formData) => {
-        const summary = calculateBudgetSummary();
-        
-        // Get next 6 months from today
         const getNextMonths = () => {
           const months = [];
           const today = new Date();
@@ -499,297 +580,291 @@ const BudgetTool = () => {
         };
 
         const nextMonths = getNextMonths();
+        const summary = calculateBudgetSummary();
 
-        // Calculate cumulative changes for a specific month
-        const calculateCumulativeChanges = (monthIndex) => {
-          const currentProjections = formData.monthlyProjections[monthIndex];
-          const income = Number(currentProjections.income) || summary.totalIncome;
-          const needs = Number(currentProjections.needs) || summary.needs;
-          const wants = Number(currentProjections.wants) || summary.wants;
-          const savings = income - needs - wants;
-          
-          const needsPercentage = (needs / income) * 100;
-          const wantsPercentage = (wants / income) * 100;
-          const savingsPercentage = (savings / income) * 100;
-
-          const changeFromBase = {
-            income: ((income - summary.totalIncome) / summary.totalIncome) * 100,
-            needs: ((needs - summary.needs) / summary.needs) * 100,
-            wants: ((wants - summary.wants) / summary.wants) * 100,
-            savings: savings > 0 ? ((savings - (summary.totalIncome - summary.needs - summary.wants)) / 
-                      (summary.totalIncome - summary.needs - summary.wants)) * 100 : 0
-          };
-
-          return {
-            income,
-            needs,
-            wants,
-            savings,
-            needsPercentage,
-            wantsPercentage,
-            savingsPercentage,
-            changeFromBase
-          };
-        };
-
-        const handlePercentageChange = (index, field, percentageValue) => {
-          const baseValue = index === 0 ? summary[field] : Number(formData.monthlyProjections[index - 1][field]);
-          const percentage = parseFloat(percentageValue) || 0;
-          const newValue = baseValue * (1 + percentage / 100);
-          
-          const newProjections = [...formData.monthlyProjections];
-          newProjections[index] = {
-            ...newProjections[index],
-            [field]: newValue.toFixed(2),
-            [`${field}Percentage`]: percentage  // Store the percentage value
-          };
-
-          // Update subsequent months to maintain their percentage changes relative to their previous month
-          for (let i = index + 1; i < 6; i++) {
-            const prevValue = Number(newProjections[i - 1][field]);
-            const currentPercentage = Number(formData.monthlyProjections[i][`${field}Percentage`]) || 0;
-            newProjections[i] = {
-              ...newProjections[i],
-              [field]: (prevValue * (1 + currentPercentage / 100)).toFixed(2),
-              [`${field}Percentage`]: currentPercentage
-            };
-          }
-          
-          setFormData(prev => ({
-            ...prev,
-            monthlyProjections: newProjections
-          }));
-        };
-
-        const handleAmountChange = (index, field, amount) => {
-          const baseValue = index === 0 ? summary[field] : Number(formData.monthlyProjections[index - 1][field]);
-          const newValue = parseFloat(amount) || 0;
-          const percentageChange = ((newValue - baseValue) / baseValue) * 100;
-          
-          const newProjections = [...formData.monthlyProjections];
-          newProjections[index] = {
-            ...newProjections[index],
-            [field]: newValue.toFixed(2),
-            [`${field}Percentage`]: percentageChange.toFixed(2)
-          };
-
-          // Update subsequent months to maintain their percentage changes relative to their previous month
-          for (let i = index + 1; i < 6; i++) {
-            const prevValue = Number(newProjections[i - 1][field]);
-            const currentPercentage = Number(formData.monthlyProjections[i][`${field}Percentage`]) || 0;
-            newProjections[i] = {
-              ...newProjections[i],
-              [field]: (prevValue * (1 + currentPercentage / 100)).toFixed(2),
-              [`${field}Percentage`]: currentPercentage
-            };
-          }
-          
-          setFormData(prev => ({
-            ...prev,
-            monthlyProjections: newProjections
-          }));
-        };
-
-        const generateRandomData = (index) => {
-          // Generate random percentage changes between -20% and +20%
-          const getRandomPercentage = () => (Math.random() * 40 - 20).toFixed(2);
-          
-          const incomeChange = getRandomPercentage();
-          const needsChange = getRandomPercentage();
-          const wantsChange = getRandomPercentage();
-          
-          const baseIncome = index === 0 ? summary.totalIncome : Number(formData.monthlyProjections[index - 1].income);
-          const baseNeeds = index === 0 ? summary.needs : Number(formData.monthlyProjections[index - 1].needs);
-          const baseWants = index === 0 ? summary.wants : Number(formData.monthlyProjections[index - 1].wants);
-          
-          const newIncome = baseIncome * (1 + parseFloat(incomeChange) / 100);
-          const newNeeds = baseNeeds * (1 + parseFloat(needsChange) / 100);
-          const newWants = baseWants * (1 + parseFloat(wantsChange) / 100);
-          
-          const newProjections = [...formData.monthlyProjections];
-          newProjections[index] = {
-            income: newIncome.toFixed(2),
-            needs: newNeeds.toFixed(2),
-            wants: newWants.toFixed(2),
-            savings: (newIncome - newNeeds - newWants).toFixed(2),
-            totalIncomePercentage: incomeChange,
-            needsPercentage: needsChange,
-            wantsPercentage: wantsChange
-          };
-          
-          // Update subsequent months to maintain their percentage changes relative to their previous month
-          for (let i = index + 1; i < 6; i++) {
-            const prevIncome = Number(newProjections[i - 1].income);
-            const prevNeeds = Number(newProjections[i - 1].needs);
-            const prevWants = Number(newProjections[i - 1].wants);
-            
-            const currentIncomePercentage = Number(formData.monthlyProjections[i].totalIncomePercentage) || 0;
-            const currentNeedsPercentage = Number(formData.monthlyProjections[i].needsPercentage) || 0;
-            const currentWantsPercentage = Number(formData.monthlyProjections[i].wantsPercentage) || 0;
-            
-            const nextIncome = prevIncome * (1 + currentIncomePercentage / 100);
-            const nextNeeds = prevNeeds * (1 + currentNeedsPercentage / 100);
-            const nextWants = prevWants * (1 + currentWantsPercentage / 100);
-            
-            newProjections[i] = {
-              income: nextIncome.toFixed(2),
-              needs: nextNeeds.toFixed(2),
-              wants: nextWants.toFixed(2),
-              savings: (nextIncome - nextNeeds - nextWants).toFixed(2),
-              totalIncomePercentage: currentIncomePercentage,
-              needsPercentage: currentNeedsPercentage,
-              wantsPercentage: currentWantsPercentage
-            };
-          }
-          
-          setFormData(prev => ({
-            ...prev,
-            monthlyProjections: newProjections
-          }));
-        };
-        
         return (
-          <div className="budgettool-monthly-inputs">
-            <h3 className="budgettool-monthly-inputs-title">Monthly Projections</h3>
-            <p className="budgettool-monthly-inputs-text">
-              Enter your expected changes for each month. You can either enter the exact amount or a percentage change.
-              For percentage, use positive numbers for increase (e.g., 10 for 10% increase) and negative for decrease (e.g., -10 for 10% decrease).
-            </p>
+          <div className="budgettool-projections">
+            <h3 className="budgettool-projections-title">6-Month Projection</h3>
             
-            <div className="budgettool-monthly-grid">
-              {nextMonths.map((monthYear, index) => {
-                const monthSummary = calculateCumulativeChanges(index);
-                
-                return (
-                  <div key={index} className="budgettool-monthly-item">
-                    <div className="budgettool-monthly-header">
-                      <h4>{monthYear}</h4>
-                      <button
-                        onClick={() => generateRandomData(index)}
-                        className="budgettool-button budgettool-button-secondary budgettool-button-small"
-                      >
-                        Generate Random Data
-                      </button>
-                    </div>
-                    <div className="budgettool-monthly-fields">
-                      <div className="budgettool-monthly-field">
-                        <label>Income</label>
-                        <div className="budgettool-input-group">
-                          <input
-                            type="number"
-                            name={`monthlyProjections.${index}.income`}
-                            value={formData.monthlyProjections[index].income}
-                            onChange={(e) => handleAmountChange(index, 'totalIncome', e.target.value)}
-                            placeholder={`Current: $${summary.totalIncome.toFixed(2)}`}
-                            className="budgettool-input"
-                          />
-                          <div className="budgettool-percentage-input">
+            {formData.incomeChange === 'yes' && (
+              <div className="budgettool-projections-table">
+                <h4>Expected Income Changes</h4>
+                <div className="budgettool-table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Month</th>
+                        {nextMonths.map((month, index) => (
+                          <th key={index}>{month}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Monthly Income</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
                             <input
                               type="number"
-                              placeholder="% change"
-                              value={formData.monthlyProjections[index].totalIncomePercentage || ''}
-                              onChange={(e) => handlePercentageChange(index, 'totalIncome', e.target.value)}
+                              value={formData.monthlyProjections[index]?.income || summary.totalIncome}
+                              onChange={(e) => handleAmountChange(index, 'income', e.target.value)}
                               className="budgettool-input"
+                              placeholder={`£${summary.totalIncome.toFixed(2)}`}
                             />
-                            <span>%</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="budgettool-monthly-field">
-                        <label>Needs</label>
-                        <div className="budgettool-input-group">
-                          <input
-                            type="number"
-                            name={`monthlyProjections.${index}.needs`}
-                            value={formData.monthlyProjections[index].needs}
-                            onChange={(e) => handleAmountChange(index, 'needs', e.target.value)}
-                            placeholder={`Current: $${summary.needs.toFixed(2)}`}
-                            className="budgettool-input"
-                          />
-                          <div className="budgettool-percentage-input">
-                            <input
-                              type="number"
-                              placeholder="% change"
-                              value={formData.monthlyProjections[index].needsPercentage || ''}
-                              onChange={(e) => handlePercentageChange(index, 'needs', e.target.value)}
-                              className="budgettool-input"
-                            />
-                            <span>%</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="budgettool-monthly-field">
-                        <label>Wants</label>
-                        <div className="budgettool-input-group">
-                          <input
-                            type="number"
-                            name={`monthlyProjections.${index}.wants`}
-                            value={formData.monthlyProjections[index].wants}
-                            onChange={(e) => handleAmountChange(index, 'wants', e.target.value)}
-                            placeholder={`Current: $${summary.wants.toFixed(2)}`}
-                            className="budgettool-input"
-                          />
-                          <div className="budgettool-percentage-input">
-                            <input
-                              type="number"
-                              placeholder="% change"
-                              value={formData.monthlyProjections[index].wantsPercentage || ''}
-                              onChange={(e) => handlePercentageChange(index, 'wants', e.target.value)}
-                              className="budgettool-input"
-                            />
-                            <span>%</span>
-                          </div>
-                        </div>
-                      </div>
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
-                      <div className="budgettool-monthly-summary">
-                        <h5>Month Summary</h5>
-                        <div className="budgettool-monthly-summary-grid">
-                          <div className="budgettool-monthly-summary-item">
-                            <span>Income:</span>
-                            <span>${monthSummary.income.toFixed(2)}</span>
-                            <span className={monthSummary.changeFromBase.income >= 0 ? 'positive' : 'negative'}>
-                              ({monthSummary.changeFromBase.income.toFixed(1)}%)
-                            </span>
-                          </div>
-                          <div className="budgettool-monthly-summary-item">
-                            <span>Needs:</span>
-                            <span>${monthSummary.needs.toFixed(2)}</span>
-                            <span className={monthSummary.changeFromBase.needs >= 0 ? 'positive' : 'negative'}>
-                              ({monthSummary.changeFromBase.needs.toFixed(1)}%)
-                            </span>
-                          </div>
-                          <div className="budgettool-monthly-summary-item">
-                            <span>Wants:</span>
-                            <span>${monthSummary.wants.toFixed(2)}</span>
-                            <span className={monthSummary.changeFromBase.wants >= 0 ? 'positive' : 'negative'}>
-                              ({monthSummary.changeFromBase.wants.toFixed(1)}%)
-                            </span>
-                          </div>
-                          <div className="budgettool-monthly-summary-item">
-                            <span>Savings:</span>
-                            <span>${monthSummary.savings.toFixed(2)}</span>
-                            <span className={monthSummary.changeFromBase.savings >= 0 ? 'positive' : 'negative'}>
-                              ({monthSummary.changeFromBase.savings.toFixed(1)}%)
-                            </span>
-                          </div>
-                        </div>
-                        <div className="budgettool-monthly-distribution">
-                          <div className="budgettool-monthly-distribution-item">
-                            <span>Distribution:</span>
-                            <span>Needs: {monthSummary.needsPercentage.toFixed(1)}%</span>
-                            <span>Wants: {monthSummary.wantsPercentage.toFixed(1)}%</span>
-                            <span>Savings: {monthSummary.savingsPercentage.toFixed(1)}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            {formData.needsChange === 'yes' && (
+              <div className="budgettool-projections-table">
+                <h4>Expected Needs Changes</h4>
+                <div className="budgettool-table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        {nextMonths.map((month, index) => (
+                          <th key={index}>{month}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Housing</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.housing || (Number(formData.rent) + Number(formData.mortgage) + Number(formData.utilities))}
+                              onChange={(e) => handleAmountChange(index, 'housing', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${(Number(formData.rent) + Number(formData.mortgage) + Number(formData.utilities)).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Transportation</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.transportation || (Number(formData.carPayment) + Number(formData.carInsurance) + Number(formData.gas) + Number(formData.publicTransportation))}
+                              onChange={(e) => handleAmountChange(index, 'transportation', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${(Number(formData.carPayment) + Number(formData.carInsurance) + Number(formData.gas) + Number(formData.publicTransportation)).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Groceries</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.groceries || Number(formData.groceries)}
+                              onChange={(e) => handleAmountChange(index, 'groceries', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.groceries).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Health Insurance</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.healthInsurance || Number(formData.healthInsurance)}
+                              onChange={(e) => handleAmountChange(index, 'healthInsurance', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.healthInsurance).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Medical Expenses</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.medicalExpenses || Number(formData.medicalExpenses)}
+                              onChange={(e) => handleAmountChange(index, 'medicalExpenses', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.medicalExpenses).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Debt Payments</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.debtPayments || (
+                                Number(formData.creditCardDebt) +
+                                Number(formData.studentLoanPayment) +
+                                Number(formData.carLoanPayment) +
+                                Number(formData.personalLoanPayment)
+                              )}
+                              onChange={(e) => handleAmountChange(index, 'debtPayments', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${(
+                                Number(formData.creditCardDebt) +
+                                Number(formData.studentLoanPayment) +
+                                Number(formData.carLoanPayment) +
+                                Number(formData.personalLoanPayment)
+                              ).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {formData.wantsChange === 'yes' && (
+              <div className="budgettool-projections-table">
+                <h4>Expected Wants Changes</h4>
+                <div className="budgettool-table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        {nextMonths.map((month, index) => (
+                          <th key={index}>{month}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Dining Out</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.diningOut || Number(formData.diningOut)}
+                              onChange={(e) => handleAmountChange(index, 'diningOut', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.diningOut).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Takeout</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.takeout || Number(formData.takeout)}
+                              onChange={(e) => handleAmountChange(index, 'takeout', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.takeout).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Gym Membership</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.gymMembership || Number(formData.gymMembership)}
+                              onChange={(e) => handleAmountChange(index, 'gymMembership', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.gymMembership).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Personal Care</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.personalCare || Number(formData.personalCare)}
+                              onChange={(e) => handleAmountChange(index, 'personalCare', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.personalCare).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Entertainment</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.entertainment || Number(formData.entertainment)}
+                              onChange={(e) => handleAmountChange(index, 'entertainment', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.entertainment).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Shopping</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.shopping || Number(formData.shopping)}
+                              onChange={(e) => handleAmountChange(index, 'shopping', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.shopping).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Subscriptions</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.subscriptions || Number(formData.subscriptions)}
+                              onChange={(e) => handleAmountChange(index, 'subscriptions', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.subscriptions).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Travel</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.travel || Number(formData.travel)}
+                              onChange={(e) => handleAmountChange(index, 'travel', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.travel).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         );
       }
@@ -886,6 +961,23 @@ const BudgetTool = () => {
     });
 
     return monthlyProjections;
+  };
+
+  const handleAmountChange = (monthIndex, field, value) => {
+    setFormData(prev => {
+      const newProjections = [...prev.monthlyProjections];
+      if (!newProjections[monthIndex]) {
+        newProjections[monthIndex] = {};
+      }
+      newProjections[monthIndex] = {
+        ...newProjections[monthIndex],
+        [field]: Number(value) || 0
+      };
+      return {
+        ...prev,
+        monthlyProjections: newProjections
+      };
+    });
   };
 
   const handleInputChange = (e) => {
@@ -1036,19 +1128,19 @@ const BudgetTool = () => {
               <div className="budgettool-projections-details">
                 <div className="budgettool-projections-item">
                   <span>Income:</span>
-                  <span>${month.income.toFixed(2)}</span>
+                  <span>£{month.income.toFixed(2)}</span>
                 </div>
                 <div className="budgettool-projections-item">
                   <span>Needs:</span>
-                  <span>${month.needs.toFixed(2)}</span>
+                  <span>£{month.needs.toFixed(2)}</span>
                 </div>
                 <div className="budgettool-projections-item">
                   <span>Wants:</span>
-                  <span>${month.wants.toFixed(2)}</span>
+                  <span>£{month.wants.toFixed(2)}</span>
                 </div>
                 <div className="budgettool-projections-item">
                   <span>Savings:</span>
-                  <span>${month.savings.toFixed(2)}</span>
+                  <span>£{month.savings.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -1098,6 +1190,53 @@ const BudgetTool = () => {
             ))}
           </select>
         );
+      case 'multiselect':
+        return (
+          <div className="budgettool-multiselect">
+            {question.options.map(option => (
+              <label 
+                key={option.value} 
+                className="budgettool-checkbox-label"
+                data-checked={formData[question.id]?.includes(option.value)}
+              >
+                <input
+                  type="checkbox"
+                  name={question.id}
+                  value={option.value}
+                  checked={formData[question.id]?.includes(option.value) || false}
+                  onChange={(e) => {
+                    const currentValues = formData[question.id] || [];
+                    let newValues;
+                    if (option.value === 'none') {
+                      // If 'none' is selected, clear all other selections
+                      newValues = e.target.checked ? ['none'] : [];
+                    } else {
+                      // If any other option is selected, remove 'none' and toggle the selected option
+                      newValues = currentValues.filter(v => v !== 'none');
+                      if (e.target.checked) {
+                        newValues.push(option.value);
+                      } else {
+                        newValues = newValues.filter(v => v !== option.value);
+                      }
+                    }
+                    setFormData(prev => ({
+                      ...prev,
+                      [question.id]: newValues
+                    }));
+                  }}
+                  className="budgettool-checkbox"
+                />
+                {option.label}
+              </label>
+            ))}
+          </div>
+        );
+      case 'display':
+        return (
+          <div className="budgettool-display-value">
+            {question.getValue(formData)}
+          </div>
+        );
       default:
         return null;
     }
@@ -1119,19 +1258,19 @@ const BudgetTool = () => {
           <div className="budgettool-summary-details">
             <div className="budgettool-summary-item">
               <span className="budgettool-summary-label">Total Income:</span>
-              <span className="budgettool-summary-value">${summary.totalIncome.toFixed(2)}</span>
+              <span className="budgettool-summary-value">£{summary.totalIncome.toFixed(2)}</span>
             </div>
             <div className="budgettool-summary-item">
               <span className="budgettool-summary-label">Needs:</span>
-              <span className="budgettool-summary-value">${summary.needs.toFixed(2)} ({summary.needsPercentage.toFixed(1)}%)</span>
+              <span className="budgettool-summary-value">£{summary.needs.toFixed(2)} ({summary.needsPercentage.toFixed(1)}%)</span>
             </div>
             <div className="budgettool-summary-item">
               <span className="budgettool-summary-label">Wants:</span>
-              <span className="budgettool-summary-value">${summary.wants.toFixed(2)} ({summary.wantsPercentage.toFixed(1)}%)</span>
+              <span className="budgettool-summary-value">£{summary.wants.toFixed(2)} ({summary.wantsPercentage.toFixed(1)}%)</span>
             </div>
             <div className="budgettool-summary-item">
               <span className="budgettool-summary-label">Remaining:</span>
-              <span className="budgettool-summary-value">${(summary.totalIncome - summary.needs - summary.wants).toFixed(2)} ({summary.remainingPercentage.toFixed(1)}%)</span>
+              <span className="budgettool-summary-value">£{(summary.totalIncome - summary.needs - summary.wants).toFixed(2)} ({summary.remainingPercentage.toFixed(1)}%)</span>
             </div>
           </div>
         </div>
@@ -1235,12 +1374,14 @@ const BudgetTool = () => {
       ['DEBT INFORMATION', '', ''],
       ['Category', 'Amount', 'Type'],
       ['Credit Card Debt', Number(formData.creditCardDebt) || 0, 'Current Balance'],
-      ['Student Loans', Number(formData.studentLoans) || 0, 'Current Balance'],
-      ['Other Debt', Number(formData.otherDebt) || 0, 'Current Balance'],
+      ['Student Loans', Number(formData.studentLoanPayment) || 0, 'Current Balance'],
+      ['Car Loan', Number(formData.carLoanPayment) || 0, 'Current Balance'],
+      ['Personal Loan', Number(formData.personalLoanPayment) || 0, 'Current Balance'],
       ['Total Debt', 
         (Number(formData.creditCardDebt) || 0) + 
-        (Number(formData.studentLoans) || 0) + 
-        (Number(formData.otherDebt) || 0), 
+        (Number(formData.studentLoanPayment) || 0) + 
+        (Number(formData.carLoanPayment) || 0) + 
+        (Number(formData.personalLoanPayment) || 0), 
         'Current Balance'
       ],
       ['', '', ''],
@@ -1334,7 +1475,7 @@ const BudgetTool = () => {
         }
       },
       currency: {
-        numFmt: '"$"#,##0.00',
+        numFmt: '"£"#,##0.00',
         font: { color: { rgb: "1B5E20" } }
       },
       percentage: {
@@ -1465,7 +1606,7 @@ const BudgetTool = () => {
       if (ws[cell] && typeof ws[cell].v === 'number') {
         if (!ws[cell].s) ws[cell].s = {};
         ws[cell].s = {
-          numFmt: '"$"#,##0.00',
+          numFmt: '"£"#,##0.00',
           font: { color: { rgb: "1B5E20" } },
           fill: {
             patternType: 'solid',
@@ -1590,25 +1731,22 @@ const BudgetTool = () => {
             {questions[currentStep].category}
           </h2>
           
-          {questions[currentStep].renderCustomContent ? (
+          {questions[currentStep].questions.map((question, index) => {
+            if (question.showIf && !question.showIf(formData)) {
+              return null;
+            }
+
+            return (
+              <div key={index} className="budgettool-question">
+                <label className="budgettool-label">{question.label}</label>
+                {renderQuestion(question)}
+              </div>
+            );
+          })}
+
+          {questions[currentStep].renderCustomContent && 
             questions[currentStep].renderCustomContent(formData)
-          ) : (
-            questions[currentStep].questions.map((question, index) => {
-              if (question.showIf && !question.showIf(formData)) {
-                return null;
-              }
-
-              return (
-                <div key={index} className="budgettool-question">
-                  <label className="budgettool-label">{question.label}</label>
-                  {renderQuestion(question)}
-                </div>
-              );
-            })
-          )}
-
-          {currentStep === questions.length - 1 && renderSavingsInfo()}
-          {/* {currentStep === questions.length - 1 && renderMonthlyProjections()} */}
+          }
         </div>
 
         {currentStep === questions.length - 1 && renderSummary()}
