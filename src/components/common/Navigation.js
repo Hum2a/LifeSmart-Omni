@@ -10,7 +10,7 @@ import GroupCreation from '../screens/simulation/GroupCreation';
 import SimulationPage from '../screens/simulation/Simulation';
 import ResultsScreen from '../screens/simulation/ResultsScreen';
 import QuizSimulation from '../screens/simulation/QuizSimulation';
-import InvestmentCalculator from '../screens/simulation/InvestmentCalculator';
+import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
 import BudgetTool from '../screens/budget/BudgetTool';
 
 const Navigation = () => {
