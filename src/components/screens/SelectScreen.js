@@ -11,13 +11,13 @@ const TOOL_CONFIG = {
     text: 'Budget Tool'
   },
   financialQuiz: {
-    enabled: false,
+    enabled: true,
     path: '/quiz',
     icon: '📝',
     text: 'Financial Quiz'
   },
   simulation: {
-    enabled: false,
+    enabled: true,
     path: '/simulation',
     icon: '🎮',
     text: 'Simulation'
