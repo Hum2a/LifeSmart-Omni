@@ -99,20 +99,20 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   };
 
   return (
-    <div className="question-container">
+    <div className="question1-container">
       {/* Progress Bar Container */}
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+      <div className="question1-progress-bar-container">
+        <div className="question1-progress-bar">
+          <div className="question1-progress" style={{ width: `${progressBarWidth}%` }}></div>
         </div>
         
-        <div className="timer-container">
+        <div className="question1-timer-container">
           {!timerStarted ? (
-            <button onClick={startTimer} className="start-timer-button">
+            <button onClick={startTimer} className="question1-start-timer-button">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
             </button>
           ) : (
-            <div className="timer">
+            <div className="question1-timer">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
             </div>
           )}
@@ -120,22 +120,22 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Task Header */}
-      <div className="task-header">
-        <div className="header-content">
-          <div className="points-section">
+      <div className="question1-task-header">
+        <div className="question1-header-content">
+          <div className="question1-points-section">
             <h3>Challenge 1</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
-            <p className="points">3 points</p>
+            <img src={lightningBolt} alt="Lightning Bolt" className="question1-lightning-bolt" />
+            <p className="question1-points">3 points</p>
           </div>
-          <div className="button-container">
-            <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
+          <div className="question1-button-container">
+            <button className="question1-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
-        <img src={q1Image} alt="Task 1 Image" className="task-image" />
+        <img src={q1Image} alt="Task 1 Image" className="question1-task-image" />
         <p>
           Ben is a 30 year old engineer. He has the following
           <span
-            className="clickable-term assets-class"
+            className="question1-clickable-term question1-assets-class"
             onMouseOver={(e) => showModal('assets', e)}
             onMouseLeave={hideModal}
           >
@@ -143,7 +143,7 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           </span>
           and
           <span
-            className="clickable-term liabilities-class"
+            className="question1-clickable-term question1-liabilities-class"
             onMouseOver={(e) => showModal('liabilities', e)}
             onMouseLeave={hideModal}
           >
@@ -154,7 +154,7 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         {/* Hover Modal */}
         {showHoverModal && (
           <div
-            className="hover-modal"
+            className="question1-hover-modal"
             style={{ top: modalPosition.top + 'px', left: modalPosition.left + 'px' }}
           >
             <h4>{modalTitle}</h4>
@@ -164,35 +164,35 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Assets and Liabilities Section */}
-      <div className="assets-liabilities-wrapper">
-        <div className="assets-liabilities">
-          <div className="card">
+      <div className="question1-assets-liabilities-wrapper">
+        <div className="question1-assets-liabilities">
+          <div className="question1-card">
             <h4>Assets</h4>
             <ul>
               <li>
-                <span className="asset-icon">🏠 House</span>
-                <span className="asset-value">£200,000</span>
+                <span className="question1-asset-icon">🏠 House</span>
+                <span className="question1-asset-value">£200,000</span>
               </li>
               <li>
-                <span className="asset-icon">🚗 Car</span>
-                <span className="asset-value">£50,000</span>
+                <span className="question1-asset-icon">🚗 Car</span>
+                <span className="question1-asset-value">£50,000</span>
               </li>
               <li>
-                <span className="asset-icon">💵 Cash</span>
-                <span className="asset-value">£20,000</span>
+                <span className="question1-asset-icon">💵 Cash</span>
+                <span className="question1-asset-value">£20,000</span>
               </li>
             </ul>
           </div>
-          <div className="card">
+          <div className="question1-card">
             <h4>Liabilities</h4>
             <ul>
               <li>
-                <span className="asset-icon">🏠 Mortgage (6%)</span>
-                <span className="asset-value">£150,000</span>
+                <span className="question1-asset-icon">🏠 Mortgage (6%)</span>
+                <span className="question1-asset-value">£150,000</span>
               </li>
               <li>
-                <span className="asset-icon">🚗 Car Loan (10%)</span>
-                <span className="asset-value">£20,000</span>
+                <span className="question1-asset-icon">🚗 Car Loan (10%)</span>
+                <span className="question1-asset-value">£20,000</span>
               </li>
             </ul>
           </div>
@@ -201,54 +201,54 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
       {/* Results Section */}
       {showResults ? (
-        <div className="result-section">
+        <div className="question1-result-section">
           <h4>Correct Answer:</h4>
-          <p className="correct-answer">£100,000</p>
-          <p className="correct-answer-description">Net Worth is</p>
-          <p className="correct-answer-description"><strong>Total Assets – Total Liabilities</strong></p>
-          <p className="correct-answer-description">£270,000 - £170,000</p>
-          <h4 className="your-answers">Your answers</h4>
+          <p className="question1-correct-answer">£100,000</p>
+          <p className="question1-correct-answer-description">Net Worth is</p>
+          <p className="question1-correct-answer-description"><strong>Total Assets – Total Liabilities</strong></p>
+          <p className="question1-correct-answer-description">£270,000 - £170,000</p>
+          <h4 className="question1-your-answers">Your answers</h4>
 
-          <div className="team-answer-comparison">
+          <div className="question1-team-answer-comparison">
             {teams.map((team, index) => (
-              <div key={team.name} className="team-answer-box">
+              <div key={team.name} className="question1-team-answer-box">
                 <p>{team.name}</p>
-                <div className={teamAnswers[index] === correctAnswer ? 'correct' : 'incorrect'}>
+                <div className={teamAnswers[index] === correctAnswer ? 'question1-correct' : 'question1-incorrect'}>
                   {teamAnswers[index] || '-'}
                 </div>
               </div>
             ))}
           </div>
 
-          <button className="next-button" onClick={nextQuestion}>Next</button>
+          <button className="question1-next-button" onClick={nextQuestion}>Next</button>
         </div>
       ) : (
         <div>
           {/* Question Section */}
-          <div className="question-section">
-            <p className="question">What is his net worth?</p>
+          <div className="question1-question-section">
+            <p className="question1-question">What is his net worth?</p>
           </div>
 
           {/* Multiple Choice Options */}
-          <div className="choices-container">
-            <button className="choice-button">A. £20,000</button>
-            <button className="choice-button">B. £50,000</button>
-            <button className="choice-button">C. £100,000</button>
-            <button className="choice-button">D. £270,000</button>
-            <button className="choice-button">E. £440,000</button>
+          <div className="question1-choices-container">
+            <button className="question1-choice-button">A. £20,000</button>
+            <button className="question1-choice-button">B. £50,000</button>
+            <button className="question1-choice-button">C. £100,000</button>
+            <button className="question1-choice-button">D. £270,000</button>
+            <button className="question1-choice-button">E. £440,000</button>
           </div>
 
           {/* Team Answer Section */}
-          <div className="team-answer-section">
+          <div className="question1-team-answer-section">
             <h4>Your answers</h4>
-            <div className="team-answer-container">
+            <div className="question1-team-answer-container">
               {teams.map((team, index) => (
-                <div key={team.name} className="team-answer-box">
+                <div key={team.name} className="question1-team-answer-box">
                   <p>{team.name}</p>
                   <select
                     value={teamAnswers[index]}
                     onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
-                    className="answer-select"
+                    className="question1-answer-select"
                   >
                     <option value="" disabled>Select answer</option>
                     <option value="A">A</option>
@@ -263,17 +263,17 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           </div>
 
           {/* Submit Button */}
-          <button className="submit-button" onClick={submitAnswers}>Submit</button>
+          <button className="question1-submit-button" onClick={submitAnswers}>Submit</button>
         </div>
       )}
 
       {/* Hint Modal */}
       {showHintModal && (
-        <div className="hint-modal-overlay">
-          <div className="hint-modal">
+        <div className="question1-hint-modal-overlay">
+          <div className="question1-hint-modal">
             <h3>Hint</h3>
             <p>Net worth = Total Assets – Total Liabilities</p>
-            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+            <button onClick={() => setShowHintModal(false)} className="question1-close-modal-button">Close</button>
           </div>
         </div>
       )}

@@ -11,7 +11,7 @@ const TOOL_CONFIG = {
     text: 'Budget Tool'
   },
   financialQuiz: {
-    enabled: false,
+    enabled: true,
     path: '/quiz',
     icon: '📝',
     text: 'Financial Quiz'

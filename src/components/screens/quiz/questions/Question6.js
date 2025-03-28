@@ -71,23 +71,25 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   };
 
   return (
-    <div className="question-container">
+    <div className="question6-container">
       {/* Header and Progress Bar */}
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+      <div className="question6-progress-bar-container">
+        <div className="question6-progress-bar">
+          <div className="question6-progress" style={{ width: `${progressBarWidth}%` }}></div>
         </div>
-        <div className="timer">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</div>
+        <div className="question6-timer">
+          {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+        </div>
       </div>
 
       {/* Glossary Sidebar */}
       {showGlossary && (
-        <div className="glossary-sidebar">
-          <div className="glossary-header">
+        <div className="question6-glossary-sidebar">
+          <div className="question6-glossary-header">
             <h2>📖 Glossary</h2>
-            <button className="close-button" onClick={() => setShowGlossary(false)}>X</button>
+            <button className="question6-close-button" onClick={() => setShowGlossary(false)}>X</button>
           </div>
-          <div className="glossary-content">
+          <div className="question6-glossary-content">
             <h3>Assets</h3>
             <p>Things you own that are worth money. For example, if you have a bicycle, some books, or a little money in a piggy bank, those are all your assets.</p>
             <h3>Liabilities</h3>
@@ -116,25 +118,13 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
       )}
 
-      {/* Hint Modal */}
-      {showHintModal && (
-        <div className="hint-modal-overlay">
-          <div className="hint-modal">
-            <h3>Hint</h3>
-            <p>Net worth = Total Assets – Total Liabilities</p>
-            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
-          </div>
-        </div>
-      )}
-
       {/* Task Description */}
-      <div className="task-header">
-        <div className="header-content">
-          <h3>Challenge 6</h3>
-          <div className="button-container">
-            <button className="glossary-button" onClick={() => setShowGlossary(true)}>📖 Glossary</button>
-            {/* <button className="hint-button" onClick={() => setShowHintModal(true)}>💡 Hint</button> */}
-          </div>
+      <div className="question6-task-header">
+        <h3>Challenge 6</h3>
+        <div className="question6-button-container">
+          <button className="question6-glossary-button" onClick={() => setShowGlossary(true)}>
+            📖 Glossary
+          </button>
         </div>
         <p>
           So now for the final round and the investment challenge to decide the ultimate winner. Ben has £100,000 in savings and wants to build a diversified portfolio of different asset classes.
@@ -143,20 +133,20 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Asset Allocation Section */}
-      <div className="allocation-header">
+      <div className="question6-allocation-header">
         <p>Decide how to allocate the money between these 5 asset classes.</p>
       </div>
 
       {/* Asset Classes */}
-      <div className="asset-classes-container">
+      <div className="question6-asset-classes-container">
         {assets.map((asset, index) => (
-          <div key={asset.name} className="asset-class">
-            <button className="asset-button" onClick={() => toggleAsset(index)}>
-              <img src={asset.image} alt={asset.name} className="asset-icon" />
+          <div key={asset.name} className="question6-asset-class">
+            <button className="question6-asset-button" onClick={() => toggleAsset(index)}>
+              <img src={asset.image} alt={asset.name} className="question6-asset-icon" />
               <span>{asset.name}</span>
             </button>
             {expandedAssets[index] && (
-              <div className="asset-definition">
+              <div className="question6-asset-definition">
                 <p>{asset.definition}</p>
               </div>
             )}
@@ -165,12 +155,12 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Asset Classes Breakdown Graph */}
-      <img src={graphImage} alt="Asset Allocation Graph" className="allocation-graph" />
+      <img src={graphImage} alt="Asset Allocation Graph" className="question6-allocation-graph" />
 
       {/* Next Button */}
-      <button className="submit-button" onClick={nextQuestion}>Next</button>
+      <button className="question6-submit-button" onClick={nextQuestion}>Next</button>
     </div>
   );
 };
 
-export default Question6; 
+export default Question6;

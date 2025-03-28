@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Question5.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
-import moneyHandshake from '../../../../assets/icons/moneyhandshake.png';
+import moneyBars from '../../../../assets/icons/moneybars.png';
 
 const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
-  const [timer, setTimer] = useState(300);
+  const [timer, setTimer] = useState(240);
   const [timerStarted, setTimerStarted] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHintModal, setShowHintModal] = useState(false);
@@ -18,20 +18,10 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     x: 0,
     y: 0,
   });
-  const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill([]));
+  const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
+  const [detailedAnswerShown, setDetailedAnswerShown] = useState(false);
 
-  const answerOptions = [
-    'A: Paying bills and payments on time',
-    'B: Registering on the electoral roll',
-    'C: Frequently applying for new credit',
-    'D: Paying off or maintaining low levels of debt',
-    'E: Keeping a bank account open for many years',
-    'F: Maxing out your credit cards regularly',
-    'G: Avoiding frequent credit applications',
-    'H: Moving house regularly'
-  ];
-
-  const correctAnswers = [0, 1, 3, 4, 6]; // Correct answers: A, B, D, E, G
+  const correctAnswer = 'B';
 
   useEffect(() => {
     let intervalId;
@@ -45,7 +35,7 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;
-  const progressBarWidth = (timer / 300) * 100;
+  const progressBarWidth = (timer / 240) * 100;
 
   const startTimer = () => {
     if (!timerStarted) {
@@ -70,62 +60,53 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
   const openGlossary = (term) => {
     setShowGlossary(true);
-    if (term === 'creditRating') {
-      setGlossaryTitle('Credit Rating');
-      setGlossaryContent('A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.');
+    if (term === 'stocksFundPortfolio') {
+      setGlossaryTitle('Stocks Fund Portfolio');
+      setGlossaryContent('A basket of different companies that are all put together. When you buy a part of the basket, you own a small piece of all the companies in it. This helps spread the risk because if one company doesn\'t do well, others in the basket might still grow!');
+    } else if (term === 'sAndP500') {
+      setGlossaryTitle('S&P 500');
+      setGlossaryContent('A list of the 500 biggest and most important companies in America. If you invest in the S&P 500, you\'re buying a little piece of each of those 500 companies.');
+    } else if (term === 'annually') {
+      setGlossaryTitle('Annually');
+      setGlossaryContent('The return rate is calculated based on a yearly period. For example, an 8% annual return means an 8% increase over one year.');
     }
-  };
-
-  const toggleTeamAnswer = (teamIndex, optionIndex) => {
-    const newAnswers = [...teamAnswers];
-    const answers = [...newAnswers[teamIndex]];
-    const answerPosition = answers.indexOf(optionIndex);
-
-    if (answerPosition === -1) {
-      answers.push(optionIndex);
-    } else {
-      answers.splice(answerPosition, 1);
-    }
-    newAnswers[teamIndex] = answers;
-    setTeamAnswers(newAnswers);
   };
 
   const submitAnswers = () => {
     setShowResults(true);
   };
 
-  const calculateScore = (index) => {
-    const answers = teamAnswers[index] || [];
-    let score = 0;
-    answers.forEach((answer) => {
-      if (correctAnswers.includes(answer)) {
-        score += 1;
-      }
-    });
-    return score;
-  };
-
   const nextQuestion = () => {
-    const pointsArray = teamAnswers.map((answers, index) => calculateScore(index));
+    const pointsArray = teamAnswers.map(answer => (answer === correctAnswer ? 3 : 0));
     onAwardPoints(pointsArray);
     onNextQuestion();
   };
 
+  const toggleDetailedAnswer = () => {
+    setDetailedAnswerShown(!detailedAnswerShown);
+  };
+
+  const handleTeamAnswerChange = (index, value) => {
+    const newAnswers = [...teamAnswers];
+    newAnswers[index] = value;
+    setTeamAnswers(newAnswers);
+  };
+
   return (
-    <div className="question-container">
+    <div className="question5-container">
       {/* Header and Progress Bar */}
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+      <div className="question5-progress-bar-container">
+        <div className="question5-progress-bar">
+          <div className="question5-progress" style={{ width: `${progressBarWidth}%` }}></div>
         </div>
 
-        <div className="timer-container">
+        <div className="question5-timer-container">
           {!timerStarted ? (
-            <button onClick={startTimer} className="start-timer-button">
+            <button onClick={startTimer} className="question5-start-timer-button">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
             </button>
           ) : (
-            <div className="timer">
+            <div className="question5-timer">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
             </div>
           )}
@@ -133,38 +114,31 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Task Description */}
-      <div className="task-header">
-        <div className="top-layer">
-          <div className="points-section">
+      <div className="question5-task-header">
+        <div className="question5-top-layer">
+          <div className="question5-points-section">
             <h3>Challenge 5</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
-            <p className="points">5 points</p>
+            <img src={lightningBolt} alt="Lightning Bolt" className="question5-lightning-bolt" />
+            <p className="question5-points">5 points</p>
           </div>
-          <div className="button-container">
-            {/* <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button> */}
+          <div className="question5-button-container">
+            <button className="question5-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
-        <div>
-          <p>
-            Ben decides he wants to get another loan in the future, so he would like to improve his
-            <span className="hoverable-term"
-                  onMouseOver={(e) => showHoverModal('Credit Rating', 'A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.', e)}
-                  onMouseLeave={hideHoverModal}>
-              <strong>credit rating</strong>
-            </span>.
-          </p>
-          <img src={moneyHandshake} alt="Task 5 Image" className="task-image" />
+        <div className="question5-task-header-question">
+          <p>Ben wants to save money for his future. He has £1,000 to invest.</p>
+          <img src={moneyBars} alt="Task 5 Image" className="question5-task-image" />
         </div>
       </div>
 
       {/* Glossary Sidebar */}
       {showGlossary && (
-        <div className="glossary-sidebar">
-          <div className="glossary-header">
+        <div className="question5-glossary-sidebar">
+          <div className="question5-glossary-header">
             <h2>{glossaryTitle}</h2>
-            <button className="close-button" onClick={() => setShowGlossary(false)}>X</button>
+            <button className="question5-close-button" onClick={() => setShowGlossary(false)}>X</button>
           </div>
-          <div className="glossary-content">
+          <div className="question5-glossary-content">
             <p>{glossaryContent}</p>
           </div>
         </div>
@@ -172,102 +146,100 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
       {/* Hint Modal */}
       {showHintModal && (
-        <div className="hint-modal-overlay">
-          <div className="hint-modal">
+        <div className="question5-hint-modal-overlay">
+          <div className="question5-hint-modal">
             <h3>Hint</h3>
-            <p>Net worth = Total Assets – Total Liabilities</p>
-            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+            <p>Consider the risk and potential return of each investment option.</p>
+            <button onClick={() => setShowHintModal(false)} className="question5-close-modal-button">Close</button>
           </div>
         </div>
       )}
 
-      {/* Question Section */}
-      <div className="question-section">
-        <p className="question-section">
-          Which of the following things improve your
-          <span className="hoverable-term"
-                onMouseOver={(e) => showHoverModal('Credit Rating', 'A score that everyone has, that tells banks how good you are at paying back money. If you have a high score, banks think you\'re good at paying back and are more likely to lend you money.', e)}
-                onMouseLeave={hideHoverModal}>
-            <strong>credit rating</strong>
-          </span>?
-        </p>
-      </div>
-
-      {/* Answer Options and Team Selection */}
+      {/* Conditionally display answer options or result section */}
       {!showResults ? (
         <div>
-          {/* Answer Options */}
-          <div className="answer-options">
-            {answerOptions.map((option, index) => (
-              <div key={index} className="answer-option">
-                <p>{option}</p>
-              </div>
-            ))}
+          {/* Question and Points Section */}
+          <div className="question5-question-section">
+            <p className="question5-question-text">What should he invest in?</p>
           </div>
 
-          {/* Teams Answer Selection */}
-          <div className="teams-selection">
-            {teams.map((team, teamIndex) => (
-              <div key={teamIndex} className="team-selection">
-                <h4>{team.name}</h4>
-                <div className="team-options">
-                  {answerOptions.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`${teamAnswers[teamIndex]?.includes(index) ? 'selected' : ''}`}
-                      onClick={() => toggleTeamAnswer(teamIndex, index)}
-                    >
-                      {String.fromCharCode(65 + index)}
-                    </button>
-                  ))}
+          {/* Multiple Choice Options */}
+          <div className="question5-choices-container">
+            <button className="question5-choice-button">A. High-risk stocks</button>
+            <button className="question5-choice-button">B. Government bonds</button>
+            <button className="question5-choice-button">C. Savings account</button>
+            <button className="question5-choice-button">D. Cryptocurrency</button>
+            <button className="question5-choice-button">E. Real estate</button>
+          </div>
+
+          {/* Team Answer Section */}
+          <div className="question5-team-answer-section">
+            <h4>Your answers</h4>
+            <div className="question5-team-answer-container">
+              {teams.map((team, index) => (
+                <div key={team.name} className="question5-team-answer-box">
+                  <p>{team.name}</p>
+                  <select
+                    value={teamAnswers[index]}
+                    onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
+                    className="question5-answer-select"
+                  >
+                    <option value="" disabled>Select answer</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button className="question5-submit-button" onClick={submitAnswers}>Submit</button>
+        </div>
+      ) : (
+        <div className="question5-result-section">
+          <h4>Correct Answer:</h4>
+          <p className="question5-correct-answer">B. Government bonds</p>
+          <p onClick={toggleDetailedAnswer} className="question5-toggle-detailed-answer">
+            Click to see detailed answer
+            <span>{detailedAnswerShown ? '⬆️' : '⬇️'}</span>
+          </p>
+
+          {/* Expanded Answer (Detailed Explanation) */}
+          {detailedAnswerShown && (
+            <div className="question5-expanded-answer">
+              <p>Government bonds are a good choice for Ben because:</p>
+              <ul>
+                <li>They are low-risk investments</li>
+                <li>They provide steady returns</li>
+                <li>They are backed by the government</li>
+                <li>They are suitable for long-term savings</li>
+              </ul>
+            </div>
+          )}
+
+          {/* Display each team's answer with comparison */}
+          <div className="question5-team-answer-comparison">
+            {teams.map((team, index) => (
+              <div key={team.name} className="question5-team-answer-box">
+                <p>{team.name}</p>
+                <div className={teamAnswers[index] === correctAnswer ? 'question5-correct' : 'question5-incorrect'}>
+                  {teamAnswers[index] || '-'}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Submit Button */}
-          <button className="submit-button" onClick={submitAnswers}>Submit</button>
-        </div>
-      ) : (
-        <div className="results-section">
-          {/* Updated answer options with correct/incorrect indicators */}
-          <div className="answer-options">
-            {answerOptions.map((option, index) => (
-              <div
-                key={index}
-                className={`answer-option ${correctAnswers.includes(index) ? 'correct' : 'incorrect'}`}
-              >
-                <p>{option}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Team Results */}
-          <div className="teams-results">
-            {teams.map((team, index) => (
-              <div key={index} className="team-result">
-                <h4>{team.name}</h4>
-                {teamAnswers[index]?.map((answer, answerIndex) => (
-                  <div
-                    key={answerIndex}
-                    className={correctAnswers.includes(answer) ? 'correct' : 'incorrect'}
-                  >
-                    {String.fromCharCode(65 + answer)}
-                  </div>
-                ))}
-                <p>Points: {calculateScore(index)}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Next Button */}
-          <button className="next-button" onClick={nextQuestion}>Next</button>
+          <button className="question5-next-button" onClick={nextQuestion}>Next</button>
         </div>
       )}
 
       {/* Hover Modal */}
       {hoverModal.show && (
-        <div className="hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
+        <div className="question5-hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
           <h3>{hoverModal.title}</h3>
           <p>{hoverModal.content}</p>
         </div>

@@ -93,20 +93,20 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   };
 
   return (
-    <div className="question-container">
+    <div className="question4-container">
       {/* Header and Progress Bar */}
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${progressBarWidth}%` }}></div>
+      <div className="question4-progress-bar-container">
+        <div className="question4-progress-bar">
+          <div className="question4-progress" style={{ width: `${progressBarWidth}%` }}></div>
         </div>
 
-        <div className="timer-container">
+        <div className="question4-timer-container">
           {!timerStarted ? (
-            <button onClick={startTimer} className="start-timer-button">
+            <button onClick={startTimer} className="question4-start-timer-button">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
             </button>
           ) : (
-            <div className="timer">
+            <div className="question4-timer">
               ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
             </div>
           )}
@@ -114,44 +114,31 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       </div>
 
       {/* Task Description */}
-      <div className="task-header">
-        <div className="top-layer">
-          <div className="points-section">
+      <div className="question4-task-header">
+        <div className="question4-top-layer">
+          <div className="question4-points-section">
             <h3>Challenge 4</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="lightning-bolt" />
-            <p className="points">2 points</p>
+            <img src={lightningBolt} alt="Lightning Bolt" className="question4-lightning-bolt" />
+            <p className="question4-points">5 points</p>
           </div>
-          <div className="button-container">
-            {/* <button className="hint-button" onClick={() => setShowHintModal(true)}>Hint?</button> */}
+          <div className="question4-button-container">
+            <button className="question4-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
-        <div className="task-header-question">
-          <p>
-            Ben decides to use £500 a month of his savings and invest in a
-            <span className="clickable-term"
-                  onMouseOver={(e) => showHoverModal('Stocks Fund Portfolio', 'A basket of different companies that are all put together. When you buy a part of the basket, you own a small piece of all the companies in it. This helps spread the risk because if one company doesn\'t do well, others in the basket might still grow!', e)}
-                  onMouseLeave={hideHoverModal}>
-              <strong>stocks fund portfolio</strong>
-            </span>.
-            He chooses the '
-            <span className="clickable-term"
-                  onMouseOver={(e) => showHoverModal('S&P 500', 'A list of the 500 biggest and most important companies in America. If you invest in the S&P 500, you\'re buying a little piece of each of those 500 companies.', e)}
-                  onMouseLeave={hideHoverModal}>
-              <strong>S&P500 Fund</strong>
-            </span>' because it is predicted to return 8%.
-          </p>
-          <img src={moneyBars} alt="Task 4 Image" className="task-image" />
+        <div className="question4-task-header-question">
+          <p>Ben wants to save money for his future. He has £1,000 to invest.</p>
+          <img src={moneyBars} alt="Task 4 Image" className="question4-task-image" />
         </div>
       </div>
 
       {/* Glossary Sidebar */}
       {showGlossary && (
-        <div className="glossary-sidebar">
-          <div className="glossary-header">
+        <div className="question4-glossary-sidebar">
+          <div className="question4-glossary-header">
             <h2>{glossaryTitle}</h2>
-            <button className="close-button" onClick={() => setShowGlossary(false)}>X</button>
+            <button className="question4-close-button" onClick={() => setShowGlossary(false)}>X</button>
           </div>
-          <div className="glossary-content">
+          <div className="question4-glossary-content">
             <p>{glossaryContent}</p>
           </div>
         </div>
@@ -159,99 +146,100 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
       {/* Hint Modal */}
       {showHintModal && (
-        <div className="hint-modal-overlay">
-          <div className="hint-modal">
+        <div className="question4-hint-modal-overlay">
+          <div className="question4-hint-modal">
             <h3>Hint</h3>
-            <p>Net worth = Total Assets – Total Liabilities</p>
-            <button onClick={() => setShowHintModal(false)} className="close-modal-button">Close</button>
+            <p>Consider the risk and potential return of each investment option.</p>
+            <button onClick={() => setShowHintModal(false)} className="question4-close-modal-button">Close</button>
           </div>
         </div>
       )}
 
-      {/* Question and Points Section */}
-      <div className="question-section">
-        <p className="question-text">
-          If he continues to put in £500 a month and the fund has a return of 8%
-          <span className="clickable-term"
-                onMouseOver={(e) => showHoverModal('Annually', 'The return rate is calculated based on a yearly period. For example, an 8% annual return means an 8% increase over one year.', e)}
-                onMouseLeave={hideHoverModal}>
-            <strong>annually</strong>
-          </span>, approximately how much money will he have after 10 years?
-        </p>
-      </div>
-
-      {/* Multiple Choice Options */}
-      {!showResults && (
-        <div className="choices-container">
-          <button className="choice-button" onClick={() => handleTeamAnswerChange(0, 'A')}>A. £25,000</button>
-          <button className="choice-button" onClick={() => handleTeamAnswerChange(0, 'B')}>B. £40,000</button>
-          <button className="choice-button" onClick={() => handleTeamAnswerChange(0, 'C')}>C. £55,000</button>
-          <button className="choice-button" onClick={() => handleTeamAnswerChange(0, 'D')}>D. £90,000</button>
-          <button className="choice-button" onClick={() => handleTeamAnswerChange(0, 'E')}>E. £120,000</button>
-        </div>
-      )}
-
-      {/* Team Answer Section */}
-      {!showResults && (
-        <div className="team-answer-section">
-          <h4>Your answers</h4>
-          <div className="team-answer-container">
-            {teams.map((team, index) => (
-              <div key={team.name} className="team-answer-box">
-                <p>{team.name}</p>
-                <select
-                  value={teamAnswers[index]}
-                  onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
-                  className="answer-select"
-                >
-                  <option value="" disabled>Select answer</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
-                </select>
-              </div>
-            ))}
+      {/* Conditionally display answer options or result section */}
+      {!showResults ? (
+        <div>
+          {/* Question and Points Section */}
+          <div className="question4-question-section">
+            <p className="question4-question-text">What should he invest in?</p>
           </div>
-          <button className="submit-button" onClick={submitAnswers}>Submit</button>
-        </div>
-      )}
 
-      {/* Result Section */}
-      {showResults && (
-        <div className="result-section">
+          {/* Multiple Choice Options */}
+          <div className="question4-choices-container">
+            <button className="question4-choice-button">A. High-risk stocks</button>
+            <button className="question4-choice-button">B. Government bonds</button>
+            <button className="question4-choice-button">C. Savings account</button>
+            <button className="question4-choice-button">D. Cryptocurrency</button>
+            <button className="question4-choice-button">E. Real estate</button>
+          </div>
+
+          {/* Team Answer Section */}
+          <div className="question4-team-answer-section">
+            <h4>Your answers</h4>
+            <div className="question4-team-answer-container">
+              {teams.map((team, index) => (
+                <div key={team.name} className="question4-team-answer-box">
+                  <p>{team.name}</p>
+                  <select
+                    value={teamAnswers[index]}
+                    onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
+                    className="question4-answer-select"
+                  >
+                    <option value="" disabled>Select answer</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button className="question4-submit-button" onClick={submitAnswers}>Submit</button>
+        </div>
+      ) : (
+        <div className="question4-result-section">
           <h4>Correct Answer:</h4>
-          <p className="correct-answer">£90,000</p>
-          <p onClick={toggleDetailedAnswer} className="toggle-detailed-answer">
-            Click to {detailedAnswerShown ? 'hide detailed answer ⬆' : 'see detailed answer ⬇'}
+          <p className="question4-correct-answer">B. Government bonds</p>
+          <p onClick={toggleDetailedAnswer} className="question4-toggle-detailed-answer">
+            Click to see detailed answer
+            <span>{detailedAnswerShown ? '⬆️' : '⬇️'}</span>
           </p>
 
-          {/* Detailed Answer with Calculator Widget */}
+          {/* Expanded Answer (Detailed Explanation) */}
           {detailedAnswerShown && (
-            <div>
-              {/* Investment Calculator component will be added here */}
+            <div className="question4-expanded-answer">
+              <p>Government bonds are a good choice for Ben because:</p>
+              <ul>
+                <li>They are low-risk investments</li>
+                <li>They provide steady returns</li>
+                <li>They are backed by the government</li>
+                <li>They are suitable for long-term savings</li>
+              </ul>
             </div>
           )}
 
-          {/* Team Answer Comparison */}
-          <div className="team-answer-comparison">
+          {/* Display each team's answer with comparison */}
+          <div className="question4-team-answer-comparison">
             {teams.map((team, index) => (
-              <div key={team.name} className="team-answer-box">
+              <div key={team.name} className="question4-team-answer-box">
                 <p>{team.name}</p>
-                <div className={`points-earned ${teamAnswers[index] === correctAnswer ? 'correct' : 'incorrect'}`}>
-                  {teamAnswers[index] === correctAnswer ? '3' : '0'} points
+                <div className={teamAnswers[index] === correctAnswer ? 'question4-correct' : 'question4-incorrect'}>
+                  {teamAnswers[index] || '-'}
                 </div>
               </div>
             ))}
           </div>
-          <button className="next-button" onClick={nextQuestion}>Next</button>
+
+          <button className="question4-next-button" onClick={nextQuestion}>Next</button>
         </div>
       )}
 
       {/* Hover Modal */}
       {hoverModal.show && (
-        <div className="hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
+        <div className="question4-hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
           <h3>{hoverModal.title}</h3>
           <p>{hoverModal.content}</p>
         </div>
