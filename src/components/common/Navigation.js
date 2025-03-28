@@ -6,10 +6,10 @@ import HomeScreen from '../screens/HomeScreen';
 import SelectScreen from '../screens/SelectScreen';
 import QuizLandingPage from '../screens/quiz/QuizLandingPage';
 import FinancialQuiz from '../screens/quiz/FinancialQuiz';
-import GroupCreation from '../screens/simulation/GroupCreation';
-import SimulationPage from '../screens/simulation/Simulation';
-import ResultsScreen from '../screens/simulation/ResultsScreen';
-import QuizSimulation from '../screens/simulation/QuizSimulation';
+import GroupCreation from '../screens/simulation/scripts/GroupCreation';
+import SimulationPage from '../screens/simulation/scripts/Simulation';
+import ResultsScreen from '../screens/simulation/scripts/ResultsScreen';
+import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
 import BudgetTool from '../screens/budget/BudgetTool';
 

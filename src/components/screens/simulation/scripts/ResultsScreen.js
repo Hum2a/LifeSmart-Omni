@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './ResultsScreen.css';
+import '../styles/ResultsScreen.css';
 
 const ResultsScreen = () => {
   const navigate = useNavigate();

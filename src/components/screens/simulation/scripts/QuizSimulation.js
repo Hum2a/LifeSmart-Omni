@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './QuizSimulation.css';
+import '../styles/QuizSimulation.css';
 
 const QuizSimulation = () => {
   const navigate = useNavigate();

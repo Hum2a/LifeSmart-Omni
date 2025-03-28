@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../../firebase/initFirebase';
-import './PastSimulations.css';
+import { db } from '../../../../firebase/initFirebase';
+import '../styles/PastSimulations.css';
 
 const PastSimulations = () => {
   const [simulations, setSimulations] = useState([]);

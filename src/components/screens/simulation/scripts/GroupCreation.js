@@ -8,11 +8,12 @@ import {
   FaPencilAlt, 
   FaTrashAlt, 
   FaArrowRight,
-  FaPlus
+  FaPlus,
+  FaDice
 } from 'react-icons/fa';
 import SimulationControls from './SimulationControls';
 import SimulationHistory from './PastSimulations';
-import './GroupCreation.css';
+import '../styles/GroupCreation.css';
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
@@ -27,6 +28,7 @@ const GroupCreation = () => {
   const [currentSimulationIndex, setCurrentSimulationIndex] = useState(null);
   const [maxPortfolioValue, setMaxPortfolioValue] = useState(100000);
   const [roundTo, setRoundTo] = useState(5000);
+  const [enableRandomGeneration, setEnableRandomGeneration] = useState(true);
   const [groups, setGroups] = useState([
     { name: 'Group 1', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' },
     { name: 'Group 2', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' },
@@ -191,6 +193,35 @@ const GroupCreation = () => {
     renderPieChart(index);
   };
 
+  const generateRandomValues = (index) => {
+    if (!enableRandomGeneration) return;
+    
+    const newGroups = [...groups];
+    const fields = ['equityTemp', 'bondsTemp', 'realestateTemp', 'commoditiesTemp', 'otherTemp'];
+    
+    let remainingValue = maxPortfolioValue;
+    const values = [];
+    
+    for (let i = 0; i < 4; i++) {
+      const max = remainingValue - (4 - i) * 1000;
+      const value = Math.floor(Math.random() * max) + 1000;
+      values.push(value);
+      remainingValue -= value;
+    }
+    values.push(remainingValue);
+    
+    for (let i = values.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [values[i], values[j]] = [values[j], values[i]];
+    }
+    
+    fields.forEach((field, i) => {
+      newGroups[index][field] = values[i].toString();
+    });
+    
+    setGroups(newGroups);
+  };
+
   useEffect(() => {
     groups.forEach((_, index) => {
       renderPieChart(index);
@@ -221,24 +252,37 @@ const GroupCreation = () => {
         {!currentSimulationIndex && (
           <>
             <div className="settings">
-              <label htmlFor="max-value-input">Max Portfolio Value:</label>
-              <input
-                id="max-value-input"
-                type="number"
-                value={maxPortfolioValue}
-                onChange={(e) => setMaxPortfolioValue(Number(e.target.value))}
-                className="modern-input"
-                step="5000"
-              />
-              <label htmlFor="round-to-input">Round Up To:</label>
-              <input
-                id="round-to-input"
-                type="number"
-                value={roundTo}
-                onChange={(e) => setRoundTo(Number(e.target.value))}
-                className="modern-input"
-                step="1000"
-              />
+              <div className="settings-group">
+                <label htmlFor="max-value-input">Max Portfolio Value:</label>
+                <input
+                  id="max-value-input"
+                  type="number"
+                  value={maxPortfolioValue}
+                  onChange={(e) => setMaxPortfolioValue(Number(e.target.value))}
+                  className="modern-input"
+                  step="5000"
+                />
+                <label htmlFor="round-to-input">Round Up To:</label>
+                <input
+                  id="round-to-input"
+                  type="number"
+                  value={roundTo}
+                  onChange={(e) => setRoundTo(Number(e.target.value))}
+                  className="modern-input"
+                  step="1000"
+                />
+              </div>
+              <div className="settings-group">
+                <label className="toggle-label">
+                  <input
+                    type="checkbox"
+                    checked={enableRandomGeneration}
+                    onChange={(e) => setEnableRandomGeneration(e.target.checked)}
+                    className="toggle-input"
+                  />
+                  <span className="toggle-text">Enable Random Generation</span>
+                </label>
+              </div>
             </div>
 
             <h1 className="header-content">
@@ -251,6 +295,14 @@ const GroupCreation = () => {
                   <div className="group-header">
                     <h2>{group.name}</h2>
                     <div className="button-group">
+                      <button 
+                        onClick={() => generateRandomValues(index)} 
+                        className="random-btn"
+                        title="Generate Random Values"
+                        disabled={!enableRandomGeneration}
+                      >
+                        <FaDice />
+                      </button>
                       <button onClick={() => editGroupName(index)} className="edit-group-btn">
                         <FaPencilAlt />
                       </button>
@@ -349,7 +401,29 @@ const GroupCreation = () => {
               </button>
             </div>
 
-            <button className="modern-button">
+            <button 
+              className="modern-button"
+              onClick={() => {
+                // Validate that all groups have values before proceeding
+                const hasEmptyValues = groups.some(group => {
+                  return !group.equity || !group.bonds || !group.realestate || !group.commodities || !group.other;
+                });
+
+                if (hasEmptyValues) {
+                  alert('Please fill in all values for each group before starting the simulation.');
+                  return;
+                }
+
+                // Navigate to simulation page with groups data
+                navigate('/simulation-page', { 
+                  state: { 
+                    groups,
+                    maxPortfolioValue,
+                    roundTo
+                  }
+                });
+              }}
+            >
               Start Simulation
               <FaArrowRight style={{ marginLeft: '5px' }} />
             </button>
