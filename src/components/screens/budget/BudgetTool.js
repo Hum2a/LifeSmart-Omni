@@ -1316,6 +1316,7 @@ const BudgetTool = () => {
       ['Shopping', formatCurrency(formData.shopping), 'Wants'],
       ['Subscriptions', formatCurrency(formData.subscriptions), 'Wants'],
       ['Travel', formatCurrency(formData.travel), 'Wants'],
+      ['Total Wants', formatCurrency(summary.totalWants), 'Monthly'],
       ['', '', ''],
       
       ['SAVINGS', '', ''],
@@ -1325,47 +1326,22 @@ const BudgetTool = () => {
       ['Emergency Fund', formatCurrency(formData.emergencyFund), 'Current Balance'],
       ['Sinking Fund', formatCurrency(formData.sinkingFund), 'Current Balance'],
       ['Goal/Investment Fund', formatCurrency(formData.goalFund), 'Current Balance'],
-      ['Total Savings', formatCurrency(Number(formData.emergencyFund || 0) + Number(formData.sinkingFund || 0) + Number(formData.goalFund || 0)), 'Current Balance'],
+      ['Monthly Savings', formatCurrency(summary.monthlySavings), 'Monthly'],
+      ['Total Savings', formatCurrency(summary.totalSavings), 'Total'],
       ['', '', ''],
       
       ['BUDGET SUMMARY', '', ''],
       ['Category', 'Amount', 'Percentage'],
       ['Total Income', formatCurrency(summary.totalIncome), '100%'],
       ['Total Needs', formatCurrency(summary.needs), `${summary.needsPercentage.toFixed(1)}%`],
-      ['Total Wants', formatCurrency(summary.wants), `${summary.wantsPercentage.toFixed(1)}%`],
-      ['Total Savings', formatCurrency(summary.totalSavings), `${summary.savingsPercentage.toFixed(1)}%`],
+      ['Total Wants', formatCurrency(summary.totalWants), `${summary.wantsPercentage.toFixed(1)}%`],
+      ['Monthly Savings', formatCurrency(summary.monthlySavings), `${summary.remainingPercentage.toFixed(1)}%`],
+      ['Current Savings Balance', formatCurrency(summary.currentSavings), 'Current'],
+      ['Total Savings', formatCurrency(summary.totalSavings), 'Total'],
       ['', '', ''],
     ];
 
-    // Add 6-month projection if available
-    if (monthlyProjections && monthlyProjections.length > 0) {
-      allData.push(
-        ['', '', ''],
-        ['6-MONTH PROJECTION', '', '', '', '', ''],
-        ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Percentage Changes']
-      );
-
-      monthlyProjections.forEach((month, index) => {
-        const prevMonth = index > 0 ? monthlyProjections[index - 1] : null;
-        const getChange = (current, previous) => {
-          if (!previous) return '0%';
-          return `${((current - previous) / previous * 100).toFixed(1)}%`;
-        };
-
-        allData.push([
-          `Month ${index + 1}`,
-          formatCurrency(month.income),
-          formatCurrency(month.needs),
-          formatCurrency(month.wants),
-          formatCurrency(month.savings),
-          `Income: ${getChange(month.income, prevMonth?.income)}, ` +
-          `Needs: ${getChange(month.needs, prevMonth?.needs)}, ` +
-          `Wants: ${getChange(month.wants, prevMonth?.wants)}`
-        ]);
-      });
-    }
-
-    // Create worksheet
+    // Add the worksheet to workbook
     const ws = XLSX.utils.aoa_to_sheet(allData);
 
     // Define column widths
@@ -1377,34 +1353,6 @@ const BudgetTool = () => {
       { wch: 15 }, // For projection table
       { wch: 40 }  // For percentage changes
     ];
-
-    // Define styles
-    const styles = {
-      header: {
-        font: { bold: true, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "4CAF50" } },
-        alignment: { horizontal: "center" }
-      },
-      subheader: {
-        font: { bold: true },
-        fill: { fgColor: { rgb: "E8F5E9" } }
-      },
-      currency: {
-        numFmt: '"£"#,##0.00'
-      }
-    };
-
-    // Apply styles to sections
-    const sectionHeaders = [0, 6, 12, 17, 22, 28, 34, 42];
-    sectionHeaders.forEach(row => {
-      const cell = XLSX.utils.encode_cell({ r: row, c: 0 });
-      if (!ws[cell]) ws[cell] = {};
-      ws[cell].s = styles.header;
-      
-      // Merge header cells
-      ws['!merges'] = ws['!merges'] || [];
-      ws['!merges'].push({ s: { r: row, c: 0 }, e: { r: row, c: 2 } });
-    });
 
     // Add the worksheet to workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Budget Overview');

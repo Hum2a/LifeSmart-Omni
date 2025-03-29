@@ -54,6 +54,9 @@ const BudgetSpreadsheet = ({ formData }) => {
     // Monthly savings is what's left after needs and wants
     const monthlySavings = Math.max(0, totalIncome - needs - totalWants);
 
+    // Add total savings calculation (current balance + projected monthly savings)
+    const totalSavings = currentSavings + monthlySavings;
+
     return {
       totalIncome,
       needs,
@@ -63,6 +66,7 @@ const BudgetSpreadsheet = ({ formData }) => {
       remainingPercentage,
       currentSavings,
       monthlySavings,
+      totalSavings,
       housingPayment
     };
   };
@@ -342,6 +346,11 @@ const BudgetSpreadsheet = ({ formData }) => {
                   <td>{formatCurrency(summary.monthlySavings)}</td>
                   <td>Monthly</td>
                 </tr>
+                <tr className="budgetspreadsheet-total">
+                  <td>Total Savings</td>
+                  <td>{formatCurrency(summary.totalSavings)}</td>
+                  <td>Total</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -407,8 +416,12 @@ const BudgetSpreadsheet = ({ formData }) => {
                 <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.monthlySavings)}</span>
               </div>
               <div className="budgetspreadsheet-summary-item">
-                <span className="budgetspreadsheet-summary-label">Total Savings Balance:</span>
+                <span className="budgetspreadsheet-summary-label">Current Savings Balance:</span>
                 <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.currentSavings)}</span>
+              </div>
+              <div className="budgetspreadsheet-summary-item">
+                <span className="budgetspreadsheet-summary-label">Total Savings:</span>
+                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.totalSavings)}</span>
               </div>
             </div>
           </section>
