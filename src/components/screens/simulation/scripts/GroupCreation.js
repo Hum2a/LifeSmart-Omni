@@ -14,6 +14,7 @@ import {
 import SimulationControls from './SimulationControls';
 import SimulationHistory from './PastSimulations';
 import '../styles/GroupCreation.css';
+import LifeSmartLogo from '../../../../assets/icons/LifeSmartLogo.png';
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
@@ -228,18 +229,27 @@ const GroupCreation = () => {
     });
   }, []);
 
+  if (isLoading) {
+    return <div className="GroupCreation-loading">Loading...</div>;
+  }
+
   return (
-    <div className="dashboard">
-      <header className="header">
-        <img src="/images/LifeSmartLogo.png" alt="Logo" className="logo" />
-        <div className="header-icons">
-          <button onClick={toggleCalculator} className="calculator-toggle">
+    <div className="GroupCreation-dashboard">
+      <header className="GroupCreation-header">
+        <button 
+          onClick={() => navigate('/select')} 
+          className="GroupCreation-logo-button"
+        >
+          <img src={LifeSmartLogo} alt="LifeSmart Logo" className="GroupCreation-logo" />
+        </button>
+        <div className="GroupCreation-header-icons">
+          <button onClick={toggleCalculator} className="GroupCreation-calculator-toggle">
             <FaCalculator />
           </button>
-          <button onClick={toggleSimulationControls} className="simulation-controls-toggle">
+          <button onClick={toggleSimulationControls} className="GroupCreation-simulation-controls-toggle">
             <FaCog />
           </button>
-          <button onClick={toggleSimulationHistory} className="simulation-history-toggle">
+          <button onClick={toggleSimulationHistory} className="GroupCreation-simulation-history-toggle">
             <FaCalendarAlt />
           </button>
         </div>
@@ -251,15 +261,15 @@ const GroupCreation = () => {
       <main>
         {!currentSimulationIndex && (
           <>
-            <div className="settings">
-              <div className="settings-group">
+            <div className="GroupCreation-settings">
+              <div className="GroupCreation-settings-group">
                 <label htmlFor="max-value-input">Max Portfolio Value:</label>
                 <input
                   id="max-value-input"
                   type="number"
                   value={maxPortfolioValue}
                   onChange={(e) => setMaxPortfolioValue(Number(e.target.value))}
-                  className="modern-input"
+                  className="GroupCreation-modern-input"
                   step="5000"
                 />
                 <label htmlFor="round-to-input">Round Up To:</label>
@@ -268,52 +278,52 @@ const GroupCreation = () => {
                   type="number"
                   value={roundTo}
                   onChange={(e) => setRoundTo(Number(e.target.value))}
-                  className="modern-input"
+                  className="GroupCreation-modern-input"
                   step="1000"
                 />
               </div>
-              <div className="settings-group">
-                <label className="toggle-label">
+              <div className="GroupCreation-settings-group">
+                <label className="GroupCreation-toggle-label">
                   <input
                     type="checkbox"
                     checked={enableRandomGeneration}
                     onChange={(e) => setEnableRandomGeneration(e.target.checked)}
-                    className="toggle-input"
+                    className="GroupCreation-toggle-input"
                   />
-                  <span className="toggle-text">Enable Random Generation</span>
+                  <span className="GroupCreation-toggle-text">Enable Random Generation</span>
                 </label>
               </div>
             </div>
 
-            <h1 className="header-content">
+            <h1 className="GroupCreation-header-content">
               <span>Group Management</span>
             </h1>
 
-            <div className="groups">
+            <div className="GroupCreation-groups">
               {groups.map((group, index) => (
-                <div key={index} className="group">
-                  <div className="group-header">
+                <div key={index} className="GroupCreation-group">
+                  <div className="GroupCreation-group-header">
                     <h2>{group.name}</h2>
-                    <div className="button-group">
+                    <div className="GroupCreation-button-group">
                       <button 
                         onClick={() => generateRandomValues(index)} 
-                        className="random-btn"
+                        className="GroupCreation-random-btn"
                         title="Generate Random Values"
                         disabled={!enableRandomGeneration}
                       >
                         <FaDice />
                       </button>
-                      <button onClick={() => editGroupName(index)} className="edit-group-btn">
+                      <button onClick={() => editGroupName(index)} className="GroupCreation-edit-group-btn">
                         <FaPencilAlt />
                       </button>
-                      <button onClick={() => removeGroup(index)} className="remove-group-btn">
+                      <button onClick={() => removeGroup(index)} className="GroupCreation-remove-group-btn">
                         <FaTrashAlt />
                       </button>
                     </div>
                   </div>
-                  <div className="group-content">
-                    <div className="inputs">
-                      <div className="input-row">
+                  <div className="GroupCreation-group-content">
+                    <div className="GroupCreation-inputs">
+                      <div className="GroupCreation-input-row">
                         <label htmlFor={`equity-${index}`}>Equity:</label>
                         <input
                           type="number"
@@ -324,10 +334,10 @@ const GroupCreation = () => {
                             setGroups(newGroups);
                           }}
                           id={`equity-${index}`}
-                          className="modern-input"
+                          className="GroupCreation-modern-input"
                         />
                       </div>
-                      <div className="input-row">
+                      <div className="GroupCreation-input-row">
                         <label htmlFor={`bonds-${index}`}>Bonds:</label>
                         <input
                           type="number"
@@ -338,10 +348,10 @@ const GroupCreation = () => {
                             setGroups(newGroups);
                           }}
                           id={`bonds-${index}`}
-                          className="modern-input"
+                          className="GroupCreation-modern-input"
                         />
                       </div>
-                      <div className="input-row">
+                      <div className="GroupCreation-input-row">
                         <label htmlFor={`realestate-${index}`}>Real Estate:</label>
                         <input
                           type="number"
@@ -352,10 +362,10 @@ const GroupCreation = () => {
                             setGroups(newGroups);
                           }}
                           id={`realestate-${index}`}
-                          className="modern-input"
+                          className="GroupCreation-modern-input"
                         />
                       </div>
-                      <div className="input-row">
+                      <div className="GroupCreation-input-row">
                         <label htmlFor={`commodities-${index}`}>Commodities:</label>
                         <input
                           type="number"
@@ -366,10 +376,10 @@ const GroupCreation = () => {
                             setGroups(newGroups);
                           }}
                           id={`commodities-${index}`}
-                          className="modern-input"
+                          className="GroupCreation-modern-input"
                         />
                       </div>
-                      <div className="input-row">
+                      <div className="GroupCreation-input-row">
                         <label htmlFor={`other-${index}`}>Other:</label>
                         <input
                           type="number"
@@ -380,29 +390,29 @@ const GroupCreation = () => {
                             setGroups(newGroups);
                           }}
                           id={`other-${index}`}
-                          className="modern-input"
+                          className="GroupCreation-modern-input"
                         />
                       </div>
-                      <div className="total-value">
+                      <div className="GroupCreation-total-value">
                         Total Portfolio Value: ${getTotalValue(group).toFixed(2)}
                       </div>
-                      <button onClick={() => updateAllGroupValues(index)} className="modern-button enter-all-btn">
+                      <button onClick={() => updateAllGroupValues(index)} className="GroupCreation-modern-button GroupCreation-enter-all-btn">
                         Enter All
                       </button>
                     </div>
-                    <div className="pie-chart-container">
+                    <div className="GroupCreation-pie-chart-container">
                       <canvas id={`pieChart_${index}`}></canvas>
                     </div>
                   </div>
                 </div>
               ))}
-              <button onClick={addGroup} className="add-group-btn">
+              <button onClick={addGroup} className="GroupCreation-add-group-btn">
                 <FaPlus /> Add Group
               </button>
             </div>
 
             <button 
-              className="modern-button"
+              className="GroupCreation-modern-button"
               onClick={() => {
                 // Validate that all groups have values before proceeding
                 const hasEmptyValues = groups.some(group => {
@@ -432,9 +442,9 @@ const GroupCreation = () => {
       </main>
 
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={toggleModal}>&times;</span>
+        <div className="GroupCreation-modal">
+          <div className="GroupCreation-modal-content">
+            <span className="GroupCreation-close" onClick={toggleModal}>&times;</span>
             <h3>Add a new group</h3>
             <form onSubmit={(e) => {
               e.preventDefault();

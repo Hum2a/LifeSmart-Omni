@@ -130,8 +130,12 @@ const FinancialQuiz = () => {
 
       console.log("New results saved to Firebase:", sortedTeams);
 
-      // Step 3: Navigate to the simulation screen
-      navigate('/quiz-simulation');
+      // Step 3: Navigate to the SimSetup screen with teams data
+      navigate('/sim-setup', { 
+        state: { 
+          teams: sortedTeams
+        }
+      });
     } catch (error) {
       console.error("Error during saving results to Firebase:", error);
     }

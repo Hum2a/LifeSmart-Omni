@@ -12,6 +12,7 @@ import ResultsScreen from '../screens/simulation/scripts/ResultsScreen';
 import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
 import BudgetTool from '../screens/budget/BudgetTool';
+import SimSetup from '../screens/quiz/sim/SimSetup';
 
 const Navigation = () => {
   return (
@@ -28,6 +29,7 @@ const Navigation = () => {
           <Route path="/simulation-results" element={<ResultsScreen />} />
           <Route path="/investment-calculator" element={<InvestmentCalculator />} />
           <Route path="/budget-tool" element={<BudgetTool />} />
+          <Route path="/sim-setup" element={<SimSetup />} />
         </Routes>
       </div>
     </Router>
