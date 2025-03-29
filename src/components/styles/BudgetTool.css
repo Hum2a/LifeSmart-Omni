@@ -151,53 +151,6 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.budgettool-summary {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.budgettool-summary-content {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-top: 1rem;
-}
-
-.budgettool-summary-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #ffffff;
-  margin-bottom: 1rem;
-}
-
-.budgettool-summary-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.budgettool-summary-item {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.budgettool-summary-label {
-  font-size: 0.9rem;
-  color: #cccccc;
-}
-
-.budgettool-summary-value {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #ffffff;
-}
-
 .budgettool-savings-info {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -286,77 +239,83 @@
   font-size: 1.1rem;
 }
 
+.budgettool-projections-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-projections-section:last-child {
+  margin-bottom: 0;
+}
+
 .budgettool-projections-question {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .budgettool-projections-question label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
   color: #ffffff;
-  font-size: 1rem;
 }
 
-.budgettool-projections-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
+.budgettool-projections-table {
+  margin-top: 1.5rem;
 }
 
-.budgettool-projections-month {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: transform 0.3s ease;
-}
-
-.budgettool-projections-month:hover {
-  transform: translateY(-5px);
-}
-
-.budgettool-projections-month h4 {
+.budgettool-projections-table h4 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   color: #ffffff;
-  text-align: center;
 }
 
-.budgettool-projections-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+.budgettool-table-container {
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
 }
 
-.budgettool-projections-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
+.budgettool-table-container table {
+  width: 100%;
+  border-collapse: collapse;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
-.budgettool-projections-item span:first-child {
-  color: #cccccc;
+.budgettool-table-container th,
+.budgettool-table-container td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.budgettool-projections-item span:last-child {
-  color: #ffffff;
+.budgettool-table-container th {
+  background: rgba(255, 255, 255, 0.05);
   font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
 }
 
-.budgettool-projections-footer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-}
-
-.budgettool-projections-footer p {
+.budgettool-table-container td {
   color: #cccccc;
-  font-size: 1rem;
-  line-height: 1.6;
+}
+
+.budgettool-table-container td:first-child {
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.budgettool-table-container tr:last-child td {
+  border-bottom: none;
+}
+
+.budgettool-table-container input {
+  width: 100%;
+  min-width: 120px;
 }
 
 .budgettool-analysis {
@@ -505,12 +464,30 @@
 
 .budgettool-input-group {
   display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .budgettool-input-group .budgettool-input {
   flex: 1;
+}
+
+.budgettool-input-group .budgettool-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.budgettool-input-group .budgettool-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
 }
 
 .budgettool-percentage-input {
@@ -661,8 +638,17 @@
     grid-template-columns: 1fr;
   }
 
-  .budgettool-projections-grid {
-    grid-template-columns: 1fr;
+  .budgettool-projections-section {
+    padding: 1rem;
+  }
+
+  .budgettool-table-container {
+    margin: 0 -1rem;
+    padding: 0;
+  }
+
+  .budgettool-table-container table {
+    border-radius: 0;
   }
 
   .budgettool-analysis {
@@ -944,5 +930,128 @@
   .budgettool-checkbox {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Developer Testing Styles */
+.budgettool-dev-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(255, 193, 7, 0.2) !important;
+  border: 1px dashed rgba(255, 193, 7, 0.5) !important;
+  color: #ffc107 !important;
+  font-family: monospace;
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.budgettool-dev-button:hover {
+  background: rgba(255, 193, 7, 0.3) !important;
+  border-color: rgba(255, 193, 7, 0.7) !important;
+  transform: translateY(-2px);
+}
+
+.budgettool-dev-button:active {
+  transform: translateY(0);
+}
+
+.budgettool-button-view-spreadsheet {
+  background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  padding: 1rem 2rem !important;
+  border: none !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  animation: pulseButton 2s infinite !important;
+}
+
+.budgettool-button-view-spreadsheet:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
+  background: linear-gradient(135deg, #FFA500, #FFD700) !important;
+}
+
+.budgettool-button-view-spreadsheet:active {
+  transform: translateY(1px) !important;
+}
+
+@keyframes pulseButton {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.budgettool-modal-text {
+  font-size: 1.2rem;
+  color: #ffffff;
+  text-align: center;
+  margin: 2rem 0;
+  line-height: 1.5;
+}
+
+.budgettool-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.budgettool-modal-actions .budgettool-button {
+  min-width: 120px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.budgettool-modal-actions .budgettool-button-primary {
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  color: white;
+  border: none;
+}
+
+.budgettool-modal-actions .budgettool-button-primary:hover {
+  background: linear-gradient(135deg, #cc0000, #ff4444);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+}
+
+.budgettool-modal-actions .budgettool-button-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.budgettool-modal-actions .budgettool-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .budgettool-modal-actions {
+    flex-direction: column;
+  }
+
+  .budgettool-modal-actions .budgettool-button {
+    width: 100%;
   }
 } 

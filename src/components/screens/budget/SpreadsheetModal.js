@@ -4,20 +4,58 @@ import '../../styles/BudgetTool.css';
 const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
   if (!isOpen) return null;
 
+  // Get housing payment based on type
+  const housingPayment = formData.housingType === 'mortgage' ? Number(formData.mortgage || 0) : Number(formData.rent || 0);
+
   const summary = {
-    totalIncome: Number(formData.monthlyIncome) + Number(formData.additionalIncome),
-    needs: Number(formData.rent) + Number(formData.mortgage) + 
-           Number(formData.utilities) + Number(formData.groceries) +
-           Number(formData.carPayment) + Number(formData.carInsurance) +
-           Number(formData.healthInsurance) + Number(formData.medicalExpenses),
-    wants: Number(formData.entertainment) + Number(formData.shopping) +
-           Number(formData.subscriptions) + Number(formData.personalCareBudget) +
-           Number(formData.travel) + Number(formData.diningOut)
+    // Income calculations
+    totalIncome: Number(formData.monthlyIncome || 0) + Number(formData.additionalIncome || 0),
+    
+    // Needs calculations
+    needs: (
+      // Housing
+      housingPayment + 
+      Number(formData.propertyTax || 0) + 
+      Number(formData.homeInsurance || 0) + 
+      Number(formData.utilities || 0) +
+      // Transportation
+      Number(formData.transportation || 0) +
+      // Food
+      Number(formData.groceries || 0) +
+      // Healthcare
+      Number(formData.healthInsurance || 0) + 
+      Number(formData.medicalExpenses || 0)
+    ),
+    
+    // Wants calculations
+    wants: (
+      // Food & Dining
+      Number(formData.diningOut || 0) + 
+      Number(formData.takeout || 0) +
+      // Personal Care
+      Number(formData.gymMembership || 0) + 
+      Number(formData.personalCare || 0) +
+      // Entertainment & Leisure
+      Number(formData.entertainment || 0) + 
+      Number(formData.shopping || 0) + 
+      Number(formData.subscriptions || 0) + 
+      Number(formData.personalCareBudget || 0) + 
+      Number(formData.travel || 0)
+    )
   };
 
-  summary.needsPercentage = (summary.needs / summary.totalIncome) * 100;
-  summary.wantsPercentage = (summary.wants / summary.totalIncome) * 100;
-  summary.remainingPercentage = 100 - summary.needsPercentage - summary.wantsPercentage;
+  summary.needsPercentage = (summary.needs / summary.totalIncome) * 100 || 0;
+  summary.wantsPercentage = (summary.wants / summary.totalIncome) * 100 || 0;
+  summary.remainingPercentage = Math.max(0, 100 - summary.needsPercentage - summary.wantsPercentage);
+  summary.savings = Math.max(0, summary.totalIncome - summary.needs - summary.wants);
+
+  // Helper function to format currency
+  const formatCurrency = (value) => `£${Number(value || 0).toFixed(2)}`;
+
+  // Helper function to get housing payment label
+  const getHousingPaymentLabel = () => {
+    return formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment';
+  };
 
   return (
     <div className="budgettool-modal-overlay">
@@ -34,19 +72,15 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Monthly Income:</span>
-                <span>${Number(formData.monthlyIncome).toFixed(2)}</span>
+                <span>{formatCurrency(formData.monthlyIncome)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Additional Income:</span>
-                <span>${Number(formData.additionalIncome).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Income Frequency:</span>
-                <span>{formData.incomeFrequency}</span>
+                <span>{formatCurrency(formData.additionalIncome)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Total Income:</span>
-                <span>${summary.totalIncome.toFixed(2)}</span>
+                <span>{formatCurrency(summary.totalIncome)}</span>
               </div>
             </div>
           </div>
@@ -56,28 +90,24 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <h3>Housing Expenses</h3>
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
-                <span>Housing Type:</span>
-                <span>{formData.housingType}</span>
+                <span>{getHousingPaymentLabel()}:</span>
+                <span>{formatCurrency(housingPayment)}</span>
               </div>
-              <div className="budgettool-modal-item">
-                <span>Rent:</span>
-                <span>${Number(formData.rent).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Mortgage:</span>
-                <span>${Number(formData.mortgage).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Property Tax:</span>
-                <span>${Number(formData.propertyTax).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Home Insurance:</span>
-                <span>${Number(formData.homeInsurance).toFixed(2)}</span>
-              </div>
+              {formData.housingType === 'mortgage' && (
+                <>
+                  <div className="budgettool-modal-item">
+                    <span>Property Tax:</span>
+                    <span>{formatCurrency(formData.propertyTax)}</span>
+                  </div>
+                  <div className="budgettool-modal-item">
+                    <span>Home Insurance:</span>
+                    <span>{formatCurrency(formData.homeInsurance)}</span>
+                  </div>
+                </>
+              )}
               <div className="budgettool-modal-item">
                 <span>Utilities:</span>
-                <span>${Number(formData.utilities).toFixed(2)}</span>
+                <span>{formatCurrency(formData.utilities)}</span>
               </div>
             </div>
           </div>
@@ -87,20 +117,8 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <h3>Transportation</h3>
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
-                <span>Car Payment:</span>
-                <span>${Number(formData.carPayment).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Car Insurance:</span>
-                <span>${Number(formData.carInsurance).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Gas:</span>
-                <span>${Number(formData.gas).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Public Transportation:</span>
-                <span>${Number(formData.publicTransportation).toFixed(2)}</span>
+                <span>Transportation Expenses:</span>
+                <span>{formatCurrency(formData.transportation)}</span>
               </div>
             </div>
           </div>
@@ -111,15 +129,15 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Groceries:</span>
-                <span>${Number(formData.groceries).toFixed(2)}</span>
+                <span>{formatCurrency(formData.groceries)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Dining Out:</span>
-                <span>${Number(formData.diningOut).toFixed(2)}</span>
+                <span>{formatCurrency(formData.diningOut)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Takeout:</span>
-                <span>${Number(formData.takeout).toFixed(2)}</span>
+                <span>{formatCurrency(formData.takeout)}</span>
               </div>
             </div>
           </div>
@@ -130,19 +148,19 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Health Insurance:</span>
-                <span>${Number(formData.healthInsurance).toFixed(2)}</span>
+                <span>{formatCurrency(formData.healthInsurance)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Medical Expenses:</span>
-                <span>${Number(formData.medicalExpenses).toFixed(2)}</span>
+                <span>{formatCurrency(formData.medicalExpenses)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Gym Membership:</span>
-                <span>${Number(formData.gymMembership).toFixed(2)}</span>
+                <span>{formatCurrency(formData.gymMembership)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Personal Care:</span>
-                <span>${Number(formData.personalCare).toFixed(2)}</span>
+                <span>{formatCurrency(formData.personalCare)}</span>
               </div>
             </div>
           </div>
@@ -153,42 +171,23 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Entertainment:</span>
-                <span>${Number(formData.entertainment).toFixed(2)}</span>
+                <span>{formatCurrency(formData.entertainment)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Shopping:</span>
-                <span>${Number(formData.shopping).toFixed(2)}</span>
+                <span>{formatCurrency(formData.shopping)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Subscriptions:</span>
-                <span>${Number(formData.subscriptions).toFixed(2)}</span>
+                <span>{formatCurrency(formData.subscriptions)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Personal Care Budget:</span>
-                <span>${Number(formData.personalCareBudget).toFixed(2)}</span>
+                <span>{formatCurrency(formData.personalCareBudget)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Travel:</span>
-                <span>${Number(formData.travel).toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Debt Information */}
-          <div className="budgettool-modal-section">
-            <h3>Debt Information</h3>
-            <div className="budgettool-modal-grid">
-              <div className="budgettool-modal-item">
-                <span>Credit Card Debt:</span>
-                <span>${Number(formData.creditCardDebt).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Student Loans:</span>
-                <span>${Number(formData.studentLoans).toFixed(2)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Other Debt:</span>
-                <span>${Number(formData.otherDebt).toFixed(2)}</span>
+                <span>{formatCurrency(formData.travel)}</span>
               </div>
             </div>
           </div>
@@ -199,23 +198,23 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Has Savings Pot:</span>
-                <span>{formData.hasSavingsPot}</span>
+                <span>{formData.hasSavingsPot === 'yes' ? 'Yes' : 'No'}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Savings Pot Type:</span>
-                <span>{formData.savingsPotType}</span>
+                <span>{formData.savingsPotType || 'Not specified'}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Emergency Fund:</span>
-                <span>${Number(formData.emergencyFund).toFixed(2)}</span>
+                <span>{formatCurrency(formData.emergencyFund)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Sinking Fund:</span>
-                <span>${Number(formData.sinkingFund).toFixed(2)}</span>
+                <span>{formatCurrency(formData.sinkingFund)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Goal/Investment Fund:</span>
-                <span>${Number(formData.goalFund).toFixed(2)}</span>
+                <span>{formatCurrency(formData.goalFund)}</span>
               </div>
             </div>
           </div>
@@ -226,57 +225,59 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
                 <span>Total Income:</span>
-                <span>${summary.totalIncome.toFixed(2)}</span>
+                <span>{formatCurrency(summary.totalIncome)}</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Needs:</span>
-                <span>${summary.needs.toFixed(2)} ({summary.needsPercentage.toFixed(1)}%)</span>
+                <span>{formatCurrency(summary.needs)} ({summary.needsPercentage.toFixed(1)}%)</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Wants:</span>
-                <span>${summary.wants.toFixed(2)} ({summary.wantsPercentage.toFixed(1)}%)</span>
+                <span>{formatCurrency(summary.wants)} ({summary.wantsPercentage.toFixed(1)}%)</span>
               </div>
               <div className="budgettool-modal-item">
                 <span>Available for Savings:</span>
-                <span>${(summary.totalIncome - summary.needs - summary.wants).toFixed(2)} ({summary.remainingPercentage.toFixed(1)}%)</span>
+                <span>{formatCurrency(summary.savings)} ({summary.remainingPercentage.toFixed(1)}%)</span>
               </div>
             </div>
           </div>
 
           {/* 6-Month Projection */}
-          <div className="budgettool-modal-section">
-            <h3>6-Month Projection</h3>
-            <div className="budgettool-modal-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Month</th>
-                    <th>Income</th>
-                    <th>Needs</th>
-                    <th>Wants</th>
-                    <th>Savings</th>
-                    <th>Changes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formData.monthlyProjections.map((month, index) => (
-                    <tr key={index}>
-                      <td>Month {index + 1}</td>
-                      <td>${Number(month.income).toFixed(2)}</td>
-                      <td>${Number(month.needs).toFixed(2)}</td>
-                      <td>${Number(month.wants).toFixed(2)}</td>
-                      <td>${Number(month.savings).toFixed(2)}</td>
-                      <td>
-                        Income: {month.totalIncomePercentage || 0}%<br/>
-                        Needs: {month.needsPercentage || 0}%<br/>
-                        Wants: {month.wantsPercentage || 0}%
-                      </td>
+          {formData.monthlyProjections && formData.monthlyProjections.length > 0 && (
+            <div className="budgettool-modal-section">
+              <h3>6-Month Projection</h3>
+              <div className="budgettool-modal-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th>Income</th>
+                      <th>Needs</th>
+                      <th>Wants</th>
+                      <th>Savings</th>
+                      <th>Changes</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {formData.monthlyProjections.map((month, index) => (
+                      <tr key={index}>
+                        <td>Month {index + 1}</td>
+                        <td>{formatCurrency(month.income)}</td>
+                        <td>{formatCurrency(month.needs)}</td>
+                        <td>{formatCurrency(month.wants)}</td>
+                        <td>{formatCurrency(month.savings)}</td>
+                        <td>
+                          Income: {(month.income / summary.totalIncome * 100 - 100).toFixed(1)}%<br/>
+                          Needs: {(month.needs / summary.needs * 100 - 100).toFixed(1)}%<br/>
+                          Wants: {(month.wants / summary.wants * 100 - 100).toFixed(1)}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
