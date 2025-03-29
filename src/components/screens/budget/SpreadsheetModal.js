@@ -30,8 +30,7 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
     // Wants calculations
     wants: (
       // Food & Dining
-      Number(formData.diningOut || 0) + 
-      Number(formData.takeout || 0) +
+      Number(formData.diningOut || 0) +
       // Personal Care
       Number(formData.gymMembership || 0) + 
       Number(formData.personalCare || 0) +
@@ -134,10 +133,6 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
               <div className="budgettool-modal-item">
                 <span>Dining Out:</span>
                 <span>{formatCurrency(formData.diningOut)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Takeout:</span>
-                <span>{formatCurrency(formData.takeout)}</span>
               </div>
             </div>
           </div>

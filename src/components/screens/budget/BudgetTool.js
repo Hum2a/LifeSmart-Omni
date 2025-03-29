@@ -68,7 +68,6 @@ const BudgetTool = () => {
     // Food & Dining
     groceries: '',
     diningOut: '',
-    takeout: '',
     
     // Personal Care
     healthInsurance: '',
@@ -853,7 +852,7 @@ const BudgetTool = () => {
                                 type="number"
                                 value={formData.monthlyProjections[index]?.wantsDetails?.diningOut || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.diningOut', e.target.value)}
-                                placeholder={`£${(Number(formData.diningOut || 0) + Number(formData.takeout || 0)).toFixed(2)}`}
+                                placeholder={`£${Number(formData.diningOut || 0).toFixed(2)}`}
                                 className="budgettool-input"
                               />
                             </td>
@@ -964,7 +963,6 @@ const BudgetTool = () => {
     const wants = 
       // Food & Dining (dining out and takeout are wants)
       Number(formData.diningOut || 0) + 
-      Number(formData.takeout || 0) +
       // Personal Care (non-health related)
       Number(formData.gymMembership || 0) + 
       Number(formData.personalCare || 0) +
@@ -1379,7 +1377,7 @@ const BudgetTool = () => {
       ['Category', 'Amount', 'Type'],
       ['Groceries', Number(formData.groceries) || 0, 'Needs'],
       ['Dining Out & Takeout', 
-        (Number(formData.diningOut) || 0) + (Number(formData.takeout) || 0), 
+        Number(formData.diningOut || 0),
         'Wants'
       ],
       ['', '', ''],

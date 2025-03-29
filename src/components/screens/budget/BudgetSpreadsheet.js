@@ -26,29 +26,22 @@ const BudgetSpreadsheet = ({ formData }) => {
     );
     
     // Wants calculations
-    const wants = (
-      // Food & Dining (combined)
-      Number(formData.diningOut || 0) + 
-      Number(formData.takeout || 0) +
-      // Personal Care
-      Number(formData.gymMembership || 0) + 
-      Number(formData.personalCare || 0) +
-      // Entertainment & Leisure
-      Number(formData.entertainment || 0) + 
+    const totalWants = 
+      Number(formData.diningOut || 0) +
+      Number(formData.entertainment || 0) +
       Number(formData.shopping || 0) + 
       Number(formData.subscriptions || 0) + 
-      Number(formData.travel || 0)
-    );
+      Number(formData.travel || 0);
 
     const needsPercentage = (needs / totalIncome) * 100 || 0;
-    const wantsPercentage = (wants / totalIncome) * 100 || 0;
+    const wantsPercentage = (totalWants / totalIncome) * 100 || 0;
     const remainingPercentage = Math.max(0, 100 - needsPercentage - wantsPercentage);
-    const savings = Math.max(0, totalIncome - needs - wants);
+    const savings = Math.max(0, totalIncome - needs - totalWants);
 
     return {
       totalIncome,
       needs,
-      wants,
+      totalWants,
       needsPercentage,
       wantsPercentage,
       remainingPercentage,
@@ -185,7 +178,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 </tr>
                 <tr>
                   <td>Dining Out & Takeout</td>
-                  <td>{formatCurrency(Number(formData.diningOut || 0) + Number(formData.takeout || 0))}</td>
+                  <td>{formatCurrency(Number(formData.diningOut || 0))}</td>
                   <td>Wants</td>
                 </tr>
               </tbody>
@@ -329,12 +322,12 @@ const BudgetSpreadsheet = ({ formData }) => {
                       <td>Month {index + 1}</td>
                       <td>{formatCurrency(month.income)}</td>
                       <td>{formatCurrency(month.needs)}</td>
-                      <td>{formatCurrency(month.wants)}</td>
+                      <td>{formatCurrency(month.totalWants)}</td>
                       <td>{formatCurrency(month.savings)}</td>
                       <td>
                         Income: {month.percentageChanges?.income || '0%'}, 
                         Needs: {month.percentageChanges?.needs || '0%'}, 
-                        Wants: {month.percentageChanges?.wants || '0%'}
+                        Wants: {month.percentageChanges?.totalWants || '0%'}
                       </td>
                     </tr>
                   ))}
@@ -357,7 +350,7 @@ const BudgetSpreadsheet = ({ formData }) => {
               </div>
               <div className="budgetspreadsheet-summary-item">
                 <span className="budgetspreadsheet-summary-label">Wants ({summary.wantsPercentage.toFixed(1)}%):</span>
-                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.wants)}</span>
+                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.totalWants)}</span>
               </div>
               <div className="budgetspreadsheet-summary-item">
                 <span className="budgetspreadsheet-summary-label">Savings ({summary.remainingPercentage.toFixed(1)}%):</span>
