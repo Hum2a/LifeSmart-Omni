@@ -1,5 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  FaWallet, 
+  FaClipboardList, 
+  FaChartLine, 
+  FaCalculator 
+} from 'react-icons/fa';
 import '../styles/SelectScreen.css';
 
 // Configuration object for tool availability
@@ -7,25 +13,25 @@ const TOOL_CONFIG = {
   budgetTool: {
     enabled: true,
     path: '/budget-tool',
-    icon: '💰',
+    icon: <FaWallet size={40} color="#4CAF50" />,
     text: 'Budget Tool'
   },
   financialQuiz: {
     enabled: true,
     path: '/quiz',
-    icon: '📝',
+    icon: <FaClipboardList size={40} color="#2196F3" />,
     text: 'Financial Quiz'
   },
   simulation: {
     enabled: true,
     path: '/simulation',
-    icon: '🎮',
+    icon: <FaChartLine size={40} color="#FF9800" />,
     text: 'Simulation'
   },
   investmentCalculator: {
     enabled: true,
     path: '/investment-calculator',
-    icon: '🧮',
+    icon: <FaCalculator size={40} color="#9C27B0" />,
     text: 'Investment Calculator'
   }
 };

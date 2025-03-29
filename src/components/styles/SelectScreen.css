@@ -162,6 +162,12 @@
 
 .selectscreen-tool-icon {
   font-size: 2.5rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.selectscreen-tool-button:hover .selectscreen-tool-icon {
+  transform: scale(1.1);
 }
 
 .selectscreen-tool-text {
