@@ -859,20 +859,6 @@ const BudgetTool = () => {
                           ))}
                         </tr>
                         <tr>
-                          <td>Takeout</td>
-                          {nextMonths.map((_, index) => (
-                            <td key={index}>
-                              <input
-                                type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.takeout || (Number(formData.takeout) + Number(formData.takeout))}
-                                onChange={(e) => handleAmountChange(index, 'wantsDetails.takeout', e.target.value)}
-                                className="budgettool-input"
-                                placeholder={`£${(Number(formData.takeout) + Number(formData.takeout)).toFixed(2)}`}
-                              />
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
                           <td>Personal Care</td>
                           {nextMonths.map((_, index) => (
                             <td key={index}>
@@ -973,72 +959,71 @@ const BudgetTool = () => {
       Number(formData.personalCareBudget || 0) + 
       Number(formData.travel || 0) +
       Number(formData.charity || 0);
+
+    // Calculate total savings
+    const totalSavings = Number(formData.emergencyFund || 0) + Number(formData.sinkingFund || 0) + Number(formData.goalFund || 0);
     
     // Calculate percentages
     const needsPercentage = totalIncome > 0 ? (needs / totalIncome) * 100 : 0;
     const wantsPercentage = totalIncome > 0 ? (wants / totalIncome) * 100 : 0;
+    const savingsPercentage = totalIncome > 0 ? (totalSavings / totalIncome) * 100 : 0;
     const remainingPercentage = Math.max(0, 100 - needsPercentage - wantsPercentage);
 
     return {
       totalIncome,
       needs,
       wants,
+      totalSavings,
       needsPercentage,
       wantsPercentage,
+      savingsPercentage,
       remainingPercentage,
       housingPayment
     };
-  };
-
-  const calculateMonthlyProjections = () => {
-    const currentSummary = calculateBudgetSummary();
-    const monthlyProjections = Array(6).fill().map(() => ({
-      income: currentSummary.totalIncome,
-      needs: currentSummary.needs,
-      wants: currentSummary.wants,
-      savings: currentSummary.totalIncome - currentSummary.needs - currentSummary.wants,
-    }));
-
-    // Apply changes based on user input
-    if (formData.incomeChange === 'no' && formData.incomeChangeMonth) {
-      const changeMonth = parseInt(formData.incomeChangeMonth) - 1;
-      for (let i = changeMonth; i < 6; i++) {
-        monthlyProjections[i].income = formData.monthlyProjections[i].income || currentSummary.totalIncome;
-      }
-    }
-
-    if (formData.needsChange === 'no' && formData.needsChangeMonth) {
-      const changeMonth = parseInt(formData.needsChangeMonth) - 1;
-      for (let i = changeMonth; i < 6; i++) {
-        monthlyProjections[i].needs = formData.monthlyProjections[i].needs || currentSummary.needs;
-      }
-    }
-
-    if (formData.wantsChange === 'no' && formData.wantsChangeMonth) {
-      const changeMonth = parseInt(formData.wantsChangeMonth) - 1;
-      for (let i = changeMonth; i < 6; i++) {
-        monthlyProjections[i].wants = formData.monthlyProjections[i].wants || currentSummary.wants;
-      }
-    }
-
-    // Recalculate savings for each month
-    monthlyProjections.forEach(projection => {
-      projection.savings = projection.income - projection.needs - projection.wants;
-    });
-
-    return monthlyProjections;
   };
 
   const handleAmountChange = (monthIndex, field, value) => {
     setFormData(prev => {
       const newProjections = [...prev.monthlyProjections];
       if (!newProjections[monthIndex]) {
-        newProjections[monthIndex] = {};
+        newProjections[monthIndex] = {
+          wantsDetails: {},  // Initialize wantsDetails if it doesn't exist
+        };
       }
-      newProjections[monthIndex] = {
-        ...newProjections[monthIndex],
-        [field]: Number(value) || 0
-      };
+
+      // If updating wants details, recalculate total wants
+      if (field.startsWith('wantsDetails.')) {
+        const wantsKey = field.split('.')[1];
+        newProjections[monthIndex] = {
+          ...newProjections[monthIndex],
+          wantsDetails: {
+            ...newProjections[monthIndex].wantsDetails || {},
+            [wantsKey]: Number(value) || 0
+          }
+        };
+        
+        // Calculate total wants from all wants categories
+        const totalWants = Object.values({
+          entertainment: Number(formData.entertainment || 0),
+          shopping: Number(formData.shopping || 0),
+          diningOut: Number(formData.diningOut || 0),
+          personalCare: Number(formData.personalCare || 0),
+          gymMembership: Number(formData.gymMembership || 0),
+          subscriptions: Number(formData.subscriptions || 0),
+          travel: Number(formData.travel || 0),
+          charity: Number(formData.charity || 0),
+          ...newProjections[monthIndex].wantsDetails
+        }).reduce((sum, val) => sum + (Number(val) || 0), 0);
+        
+        // Update the total wants for this month
+        newProjections[monthIndex].wants = totalWants;
+      } else {
+        newProjections[monthIndex] = {
+          ...newProjections[monthIndex],
+          [field]: Number(value) || 0
+        };
+      }
+
       return {
         ...prev,
         monthlyProjections: newProjections
@@ -1167,73 +1152,6 @@ const BudgetTool = () => {
     return null;
   };
 
-  const renderMonthlyProjections = () => {
-    const projections = calculateMonthlyProjections();
-    const averageWantsPercentage = projections.reduce((acc, month) => 
-      acc + (month.wants / month.income) * 100, 0) / 6;
-    const recommendedSavingsPercentage = 14;
-
-    return (
-      <div className="budgettool-projections">
-        <h3 className="budgettool-projections-title">6-Month Projection</h3>
-        
-        {averageWantsPercentage > 28 && (
-          <div className="budgettool-projections-warning">
-            <p>
-              It seems you are spending a much higher portion of your income on wants without saving. 
-              We would recommend you save at least {recommendedSavingsPercentage}%.
-            </p>
-            <div className="budgettool-projections-question">
-              <label>Do you think you can reduce your wants over the next 6 months?</label>
-              <select
-                value={formData.canReduceWants}
-                onChange={(e) => handleInputChange(e)}
-                className="budgettool-select"
-              >
-                <option value="">Select an option</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        <div className="budgettool-projections-grid">
-          {projections.map((month, index) => (
-            <div key={index} className="budgettool-projections-month">
-              <h4>Month {index + 1}</h4>
-              <div className="budgettool-projections-details">
-                <div className="budgettool-projections-item">
-                  <span>Income:</span>
-                  <span>£{month.income.toFixed(2)}</span>
-                </div>
-                <div className="budgettool-projections-item">
-                  <span>Needs:</span>
-                  <span>£{month.needs.toFixed(2)}</span>
-                </div>
-                <div className="budgettool-projections-item">
-                  <span>Wants:</span>
-                  <span>£{month.wants.toFixed(2)}</span>
-                </div>
-                <div className="budgettool-projections-item">
-                  <span>Savings:</span>
-                  <span>£{month.savings.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="budgettool-projections-footer">
-          <p>
-            Please come back after one month and enter the actual figures to compare with these projections.
-            This will help you track your progress and make necessary adjustments to your budget.
-          </p>
-        </div>
-      </div>
-    );
-  };
-
   const renderQuestion = (question) => {
     if (question.showIf && !question.showIf(formData)) {
       return null;
@@ -1339,6 +1257,14 @@ const BudgetTool = () => {
     }
   };
 
+  // Helper function to format currency values
+  const formatCurrency = (value) => `£${Number(value || 0).toFixed(2)}`;
+
+  // Helper function to get housing payment label
+  const getHousingPaymentLabel = () => {
+    return formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment';
+  };
+
   const downloadBudgetSpreadsheet = () => {
     const summary = calculateBudgetSummary();
     const monthlyProjections = formData.monthlyProjections;
@@ -1348,285 +1274,145 @@ const BudgetTool = () => {
     
     // Prepare all data in sections with spacing between them
     const allData = [
-      ['INCOME INFORMATION', '', ''],
-      ['Category', 'Amount', 'Frequency/Type'],
-      ['Monthly Income', Number(formData.monthlyIncome) || 0, 'Monthly'],
-      ['Additional Income', Number(formData.additionalIncome) || 0, 'Monthly'],
-      ['Total Monthly Income', summary.totalIncome, 'Monthly'],
+      ['INCOME', '', ''],
+      ['Category', 'Amount', 'Frequency'],
+      ['Monthly Income', formatCurrency(formData.monthlyIncome), 'Monthly'],
+      ['Additional Income', formatCurrency(formData.additionalIncome), 'Monthly'],
+      ['Total Income', formatCurrency(summary.totalIncome), 'Monthly'],
       ['', '', ''],
       
-      ['HOUSING EXPENSES', '', ''],
+      ['HOUSING', '', ''],
       ['Category', 'Amount', 'Type'],
-      [formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment', 
-        formData.housingType === 'mortgage' ? Number(formData.mortgage) || 0 : Number(formData.rent) || 0, 
-        'Needs'
-      ],
+      [getHousingPaymentLabel(), formatCurrency(summary.housingPayment), 'Needs'],
       ...(formData.housingType === 'mortgage' ? [
-        ['Property Tax', Number(formData.propertyTax) || 0, 'Needs'],
-        ['Home Insurance', Number(formData.homeInsurance) || 0, 'Needs'],
+        ['Property Tax', formatCurrency(formData.propertyTax), 'Needs'],
+        ['Home Insurance', formatCurrency(formData.homeInsurance), 'Needs'],
       ] : []),
-      ['Utilities', Number(formData.utilities) || 0, 'Needs'],
+      ['Utilities', formatCurrency(formData.utilities), 'Needs'],
       ['', '', ''],
       
-      ['TRANSPORTATION EXPENSES', '', ''],
+      ['TRANSPORTATION', '', ''],
       ['Category', 'Amount', 'Type'],
-      ['Transportation Expenses', Number(formData.transportation) || 0, 'Needs'],
+      ['Transportation Expenses', formatCurrency(formData.transportation), 'Needs'],
       ['', '', ''],
       
-      ['FOOD & DINING EXPENSES', '', ''],
+      ['FOOD & DINING', '', ''],
       ['Category', 'Amount', 'Type'],
-      ['Groceries', Number(formData.groceries) || 0, 'Needs'],
-      ['Dining Out & Takeout', 
-        Number(formData.diningOut || 0),
-        'Wants'
-      ],
+      ['Groceries', formatCurrency(formData.groceries), 'Needs'],
+      ['Dining Out & Takeout', formatCurrency(formData.diningOut), 'Wants'],
       ['', '', ''],
       
-      ['PERSONAL CARE EXPENSES', '', ''],
+      ['PERSONAL CARE', '', ''],
       ['Category', 'Amount', 'Type'],
-      ['Health Insurance', Number(formData.healthInsurance) || 0, 'Needs'],
-      ['Medical Expenses', Number(formData.medicalExpenses) || 0, 'Needs'],
-      ['Gym Membership', Number(formData.gymMembership) || 0, 'Wants'],
-      ['Personal Care', Number(formData.personalCare) || 0, 'Wants'],
+      ['Health Insurance', formatCurrency(formData.healthInsurance), 'Needs'],
+      ['Medical Expenses', formatCurrency(formData.medicalExpenses), 'Needs'],
+      ['Gym Membership', formatCurrency(formData.gymMembership), 'Wants'],
+      ['Personal Care', formatCurrency(formData.personalCare), 'Wants'],
       ['', '', ''],
       
-      ['ENTERTAINMENT & LEISURE EXPENSES', '', ''],
+      ['ENTERTAINMENT & LEISURE', '', ''],
       ['Category', 'Amount', 'Type'],
-      ['Entertainment', Number(formData.entertainment) || 0, 'Wants'],
-      ['Shopping', Number(formData.shopping) || 0, 'Wants'],
-      ['Subscriptions', Number(formData.subscriptions) || 0, 'Wants'],
-      ['Travel', Number(formData.travel) || 0, 'Wants'],
+      ['Entertainment', formatCurrency(formData.entertainment), 'Wants'],
+      ['Shopping', formatCurrency(formData.shopping), 'Wants'],
+      ['Subscriptions', formatCurrency(formData.subscriptions), 'Wants'],
+      ['Travel', formatCurrency(formData.travel), 'Wants'],
       ['', '', ''],
       
-      ['SAVINGS INFORMATION', '', ''],
+      ['SAVINGS', '', ''],
       ['Category', 'Amount', 'Type'],
       ['Has Savings Pot', formData.hasSavingsPot === 'yes' ? 'Yes' : 'No', 'Status'],
       ['Savings Pot Type', formData.savingsPotType || 'Not specified', 'Type'],
-      ['Emergency Fund', Number(formData.emergencyFund) || 0, 'Current Balance'],
-      ['Sinking Fund', Number(formData.sinkingFund) || 0, 'Current Balance'],
-      ['Goal/Investment Fund', Number(formData.goalFund) || 0, 'Current Balance'],
-      ['Monthly Savings', summary.savings, 'Monthly'],
+      ['Emergency Fund', formatCurrency(formData.emergencyFund), 'Current Balance'],
+      ['Sinking Fund', formatCurrency(formData.sinkingFund), 'Current Balance'],
+      ['Goal/Investment Fund', formatCurrency(formData.goalFund), 'Current Balance'],
+      ['Total Savings', formatCurrency(Number(formData.emergencyFund || 0) + Number(formData.sinkingFund || 0) + Number(formData.goalFund || 0)), 'Current Balance'],
       ['', '', ''],
       
       ['BUDGET SUMMARY', '', ''],
-      ['Category', 'Amount', 'Percentage of Income'],
-      ['Total Monthly Income', summary.totalIncome, '100%'],
-      ['Total Needs', summary.needs, `${summary.needsPercentage.toFixed(1)}%`],
-      ['Total Wants', summary.wants, `${summary.wantsPercentage.toFixed(1)}%`],
-      ['Available for Savings', summary.savings, `${summary.remainingPercentage.toFixed(1)}%`],
-      ['', '', ''],
-      ['Recommended Allocations', '', ''],
-      ['Needs', '', '50%'],
-      ['Wants', '', '30%'],
-      ['Savings', '', '20%'],
+      ['Category', 'Amount', 'Percentage'],
+      ['Total Income', formatCurrency(summary.totalIncome), '100%'],
+      ['Total Needs', formatCurrency(summary.needs), `${summary.needsPercentage.toFixed(1)}%`],
+      ['Total Wants', formatCurrency(summary.wants), `${summary.wantsPercentage.toFixed(1)}%`],
+      ['Total Savings', formatCurrency(summary.totalSavings), `${summary.savingsPercentage.toFixed(1)}%`],
       ['', '', ''],
     ];
 
     // Add 6-month projection if available
     if (monthlyProjections && monthlyProjections.length > 0) {
-      // Calculate percentage changes between consecutive months
-      const getPercentageChange = (current, previous) => {
-        if (!previous || previous === 0) return 0;
-        return ((current - previous) / previous) * 100;
-      };
-
-      const projectionRows = monthlyProjections.map((month, index) => {
-        const previousMonth = index > 0 ? monthlyProjections[index - 1] : null;
-        const incomeChange = getPercentageChange(Number(month.income), previousMonth ? Number(previousMonth.income) : Number(summary.totalIncome));
-        const needsChange = getPercentageChange(Number(month.needs), previousMonth ? Number(previousMonth.needs) : Number(summary.needs));
-        const wantsChange = getPercentageChange(Number(month.wants), previousMonth ? Number(previousMonth.wants) : Number(summary.wants));
-
-        return [
-          `Month ${index + 1}`,
-          Number(month.income).toFixed(2),
-          Number(month.needs).toFixed(2),
-          Number(month.wants).toFixed(2),
-          Number(month.savings).toFixed(2),
-          `Income: ${incomeChange.toFixed(1)}%, Needs: ${needsChange.toFixed(1)}%, Wants: ${wantsChange.toFixed(1)}%`
-        ];
-      });
-
       allData.push(
+        ['', '', ''],
         ['6-MONTH PROJECTION', '', '', '', '', ''],
-        ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Percentage Changes'],
-        ...projectionRows
+        ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Percentage Changes']
       );
+
+      monthlyProjections.forEach((month, index) => {
+        const prevMonth = index > 0 ? monthlyProjections[index - 1] : null;
+        const getChange = (current, previous) => {
+          if (!previous) return '0%';
+          return `${((current - previous) / previous * 100).toFixed(1)}%`;
+        };
+
+        allData.push([
+          `Month ${index + 1}`,
+          formatCurrency(month.income),
+          formatCurrency(month.needs),
+          formatCurrency(month.wants),
+          formatCurrency(month.savings),
+          `Income: ${getChange(month.income, prevMonth?.income)}, ` +
+          `Needs: ${getChange(month.needs, prevMonth?.needs)}, ` +
+          `Wants: ${getChange(month.wants, prevMonth?.wants)}`
+        ]);
+      });
     }
 
-    // Create the worksheet
+    // Create worksheet
     const ws = XLSX.utils.aoa_to_sheet(allData);
+
+    // Define column widths
+    ws['!cols'] = [
+      { wch: 25 }, // Category
+      { wch: 15 }, // Amount
+      { wch: 20 }, // Type/Frequency
+      { wch: 15 }, // For projection table
+      { wch: 15 }, // For projection table
+      { wch: 40 }  // For percentage changes
+    ];
 
     // Define styles
     const styles = {
-      headerSection: {
+      header: {
         font: { bold: true, color: { rgb: "FFFFFF" } },
         fill: { fgColor: { rgb: "4CAF50" } },
-        alignment: { horizontal: "center", vertical: "center" },
-        border: {
-          top: { style: "medium", color: { rgb: "FFFFFF" } },
-          bottom: { style: "medium", color: { rgb: "FFFFFF" } },
-          left: { style: "medium", color: { rgb: "FFFFFF" } },
-          right: { style: "medium", color: { rgb: "FFFFFF" } }
-        }
+        alignment: { horizontal: "center" }
       },
-      subHeader: {
-        font: { bold: true, color: { rgb: "000000" } },
-        fill: { fgColor: { rgb: "E8F5E9" } },
-        alignment: { horizontal: "center", vertical: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "4CAF50" } },
-          bottom: { style: "thin", color: { rgb: "4CAF50" } },
-          left: { style: "thin", color: { rgb: "4CAF50" } },
-          right: { style: "thin", color: { rgb: "4CAF50" } }
-        }
-      },
-      totalRow: {
-        font: { bold: true, color: { rgb: "000000" } },
-        fill: { fgColor: { rgb: "C8E6C9" } },
-        alignment: { horizontal: "left", vertical: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "4CAF50" } },
-          bottom: { style: "thin", color: { rgb: "4CAF50" } },
-          left: { style: "thin", color: { rgb: "4CAF50" } },
-          right: { style: "thin", color: { rgb: "4CAF50" } }
-        }
+      subheader: {
+        font: { bold: true },
+        fill: { fgColor: { rgb: "E8F5E9" } }
       },
       currency: {
-        numFmt: '"£"#,##0.00',
-        font: { color: { rgb: "1B5E20" } }
-      },
-      percentage: {
-        numFmt: '0.0"%"',
-        font: { color: { rgb: "0277BD" } }
-      },
-      defaultCell: {
-        alignment: { horizontal: "left", vertical: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "B0BEC5" } },
-          bottom: { style: "thin", color: { rgb: "B0BEC5" } },
-          left: { style: "thin", color: { rgb: "B0BEC5" } },
-          right: { style: "thin", color: { rgb: "B0BEC5" } }
-        },
-        fill: { fgColor: { rgb: "FFFFFF" } }
+        numFmt: '"£"#,##0.00'
       }
     };
 
-    // Apply column widths
-    ws['!cols'] = [
-      { wch: 30 }, // Category column
-      { wch: 15 }, // Amount column
-      { wch: 20 }, // Type column
-      { wch: 15 }, // Extra column for projections
-      { wch: 25 }, // Changes column
-      { wch: 40 }  // Percentage Changes column
-    ];
-
-    // Apply styles to section headers
-    const sectionHeaders = {
-      'A1': { text: 'INCOME INFORMATION', style: styles.headerSection },
-      'A7': { text: 'HOUSING EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "009688" } } } },
-      'A13': { text: 'TRANSPORTATION EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "673AB7" } } } },
-      'A17': { text: 'FOOD & DINING EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "FF5722" } } } },
-      'A22': { text: 'PERSONAL CARE EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "795548" } } } },
-      'A28': { text: 'ENTERTAINMENT & LEISURE EXPENSES', style: { ...styles.headerSection, fill: { fgColor: { rgb: "E91E63" } } } },
-      'A34': { text: 'SAVINGS INFORMATION', style: { ...styles.headerSection, fill: { fgColor: { rgb: "FFC107" } } } },
-      'A42': { text: 'BUDGET SUMMARY', style: { ...styles.headerSection, fill: { fgColor: { rgb: "3F51B5" } } } }
-    };
-
-    // Apply styles to section headers and merge cells
-    Object.keys(sectionHeaders).forEach(cell => {
+    // Apply styles to sections
+    const sectionHeaders = [0, 6, 12, 17, 22, 28, 34, 42];
+    sectionHeaders.forEach(row => {
+      const cell = XLSX.utils.encode_cell({ r: row, c: 0 });
       if (!ws[cell]) ws[cell] = {};
-      ws[cell].s = sectionHeaders[cell].style;
+      ws[cell].s = styles.header;
       
-      // Merge cells for section headers
-      const mergeCell = cell.replace('A', '');
+      // Merge header cells
       ws['!merges'] = ws['!merges'] || [];
-      ws['!merges'].push({ s: { r: parseInt(mergeCell) - 1, c: 0 }, e: { r: parseInt(mergeCell) - 1, c: 2 } });
+      ws['!merges'].push({ s: { r: row, c: 0 }, e: { r: row, c: 2 } });
     });
 
-    // Apply alternating row colors and basic styling to all cells
-    for (let i = 0; i < allData.length; i++) {
-      for (let j = 0; j < 6; j++) {
-        const cell = XLSX.utils.encode_cell({ r: i, c: j });
-        if (ws[cell]) {
-          if (!ws[cell].s) ws[cell].s = {};
-          ws[cell].s = {
-            ...styles.defaultCell,
-            fill: {
-              patternType: 'solid',
-              fgColor: { rgb: i % 2 === 0 ? "F5F5F5" : "FFFFFF" }
-            }
-          };
-
-          // Apply currency format to amount columns
-          if (j === 1 && typeof ws[cell].v === 'number') {
-            ws[cell].s = {
-              ...ws[cell].s,
-              ...styles.currency
-            };
-          }
-
-          // Apply percentage format to percentage columns
-          if (j === 2 && ws[cell].v && ws[cell].v.toString().includes('%')) {
-            ws[cell].s = {
-              ...ws[cell].s,
-              ...styles.percentage
-            };
-          }
-        }
-      }
-    }
-
-    // Add special styling for the 6-month projection section if it exists
-    if (monthlyProjections && monthlyProjections.length > 0) {
-      const projectionStartRow = allData.findIndex(row => row[0] === '6-MONTH PROJECTION');
-      if (projectionStartRow !== -1) {
-        // Style the projection header
-        const projectionHeaderCell = XLSX.utils.encode_cell({ r: projectionStartRow, c: 0 });
-        if (ws[projectionHeaderCell]) {
-          ws[projectionHeaderCell].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "2196F3" } },
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-          // Merge the header cells
-          ws['!merges'].push({
-            s: { r: projectionStartRow, c: 0 },
-            e: { r: projectionStartRow, c: 5 }
-          });
-        }
-
-        // Style the projection data
-        for (let i = projectionStartRow + 1; i < projectionStartRow + 2 + monthlyProjections.length; i++) {
-          for (let j = 0; j < 6; j++) {
-            const cell = XLSX.utils.encode_cell({ r: i, c: j });
-            if (ws[cell]) {
-              ws[cell].s = {
-                ...styles.defaultCell,
-                fill: { fgColor: { rgb: "E1F5FE" } },
-                font: { color: { rgb: j === 5 ? "1B5E20" : "000000" } }
-              };
-            }
-          }
-        }
-      }
-    }
-
-    // Add the worksheet to the workbook
+    // Add the worksheet to workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Budget Overview');
 
     // Save the file
     XLSX.writeFile(wb, 'budget_spreadsheet.xlsx');
   };
 
-  // Helper function to get changes for each month
-  function getMonthChanges(monthNum) {
-    const changes = [];
-    if (formData.incomeChangeMonth === monthNum.toString()) changes.push('Income');
-    if (formData.needsChangeMonth === monthNum.toString()) changes.push('Needs');
-    if (formData.wantsChangeMonth === monthNum.toString()) changes.push('Wants');
-    return changes.length ? changes.join(', ') : 'No Changes';
-  }
 
   const ConfirmModal = ({ isOpen, onClose, onConfirm }) => {
     if (!isOpen) return null;
@@ -1750,15 +1536,14 @@ const BudgetTool = () => {
                       
                       // Generate variations for wants categories
                       const wantsDetails = {
-                        entertainment: Math.round(Number(formData.entertainment) * getRandomVariation()),
-                        shopping: Math.round(Number(formData.shopping) * getRandomVariation()),
-                        diningOut: Math.round(Number(formData.diningOut) * getRandomVariation()),
-                        takeout: Math.round(Number(formData.takeout) * getRandomVariation()),
-                        personalCare: Math.round(Number(formData.personalCare) * getRandomVariation()),
-                        gymMembership: Math.round(Number(formData.gymMembership) * getRandomVariation()),
-                        subscriptions: Math.round(Number(formData.subscriptions) * getRandomVariation()),
-                        personalCareBudget: Math.round(Number(formData.personalCareBudget) * getRandomVariation()),
-                        travel: Math.round(Number(formData.travel) * getRandomVariation())
+                        entertainment: Math.round(Number(formData.entertainment || 0) * getRandomVariation()),
+                        shopping: Math.round(Number(formData.shopping || 0) * getRandomVariation()),
+                        diningOut: Math.round(Number(formData.diningOut || 0) * getRandomVariation()),
+                        personalCare: Math.round(Number(formData.personalCare || 0) * getRandomVariation()),
+                        gymMembership: Math.round(Number(formData.gymMembership || 0) * getRandomVariation()),
+                        subscriptions: Math.round(Number(formData.subscriptions || 0) * getRandomVariation()),
+                        travel: Math.round(Number(formData.travel || 0) * getRandomVariation()),
+                        charity: Math.round(Number(formData.charity || 0) * getRandomVariation())
                       };
 
                       // Generate variations for savings categories
@@ -1778,7 +1563,6 @@ const BudgetTool = () => {
                         needs: totalNeeds,
                         wants: totalWants,
                         savings: income - totalNeeds - totalWants,
-                        // Include individual categories
                         needsDetails,
                         wantsDetails,
                         savingsDetails

@@ -25,18 +25,34 @@ const BudgetSpreadsheet = ({ formData }) => {
       Number(formData.medicalExpenses || 0)
     );
     
-    // Wants calculations
-    const totalWants = 
+    // Wants calculations - Include ALL want categories
+    const totalWants = (
+      // Dining & Food
       Number(formData.diningOut || 0) +
+      // Entertainment & Shopping
       Number(formData.entertainment || 0) +
       Number(formData.shopping || 0) + 
       Number(formData.subscriptions || 0) + 
-      Number(formData.travel || 0);
+      Number(formData.travel || 0) +
+      // Personal Care wants
+      Number(formData.gymMembership || 0) +
+      Number(formData.personalCare || 0)
+    );
 
+    // Calculate percentages
     const needsPercentage = (needs / totalIncome) * 100 || 0;
     const wantsPercentage = (totalWants / totalIncome) * 100 || 0;
     const remainingPercentage = Math.max(0, 100 - needsPercentage - wantsPercentage);
-    const savings = Math.max(0, totalIncome - needs - totalWants);
+
+    // Calculate total savings (both current savings pots and monthly savings)
+    const currentSavings = (
+      Number(formData.emergencyFund || 0) +
+      Number(formData.sinkingFund || 0) +
+      Number(formData.goalFund || 0)
+    );
+    
+    // Monthly savings is what's left after needs and wants
+    const monthlySavings = Math.max(0, totalIncome - needs - totalWants);
 
     return {
       totalIncome,
@@ -45,7 +61,8 @@ const BudgetSpreadsheet = ({ formData }) => {
       needsPercentage,
       wantsPercentage,
       remainingPercentage,
-      savings,
+      currentSavings,
+      monthlySavings,
       housingPayment
     };
   };
@@ -56,6 +73,29 @@ const BudgetSpreadsheet = ({ formData }) => {
   // Helper function to get housing payment label
   const getHousingPaymentLabel = () => {
     return formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment';
+  };
+
+  // Add a helper function to calculate total wants for a month
+  const calculateMonthlyWants = (month) => {
+    if (!month) return 0;
+    
+    if (month.wantsDetails) {
+      return Object.values(month.wantsDetails).reduce((sum, val) => sum + (Number(val) || 0), 0);
+    }
+    
+    // Fallback to direct wants value if wantsDetails is not available
+    return Number(month.wants || 0);
+  };
+
+  // Add a helper function to calculate wants percentage change
+  const calculateWantsChange = (currentMonth, previousMonth) => {
+    if (!previousMonth) return 'N/A';
+    
+    const currentWants = calculateMonthlyWants(currentMonth);
+    const previousWants = calculateMonthlyWants(previousMonth);
+    
+    if (previousWants === 0) return 'N/A';
+    return `${((currentWants - previousWants) / previousWants * 100).toFixed(1)}%`;
   };
 
   return (
@@ -253,6 +293,11 @@ const BudgetSpreadsheet = ({ formData }) => {
                   <td>{formatCurrency(formData.travel)}</td>
                   <td>Wants</td>
                 </tr>
+                <tr className="budgetspreadsheet-total">
+                  <td>Total Wants</td>
+                  <td>{formatCurrency(summary.totalWants)}</td>
+                  <td>Monthly</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -294,7 +339,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 </tr>
                 <tr className="budgetspreadsheet-total">
                   <td>Monthly Savings</td>
-                  <td>{formatCurrency(summary.savings)}</td>
+                  <td>{formatCurrency(summary.monthlySavings)}</td>
                   <td>Monthly</td>
                 </tr>
               </tbody>
@@ -313,24 +358,29 @@ const BudgetSpreadsheet = ({ formData }) => {
                     <th>Needs</th>
                     <th>Wants</th>
                     <th>Savings</th>
-                    <th>Percentage Changes</th>
+                    <th>Changes</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {formData.monthlyProjections.map((month, index) => (
-                    <tr key={index}>
-                      <td>Month {index + 1}</td>
-                      <td>{formatCurrency(month.income)}</td>
-                      <td>{formatCurrency(month.needs)}</td>
-                      <td>{formatCurrency(month.totalWants)}</td>
-                      <td>{formatCurrency(month.savings)}</td>
-                      <td>
-                        Income: {month.percentageChanges?.income || '0%'}, 
-                        Needs: {month.percentageChanges?.needs || '0%'}, 
-                        Wants: {month.percentageChanges?.totalWants || '0%'}
-                      </td>
-                    </tr>
-                  ))}
+                  {formData.monthlyProjections.map((month, index) => {
+                    const prevMonth = index > 0 ? formData.monthlyProjections[index - 1] : null;
+                    const monthlyWants = calculateMonthlyWants(month);
+                    
+                    return (
+                      <tr key={index}>
+                        <td>Month {index + 1}</td>
+                        <td>{formatCurrency(month.income)}</td>
+                        <td>{formatCurrency(month.needs)}</td>
+                        <td>{formatCurrency(monthlyWants)}</td>
+                        <td>{formatCurrency(month.savings)}</td>
+                        <td>
+                          Income: {((month.income - (prevMonth?.income || month.income)) / (prevMonth?.income || month.income) * 100).toFixed(1)}%<br />
+                          Needs: {((month.needs - (prevMonth?.needs || month.needs)) / (prevMonth?.needs || month.needs) * 100).toFixed(1)}%<br />
+                          Wants: {calculateWantsChange(month, prevMonth)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </section>
@@ -353,8 +403,12 @@ const BudgetSpreadsheet = ({ formData }) => {
                 <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.totalWants)}</span>
               </div>
               <div className="budgetspreadsheet-summary-item">
-                <span className="budgetspreadsheet-summary-label">Savings ({summary.remainingPercentage.toFixed(1)}%):</span>
-                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.savings)}</span>
+                <span className="budgetspreadsheet-summary-label">Monthly Savings ({summary.remainingPercentage.toFixed(1)}%):</span>
+                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.monthlySavings)}</span>
+              </div>
+              <div className="budgetspreadsheet-summary-item">
+                <span className="budgetspreadsheet-summary-label">Total Savings Balance:</span>
+                <span className="budgetspreadsheet-summary-value">{formatCurrency(summary.currentSavings)}</span>
               </div>
             </div>
           </section>
