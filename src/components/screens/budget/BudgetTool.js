@@ -1053,14 +1053,18 @@ const BudgetTool = () => {
   const handleNext = () => {
     if (currentStep < questions.length - 1) {
       setCurrentStep(prev => prev + 1);
-    } else {
-      setShowSpreadsheet(true);
+    } else if (currentStep === questions.length - 1) {
+      setCurrentStep(prev => prev + 1); // Move to step 7
+      setShowSpreadsheet(true); // Show spreadsheet modal
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
+      if (currentStep === questions.length) { // If on step 7
+        setShowSpreadsheet(false); // Hide spreadsheet modal
+      }
     }
   };
 
@@ -1395,7 +1399,60 @@ const BudgetTool = () => {
   };
 
   if (showSpreadsheet) {
-    return <BudgetSpreadsheet formData={formData} />;
+    return (
+      <div className="budgettool-container">
+        <div className="budgettool-content">
+          <header className="budgettool-header">
+            <h1 className="budgettool-title">Budget Planning Tool</h1>
+            <p className="budgettool-subtitle">Review your complete budget information</p>
+          </header>
+
+          <div className="budgettool-progress">
+            <div 
+              className="budgettool-progress-bar"
+              style={{ width: `${((currentStep + 1) / (questions.length + 1)) * 100}%` }}
+            ></div>
+            <p className="budgettool-progress-text">
+              Step {currentStep + 1} of {questions.length + 1}
+            </p>
+          </div>
+
+          <div className="budgettool-spreadsheet-step">
+            <BudgetSpreadsheet formData={formData} />
+          </div>
+
+          <div className="budgettool-navigation">
+            <button
+              onClick={handlePrevious}
+              className="budgettool-button budgettool-button-secondary"
+              disabled={currentStep === 0}
+            >
+              Previous
+            </button>
+            <div className="budgettool-navigation-right">
+              <button
+                onClick={() => setIsConfirmModalOpen(true)}
+                className="budgettool-button budgettool-button-secondary"
+              >
+                Return to Home
+              </button>
+              <button
+                onClick={downloadBudgetSpreadsheet}
+                className="budgettool-button budgettool-button-primary"
+              >
+                Download Spreadsheet
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          onConfirm={() => window.location.href = '/select'}
+        />
+      </div>
+    );
   }
 
   return (
@@ -1409,154 +1466,167 @@ const BudgetTool = () => {
         <div className="budgettool-progress">
           <div 
             className="budgettool-progress-bar"
-            style={{ width: `${((currentStep + 1) / questions.length) * 100}%` }}
+            style={{ width: `${((currentStep + 1) / (questions.length + 1)) * 100}%` }}
           ></div>
           <p className="budgettool-progress-text">
-            Step {currentStep + 1} of {questions.length}
+            Step {currentStep + 1} of {questions.length + 1}
           </p>
         </div>
 
         <div className="budgettool-form">
-          {DEV_TESTING_ENABLED && (
-            <div className="budgettool-dev-controls" style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-              <div style={{ marginBottom: '0.5rem', color: '#ffc107', fontFamily: 'monospace' }}>
-                🛠️ Developer Testing Mode: ON
-              </div>
-              <button
-                onClick={() => {
-                  const newFormData = { ...formData };
-                  
-                  // Handle standard questions if they exist
-                  if (questions[currentStep].questions.length > 0) {
-                    questions[currentStep].questions.forEach(question => {
-                      if (!question.showIf || question.showIf(formData)) {
-                        if (question.type === 'number') {
-                          const range = Object.entries(DEV_RANGES).find(([key]) => 
-                            question.id.toLowerCase().includes(key)
-                          );
-                          const { min, max } = range ? range[1] : { min: 100, max: 5000 };
-                          newFormData[question.id] = generateRandomAmount(min, max).toString();
-                        } else if (question.type === 'select') {
-                          newFormData[question.id] = generateRandomSelection(question.options);
-                        } else if (question.type === 'multiselect' && question.options) {
-                          const numSelections = Math.floor(Math.random() * 3) + 1;
-                          const shuffled = [...question.options].sort(() => 0.5 - Math.random());
-                          newFormData[question.id] = shuffled.slice(0, numSelections).map(opt => opt.value);
-                        }
+          {currentStep < questions.length ? (
+            <>
+              {DEV_TESTING_ENABLED && (
+                <div className="budgettool-dev-controls" style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                  <div style={{ marginBottom: '0.5rem', color: '#ffc107', fontFamily: 'monospace' }}>
+                    🛠️ Developer Testing Mode: ON
+                  </div>
+                  <button
+                    onClick={() => {
+                      const newFormData = { ...formData };
+                      
+                      // Handle standard questions if they exist
+                      if (questions[currentStep].questions.length > 0) {
+                        questions[currentStep].questions.forEach(question => {
+                          if (!question.showIf || question.showIf(formData)) {
+                            if (question.type === 'number') {
+                              const range = Object.entries(DEV_RANGES).find(([key]) => 
+                                question.id.toLowerCase().includes(key)
+                              );
+                              const { min, max } = range ? range[1] : { min: 100, max: 5000 };
+                              newFormData[question.id] = generateRandomAmount(min, max).toString();
+                            } else if (question.type === 'select') {
+                              newFormData[question.id] = generateRandomSelection(question.options);
+                            } else if (question.type === 'multiselect' && question.options) {
+                              const numSelections = Math.floor(Math.random() * 3) + 1;
+                              const shuffled = [...question.options].sort(() => 0.5 - Math.random());
+                              newFormData[question.id] = shuffled.slice(0, numSelections).map(opt => opt.value);
+                            }
+                          }
+                        });
                       }
-                    });
-                  }
-                  
-                  // Special handling for 6-Month Projection step
-                  if (currentStep === 5) { // 6-Month Projection step
-                    // Always set all changes to yes
-                    newFormData.incomeChange = 'yes';
-                    newFormData.needsChange = 'yes';
-                    newFormData.wantsChange = 'yes';
-                    
-                    // Get current summary for base values
-                    const summary = calculateBudgetSummary();
-                    
-                    // Generate monthly projections with realistic variations
-                    const monthlyProjections = Array(6).fill().map((_, index) => {
-                      const variationRange = 0.15; // 15% variation range
-                      const getRandomVariation = () => 1 + (Math.random() * variationRange * 2 - variationRange);
                       
-                      // Generate variations for income
-                      const income = Math.round(summary.totalIncome * getRandomVariation());
-                      
-                      // Get the correct housing payment based on type
-                      const baseHousingPayment = formData.housingType === 'mortgage' 
-                        ? Number(formData.mortgage || 0) 
-                        : Number(formData.rent || 0);
-                      
-                      // Generate variations for needs categories
-                      const needsDetails = {
-                        housing: Math.round(baseHousingPayment * getRandomVariation()),
-                        transportation: Math.round((Number(formData.transportation) || generateRandomAmount(DEV_RANGES.transportation.min, DEV_RANGES.transportation.max)) * getRandomVariation()),
-                        groceries: Math.round(Number(formData.groceries) * getRandomVariation()),
-                        healthInsurance: Math.round((Number(formData.healthInsurance) || generateRandomAmount(DEV_RANGES.healthInsurance.min, DEV_RANGES.healthInsurance.max)) * getRandomVariation()),
-                        medicalExpenses: Math.round((Number(formData.medicalExpenses) || generateRandomAmount(DEV_RANGES.medicalExpenses.min, DEV_RANGES.medicalExpenses.max)) * getRandomVariation()),
-                        utilities: Math.round(Number(formData.utilities) * getRandomVariation()),
-                        propertyTax: formData.housingType === 'mortgage' ? Math.round(Number(formData.propertyTax) * getRandomVariation()) : 0,
-                        homeInsurance: formData.housingType === 'mortgage' ? Math.round(Number(formData.homeInsurance) * getRandomVariation()) : 0
-                      };
-                      
-                      // Generate variations for wants categories
-                      const wantsDetails = {
-                        entertainment: Math.round(Number(formData.entertainment || 0) * getRandomVariation()),
-                        shopping: Math.round(Number(formData.shopping || 0) * getRandomVariation()),
-                        diningOut: Math.round(Number(formData.diningOut || 0) * getRandomVariation()),
-                        personalCare: Math.round(Number(formData.personalCare || 0) * getRandomVariation()),
-                        gymMembership: Math.round(Number(formData.gymMembership || 0) * getRandomVariation()),
-                        subscriptions: Math.round(Number(formData.subscriptions || 0) * getRandomVariation()),
-                        travel: Math.round(Number(formData.travel || 0) * getRandomVariation()),
-                        charity: Math.round(Number(formData.charity || 0) * getRandomVariation())
-                      };
+                      // Special handling for 6-Month Projection step
+                      if (currentStep === 5) { // 6-Month Projection step
+                        // Always set all changes to yes
+                        newFormData.incomeChange = 'yes';
+                        newFormData.needsChange = 'yes';
+                        newFormData.wantsChange = 'yes';
+                        
+                        // Get current summary for base values
+                        const summary = calculateBudgetSummary();
+                        
+                        // Generate monthly projections with realistic variations
+                        const monthlyProjections = Array(6).fill().map((_, index) => {
+                          const variationRange = 0.15; // 15% variation range
+                          const getRandomVariation = () => 1 + (Math.random() * variationRange * 2 - variationRange);
+                          
+                          // Generate variations for income
+                          const income = Math.round(summary.totalIncome * getRandomVariation());
+                          
+                          // Get the correct housing payment based on type
+                          const baseHousingPayment = formData.housingType === 'mortgage' 
+                            ? Number(formData.mortgage || 0) 
+                            : Number(formData.rent || 0);
+                            
+                          // Generate variations for needs categories
+                          const needsDetails = {
+                            housing: Math.round(baseHousingPayment * getRandomVariation()),
+                            transportation: Math.round((Number(formData.transportation) || generateRandomAmount(DEV_RANGES.transportation.min, DEV_RANGES.transportation.max)) * getRandomVariation()),
+                            groceries: Math.round(Number(formData.groceries) * getRandomVariation()),
+                            healthInsurance: Math.round((Number(formData.healthInsurance) || generateRandomAmount(DEV_RANGES.healthInsurance.min, DEV_RANGES.healthInsurance.max)) * getRandomVariation()),
+                            medicalExpenses: Math.round((Number(formData.medicalExpenses) || generateRandomAmount(DEV_RANGES.medicalExpenses.min, DEV_RANGES.medicalExpenses.max)) * getRandomVariation()),
+                            utilities: Math.round(Number(formData.utilities) * getRandomVariation()),
+                            propertyTax: formData.housingType === 'mortgage' ? Math.round(Number(formData.propertyTax) * getRandomVariation()) : 0,
+                            homeInsurance: formData.housingType === 'mortgage' ? Math.round(Number(formData.homeInsurance) * getRandomVariation()) : 0
+                          };
+                          
+                          // Generate variations for wants categories
+                          const wantsDetails = {
+                            entertainment: Math.round(Number(formData.entertainment || 0) * getRandomVariation()),
+                            shopping: Math.round(Number(formData.shopping || 0) * getRandomVariation()),
+                            diningOut: Math.round(Number(formData.diningOut || 0) * getRandomVariation()),
+                            personalCare: Math.round(Number(formData.personalCare || 0) * getRandomVariation()),
+                            gymMembership: Math.round(Number(formData.gymMembership || 0) * getRandomVariation()),
+                            subscriptions: Math.round(Number(formData.subscriptions || 0) * getRandomVariation()),
+                            travel: Math.round(Number(formData.travel || 0) * getRandomVariation()),
+                            charity: Math.round(Number(formData.charity || 0) * getRandomVariation())
+                          };
 
-                      // Generate variations for savings categories
-                      const savingsDetails = {
-                        emergencyFund: Math.round(Number(formData.emergencyFund) * getRandomVariation()),
-                        sinkingFund: Math.round(Number(formData.sinkingFund) * getRandomVariation()),
-                        goalFund: Math.round(Number(formData.goalFund) * getRandomVariation())
-                      };
+                          // Generate variations for savings categories
+                          const savingsDetails = {
+                            emergencyFund: Math.round(Number(formData.emergencyFund) * getRandomVariation()),
+                            sinkingFund: Math.round(Number(formData.sinkingFund) * getRandomVariation()),
+                            goalFund: Math.round(Number(formData.goalFund) * getRandomVariation())
+                          };
+                          
+                          // Calculate totals
+                          const totalNeeds = Object.values(needsDetails).reduce((sum, val) => sum + val, 0);
+                          const totalWants = Object.values(wantsDetails).reduce((sum, val) => sum + val, 0);
+                          const totalSavings = Object.values(savingsDetails).reduce((sum, val) => sum + val, 0);
+                          
+                          return {
+                            income,
+                            needs: totalNeeds,
+                            wants: totalWants,
+                            savings: income - totalNeeds - totalWants,
+                            needsDetails,
+                            wantsDetails,
+                            savingsDetails
+                          };
+                        });
+                        
+                        newFormData.monthlyProjections = monthlyProjections;
+                        
+                        // Random selection for wants reduction question
+                        newFormData.canReduceWants = Math.random() > 0.5 ? 'yes' : 'no';
+                        
+                        console.log('[Dev] Generated random projections:', monthlyProjections);
+                      }
                       
-                      // Calculate totals
-                      const totalNeeds = Object.values(needsDetails).reduce((sum, val) => sum + val, 0);
-                      const totalWants = Object.values(wantsDetails).reduce((sum, val) => sum + val, 0);
-                      const totalSavings = Object.values(savingsDetails).reduce((sum, val) => sum + val, 0);
-                      
-                      return {
-                        income,
-                        needs: totalNeeds,
-                        wants: totalWants,
-                        savings: income - totalNeeds - totalWants,
-                        needsDetails,
-                        wantsDetails,
-                        savingsDetails
-                      };
-                    });
-                    
-                    newFormData.monthlyProjections = monthlyProjections;
-                    
-                    // Random selection for wants reduction question
-                    newFormData.canReduceWants = Math.random() > 0.5 ? 'yes' : 'no';
-                    
-                    console.log('[Dev] Generated random projections:', monthlyProjections);
-                  }
-                  
-                  setFormData(newFormData);
-                  console.log(`[Dev] Generated random data for ${questions[currentStep].category}:`, newFormData);
-                }}
-                className="budgettool-dev-button"
-              >
-                🎲 Generate Random Data for {questions[currentStep].category}
-                <br />
-                <small style={{ opacity: 0.7 }}>Using realistic ranges for each field type</small>
-              </button>
+                      setFormData(newFormData);
+                      console.log(`[Dev] Generated random data for ${questions[currentStep].category}:`, newFormData);
+                    }}
+                    className="budgettool-dev-button"
+                  >
+                    🎲 Generate Random Data for {questions[currentStep].category}
+                    <br />
+                    <small style={{ opacity: 0.7 }}>Using realistic ranges for each field type</small>
+                  </button>
+                </div>
+              )}
+              
+              <h2 className="budgettool-category-title">
+                {questions[currentStep].category}
+              </h2>
+              
+              {questions[currentStep].questions.map((question, index) => {
+                if (question.showIf && !question.showIf(formData)) {
+                  return null;
+                }
+
+                return (
+                  <div key={index} className="budgettool-question">
+                    <label className="budgettool-label">{question.label}</label>
+                    {renderQuestion(question)}
+                  </div>
+                );
+              })}
+
+              {questions[currentStep].renderCustomContent && 
+                questions[currentStep].renderCustomContent(formData)
+              }
+            </>
+          ) : (
+            <div className="budgettool-spreadsheet-step">
+              <h2 className="budgettool-category-title">Your Budget Spreadsheet</h2>
+              <p className="budgettool-spreadsheet-text">
+                Review your complete budget information in the spreadsheet below.
+                You can download it at any time using the button below.
+              </p>
+              <BudgetSpreadsheet formData={formData} />
             </div>
           )}
-          
-          <h2 className="budgettool-category-title">
-            {questions[currentStep].category}
-          </h2>
-          
-          {questions[currentStep].questions.map((question, index) => {
-            if (question.showIf && !question.showIf(formData)) {
-              return null;
-            }
-
-            return (
-              <div key={index} className="budgettool-question">
-                <label className="budgettool-label">{question.label}</label>
-                {renderQuestion(question)}
-              </div>
-            );
-          })}
-
-          {questions[currentStep].renderCustomContent && 
-            questions[currentStep].renderCustomContent(formData)
-          }
         </div>
 
         <div className="budgettool-navigation">
@@ -1568,27 +1638,19 @@ const BudgetTool = () => {
             Previous
           </button>
           <div className="budgettool-navigation-right">
-            {currentStep === questions.length - 1 && (
-              <>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="budgettool-button budgettool-button-view-spreadsheet"
-                >
-                  View Spreadsheet
-                </button>
-                <button
-                  onClick={() => setIsConfirmModalOpen(true)}
-                  className="budgettool-button budgettool-button-secondary"
-                >
-                  Return to Home
-                </button>
-              </>
+            {currentStep === questions.length && (
+              <button
+                onClick={() => setIsConfirmModalOpen(true)}
+                className="budgettool-button budgettool-button-secondary"
+              >
+                Return to Home
+              </button>
             )}
             <button
-              onClick={currentStep === questions.length - 1 ? downloadBudgetSpreadsheet : handleNext}
+              onClick={currentStep === questions.length ? downloadBudgetSpreadsheet : handleNext}
               className="budgettool-button budgettool-button-primary"
             >
-              {currentStep === questions.length - 1 ? 'Download Spreadsheet' : 'Next'}
+              {currentStep === questions.length ? 'Download Spreadsheet' : 'Next'}
             </button>
           </div>
         </div>

@@ -1091,4 +1091,25 @@
   .budgettool-modal-actions .budgettool-button {
     width: 100%;
   }
+}
+
+.budgettool-spreadsheet-step {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.budgettool-spreadsheet-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .budgettool-spreadsheet-step {
+    padding: 1rem;
+  }
 } 

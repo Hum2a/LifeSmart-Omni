@@ -102,6 +102,19 @@ const BudgetSpreadsheet = ({ formData }) => {
     return `${((currentWants - previousWants) / previousWants * 100).toFixed(1)}%`;
   };
 
+  // Add helper function to get month names
+  const getNextMonths = () => {
+    const months = [];
+    const today = new Date();
+    for (let i = 0; i < 6; i++) {
+      const nextMonth = new Date(today.getFullYear(), today.getMonth() + i + 1, 1);
+      months.push(nextMonth.toLocaleString('default', { month: 'long', year: 'numeric' }));
+    }
+    return months;
+  };
+
+  const nextMonths = getNextMonths();
+
   return (
     <div className="budgetspreadsheet-container">
       <div className="budgetspreadsheet-content">
@@ -367,6 +380,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                     <th>Needs</th>
                     <th>Wants</th>
                     <th>Savings</th>
+                    <th>Savings Pot</th>
                     <th>Changes</th>
                   </tr>
                 </thead>
@@ -375,13 +389,20 @@ const BudgetSpreadsheet = ({ formData }) => {
                     const prevMonth = index > 0 ? formData.monthlyProjections[index - 1] : null;
                     const monthlyWants = calculateMonthlyWants(month);
                     
+                    // Calculate cumulative savings pot
+                    const currentSavingsPot = summary.currentSavings + 
+                      formData.monthlyProjections
+                        .slice(0, index + 1)
+                        .reduce((sum, m) => sum + (Number(m.savings) || 0), 0);
+                    
                     return (
                       <tr key={index}>
-                        <td>Month {index + 1}</td>
+                        <td>{nextMonths[index]}</td>
                         <td>{formatCurrency(month.income)}</td>
                         <td>{formatCurrency(month.needs)}</td>
                         <td>{formatCurrency(monthlyWants)}</td>
                         <td>{formatCurrency(month.savings)}</td>
+                        <td>{formatCurrency(currentSavingsPot)}</td>
                         <td>
                           Income: {((month.income - (prevMonth?.income || month.income)) / (prevMonth?.income || month.income) * 100).toFixed(1)}%<br />
                           Needs: {((month.needs - (prevMonth?.needs || month.needs)) / (prevMonth?.needs || month.needs) * 100).toFixed(1)}%<br />
