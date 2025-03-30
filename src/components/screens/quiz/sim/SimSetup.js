@@ -157,23 +157,40 @@ const SimSetup = () => {
       const newGroups = [...prevGroups];
       const group = newGroups[index];
       const totalSpendable = getTotalSpendableAmount(group.points);
-      const currentTotal = Object.values(group.assets).reduce(
-        (sum, val) => sum + parseFloat(val || 0),
-        0
-      );
-      const newValue = parseFloat(value) || 0;
       
-      // Calculate the difference between current total and new total
-      const currentAssetValue = parseFloat(group.assets[key]) || 0;
-      const newTotal = currentTotal - currentAssetValue + newValue;
+      // Handle empty input
+      if (value === '') {
+        group.percentages[key] = '';
+        group.assets[key] = 0;
+        return newGroups;
+      }
       
-      // If the new total would exceed the spendable amount, don't update
-      if (newTotal > totalSpendable) {
-        alert('This allocation would exceed your total spendable amount.');
+      const newPercentage = parseFloat(value);
+      
+      // Validate percentage is between 0 and 100
+      if (newPercentage < 0 || newPercentage > 100) {
+        alert('Percentage must be between 0 and 100');
         return prevGroups;
       }
       
-      group.assets[key] = newValue;
+      // Calculate the actual amount based on percentage
+      const newAmount = (newPercentage / 100) * totalSpendable;
+      
+      // Calculate total percentage across all assets
+      const currentTotalPercentage = Object.values(group.percentages).reduce(
+        (sum, val) => sum + parseFloat(val || 0),
+        0
+      );
+      const newTotalPercentage = currentTotalPercentage - (parseFloat(group.percentages[key]) || 0) + newPercentage;
+      
+      // If total percentage would exceed 100%, don't update
+      if (newTotalPercentage > 100) {
+        alert('Total allocation cannot exceed 100%');
+        return prevGroups;
+      }
+      
+      group.percentages[key] = newPercentage;
+      group.assets[key] = newAmount;
       return newGroups;
     });
     updateSpendableAmount(index);
@@ -386,16 +403,20 @@ const SimSetup = () => {
                     <div className="GroupCreation-inputs">
                       {Object.entries(group.assets).map(([key, value]) => (
                         <div key={key} className="GroupCreation-input-row">
-                          <label htmlFor={`${key}-${index}`}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+                          <label htmlFor={`${key}-${index}`}>{key.charAt(0).toUpperCase() + key.slice(1)} (%):</label>
                           <input
                             type="number"
-                            value={value}
+                            value={group.percentages[key]}
                             onChange={(e) => handleAssetInputChange(index, key, e.target.value)}
                             id={`${key}-${index}`}
                             className="GroupCreation-modern-input"
                             min="0"
-                            step="1000"
+                            max="100"
+                            step="1"
                           />
+                          <span className="GroupCreation-amount-display">
+                            (£{(value || 0).toLocaleString()})
+                          </span>
                         </div>
                       ))}
                       <div className="GroupCreation-total-value">
