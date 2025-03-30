@@ -1269,100 +1269,166 @@ const BudgetTool = () => {
     return formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment';
   };
 
+  // Add a helper function to calculate total wants for a month
+  const calculateMonthlyWants = (month) => {
+    if (!month) return 0;
+    
+    if (month.wantsDetails) {
+      return Object.values(month.wantsDetails).reduce((sum, val) => sum + (Number(val) || 0), 0);
+    }
+    
+    // Fallback to direct wants value if wantsDetails is not available
+    return Number(month.wants || 0);
+  };
+
+  // Add helper function to get month names
+  const getNextMonths = () => {
+    const months = [];
+    const today = new Date();
+    for (let i = 0; i < 6; i++) {
+      const nextMonth = new Date(today.getFullYear(), today.getMonth() + i + 1, 1);
+      months.push(nextMonth.toLocaleString('default', { month: 'long', year: 'numeric' }));
+    }
+    return months;
+  };
+
+  // Add helper function to calculate wants percentage change
+  const calculateWantsChange = (currentMonth, previousMonth) => {
+    if (!previousMonth) return 'N/A';
+    
+    const currentWants = calculateMonthlyWants(currentMonth);
+    const previousWants = calculateMonthlyWants(previousMonth);
+    
+    if (previousWants === 0) return 'N/A';
+    return `${((currentWants - previousWants) / previousWants * 100).toFixed(1)}%`;
+  };
+
   const downloadBudgetSpreadsheet = () => {
+    // Calculate summary data
     const summary = calculateBudgetSummary();
-    const monthlyProjections = formData.monthlyProjections;
     
-    // Create workbook
+    // Create workbook and worksheet
     const wb = XLSX.utils.book_new();
-    
-    // Prepare all data in sections with spacing between them
-    const allData = [
-      ['INCOME', '', ''],
+    const ws = XLSX.utils.aoa_to_sheet([
+      // Title
+      ['Budget Overview'],
+      [],
+      
+      // Income Information
+      ['Income Information'],
       ['Category', 'Amount', 'Frequency'],
-      ['Monthly Income', formatCurrency(formData.monthlyIncome), 'Monthly'],
-      ['Additional Income', formatCurrency(formData.additionalIncome), 'Monthly'],
-      ['Total Income', formatCurrency(summary.totalIncome), 'Monthly'],
-      ['', '', ''],
+      ['Monthly Income', formData.monthlyIncome, 'Monthly'],
+      ['Additional Income', formData.additionalIncome, 'Monthly'],
+      ['Total Income', summary.totalIncome, 'Monthly'],
+      [],
       
-      ['HOUSING', '', ''],
+      // Housing Expenses
+      ['Housing Expenses'],
       ['Category', 'Amount', 'Type'],
-      [getHousingPaymentLabel(), formatCurrency(summary.housingPayment), 'Needs'],
+      [getHousingPaymentLabel(), summary.housingPayment, 'Needs'],
       ...(formData.housingType === 'mortgage' ? [
-        ['Property Tax', formatCurrency(formData.propertyTax), 'Needs'],
-        ['Home Insurance', formatCurrency(formData.homeInsurance), 'Needs'],
+        ['Property Tax', formData.propertyTax, 'Needs'],
+        ['Home Insurance', formData.homeInsurance, 'Needs']
       ] : []),
-      ['Utilities', formatCurrency(formData.utilities), 'Needs'],
-      ['', '', ''],
+      ['Utilities', formData.utilities, 'Needs'],
+      [],
       
-      ['TRANSPORTATION', '', ''],
+      // Transportation
+      ['Transportation'],
       ['Category', 'Amount', 'Type'],
-      ['Transportation Expenses', formatCurrency(formData.transportation), 'Needs'],
-      ['', '', ''],
+      ['Transportation Expenses', formData.transportation, 'Needs'],
+      [],
       
-      ['FOOD & DINING', '', ''],
+      // Food & Dining
+      ['Food & Dining'],
       ['Category', 'Amount', 'Type'],
-      ['Groceries', formatCurrency(formData.groceries), 'Needs'],
-      ['Dining Out & Takeout', formatCurrency(formData.diningOut), 'Wants'],
-      ['', '', ''],
+      ['Groceries', formData.groceries, 'Needs'],
+      ['Dining Out', formData.diningOut, 'Wants'],
+      [],
       
-      ['PERSONAL CARE', '', ''],
+      // Personal Care
+      ['Personal Care'],
       ['Category', 'Amount', 'Type'],
-      ['Health Insurance', formatCurrency(formData.healthInsurance), 'Needs'],
-      ['Medical Expenses', formatCurrency(formData.medicalExpenses), 'Needs'],
-      ['Gym Membership', formatCurrency(formData.gymMembership), 'Wants'],
-      ['Personal Care', formatCurrency(formData.personalCare), 'Wants'],
-      ['', '', ''],
+      ['Health Insurance', formData.healthInsurance, 'Needs'],
+      ['Medical Expenses', formData.medicalExpenses, 'Needs'],
+      ['Gym Membership', formData.gymMembership, 'Wants'],
+      ['Personal Care', formData.personalCare, 'Wants'],
+      [],
       
-      ['ENTERTAINMENT & LEISURE', '', ''],
+      // Entertainment & Leisure
+      ['Entertainment & Leisure'],
       ['Category', 'Amount', 'Type'],
-      ['Entertainment', formatCurrency(formData.entertainment), 'Wants'],
-      ['Shopping', formatCurrency(formData.shopping), 'Wants'],
-      ['Subscriptions', formatCurrency(formData.subscriptions), 'Wants'],
-      ['Travel', formatCurrency(formData.travel), 'Wants'],
-      ['Total Wants', formatCurrency(summary.totalWants), 'Monthly'],
-      ['', '', ''],
+      ['Entertainment', formData.entertainment, 'Wants'],
+      ['Shopping', formData.shopping, 'Wants'],
+      ['Subscriptions', formData.subscriptions, 'Wants'],
+      ['Travel', formData.travel, 'Wants'],
+      [],
       
-      ['SAVINGS', '', ''],
+      // Savings Information
+      ['Savings Information'],
       ['Category', 'Amount', 'Type'],
       ['Has Savings Pot', formData.hasSavingsPot === 'yes' ? 'Yes' : 'No', 'Status'],
       ['Savings Pot Type', formData.savingsPotType || 'Not specified', 'Type'],
-      ['Emergency Fund', formatCurrency(formData.emergencyFund), 'Current Balance'],
-      ['Sinking Fund', formatCurrency(formData.sinkingFund), 'Current Balance'],
-      ['Goal/Investment Fund', formatCurrency(formData.goalFund), 'Current Balance'],
-      ['Monthly Savings', formatCurrency(summary.monthlySavings), 'Monthly'],
-      ['Total Savings', formatCurrency(summary.totalSavings), 'Total'],
-      ['', '', ''],
+      ['Emergency Fund', formData.emergencyFund, 'Current Balance'],
+      ['Sinking Fund', formData.sinkingFund, 'Current Balance'],
+      ['Goal/Investment Fund', formData.goalFund, 'Current Balance'],
+      ['Monthly Savings', summary.monthlySavings, 'Monthly'],
+      ['Total Savings', summary.totalSavings, 'Total'],
+      [],
       
-      ['BUDGET SUMMARY', '', ''],
+      // Current Budget Summary
+      ['Current Budget Summary'],
       ['Category', 'Amount', 'Percentage'],
-      ['Total Income', formatCurrency(summary.totalIncome), '100%'],
-      ['Total Needs', formatCurrency(summary.needs), `${summary.needsPercentage.toFixed(1)}%`],
-      ['Total Wants', formatCurrency(summary.totalWants), `${summary.wantsPercentage.toFixed(1)}%`],
-      ['Monthly Savings', formatCurrency(summary.monthlySavings), `${summary.remainingPercentage.toFixed(1)}%`],
-      ['Current Savings Balance', formatCurrency(summary.currentSavings), 'Current'],
-      ['Total Savings', formatCurrency(summary.totalSavings), 'Total'],
-      ['', '', ''],
-    ];
+      ['Total Income', summary.totalIncome, '100%'],
+      ['Needs', summary.needs, `${summary.needsPercentage.toFixed(1)}%`],
+      ['Wants', summary.totalWants, `${summary.wantsPercentage.toFixed(1)}%`],
+      ['Available for Savings', summary.monthlySavings, `${summary.remainingPercentage.toFixed(1)}%`],
+      [],
+      
+      // 6-Month Projection
+      ['6-Month Projection'],
+      ['Month', 'Income', 'Needs', 'Wants', 'Savings', 'Savings Pot', 'Income Change', 'Needs Change', 'Wants Change']
+    ]);
 
-    // Add the worksheet to workbook
-    const ws = XLSX.utils.aoa_to_sheet(allData);
+    // Add monthly projection data
+    if (formData.monthlyProjections && formData.monthlyProjections.length > 0) {
+      const nextMonths = getNextMonths();
+      formData.monthlyProjections.forEach((month, index) => {
+        const prevMonth = index > 0 ? formData.monthlyProjections[index - 1] : null;
+        const monthlyWants = calculateMonthlyWants(month);
+        
+        // Calculate cumulative savings pot
+        const currentSavingsPot = summary.currentSavings + 
+          formData.monthlyProjections
+            .slice(0, index + 1)
+            .reduce((sum, m) => sum + (Number(m.savings) || 0), 0);
+        
+        // Calculate percentage changes
+        const incomeChange = prevMonth ? 
+          ((month.income - prevMonth.income) / prevMonth.income * 100).toFixed(1) + '%' : 'N/A';
+        const needsChange = prevMonth ? 
+          ((month.needs - prevMonth.needs) / prevMonth.needs * 100).toFixed(1) + '%' : 'N/A';
+        const wantsChange = calculateWantsChange(month, prevMonth);
+        
+        XLSX.utils.sheet_add_aoa(ws, [[
+          nextMonths[index],
+          month.income,
+          month.needs,
+          monthlyWants,
+          month.savings,
+          currentSavingsPot,
+          incomeChange,
+          needsChange,
+          wantsChange
+        ]], { origin: -1 });
+      });
+    }
 
-    // Define column widths
-    ws['!cols'] = [
-      { wch: 25 }, // Category
-      { wch: 15 }, // Amount
-      { wch: 20 }, // Type/Frequency
-      { wch: 15 }, // For projection table
-      { wch: 15 }, // For projection table
-      { wch: 40 }  // For percentage changes
-    ];
-
-    // Add the worksheet to workbook
+    // Add the worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Budget Overview');
 
-    // Save the file
-    XLSX.writeFile(wb, 'budget_spreadsheet.xlsx');
+    // Generate and download the file
+    XLSX.writeFile(wb, 'budget_overview.xlsx');
   };
 
 
