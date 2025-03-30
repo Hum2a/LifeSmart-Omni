@@ -264,6 +264,8 @@
 
 .budgettool-projections-table {
   margin-top: 1.5rem;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .budgettool-projections-table h4 {
@@ -272,50 +274,67 @@
   color: #ffffff;
 }
 
-.budgettool-table-container {
-  overflow-x: auto;
-  margin: 0 -1rem;
-  padding: 0 1rem;
-}
-
-.budgettool-table-container table {
+.budgettool-projections-table table {
   width: 100%;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
+  margin-bottom: 1.5rem;
 }
 
-.budgettool-table-container th,
-.budgettool-table-container td {
+.budgettool-projections-table th,
+.budgettool-projections-table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
 }
 
-.budgettool-table-container th {
+.budgettool-projections-table th {
   background: rgba(255, 255, 255, 0.05);
   font-weight: 500;
   color: #ffffff;
-  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
-.budgettool-table-container td {
+.budgettool-projections-table td {
   color: #cccccc;
 }
 
-.budgettool-table-container td:first-child {
+.budgettool-projections-table td:first-child {
   font-weight: 500;
   color: #ffffff;
-  white-space: nowrap;
+  position: sticky;
+  left: 0;
+  background: rgba(255, 255, 255, 0.03);
+  z-index: 2;
 }
 
-.budgettool-table-container tr:last-child td {
+.budgettool-projections-table tr:last-child td {
   border-bottom: none;
 }
 
-.budgettool-table-container input {
+.budgettool-projections-table input {
   width: 100%;
   min-width: 120px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.budgettool-projections-table input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.25);
+}
+
+.budgettool-projections-table input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .budgettool-analysis {
@@ -703,6 +722,24 @@
   .budgettool-monthly-distribution-item span:not(:first-child) {
     width: 100%;
     text-align: center;
+  }
+
+  .budgettool-projections-table {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
+  .budgettool-projections-table table {
+    border-radius: 0;
+  }
+
+  .budgettool-projections-table th,
+  .budgettool-projections-table td {
+    padding: 0.8rem;
+  }
+
+  .budgettool-projections-table input {
+    min-width: 100px;
   }
 }
 
