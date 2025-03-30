@@ -13,6 +13,13 @@ import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
 import BudgetTool from '../screens/budget/BudgetTool';
 import SimSetup from '../screens/quiz/sim/SimSetup';
+import ProfileScreen from '../screens/ProfileScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import PortfolioCreation from '../screens/stockmarket/scripts/PortfolioCreation';
+import PortfolioDisplay from '../screens/stockmarket/scripts/PortfolioDisplay';
+import StockTradingSelect from '../screens/stockmarket/scripts/StockTradingSelect';
+import FinancialLiteracy from '../screens/learning/FinancialLiteracy';
+import InvestingCourse from '../screens/learning/investingCourse/InvestingCourse';
 
 const Navigation = () => {
   return (
@@ -30,6 +37,13 @@ const Navigation = () => {
           <Route path="/investment-calculator" element={<InvestmentCalculator />} />
           <Route path="/budget-tool" element={<BudgetTool />} />
           <Route path="/sim-setup" element={<SimSetup />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="/portfolio-creation" element={<PortfolioCreation />} />
+          <Route path="/portfolio-display" element={<PortfolioDisplay />} />
+          <Route path="/stock-market-simulator" element={<StockTradingSelect />} />
+          <Route path="/investing-course" element={<InvestingCourse />} />
+          <Route path="/financial-literacy" element={<FinancialLiteracy />} />
         </Routes>
       </div>
     </Router>

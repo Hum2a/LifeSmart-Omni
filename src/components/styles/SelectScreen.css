@@ -183,6 +183,58 @@
   font-size: 0.9rem;
 }
 
+.selectscreen-user-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.selectscreen-user-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.selectscreen-user-button:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.selectscreen-profile-button {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(33, 150, 243, 0.1));
+  border-color: rgba(33, 150, 243, 0.3);
+}
+
+.selectscreen-profile-button:hover {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(33, 150, 243, 0.2));
+}
+
+.selectscreen-settings-button {
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(156, 39, 176, 0.1));
+  border-color: rgba(156, 39, 176, 0.3);
+}
+
+.selectscreen-settings-button:hover {
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.3), rgba(156, 39, 176, 0.2));
+}
+
 @media (max-width: 768px) {
   .selectscreen-select-title {
     font-size: 2.5rem;
@@ -194,5 +246,15 @@
   
   .selectscreen-tool-button {
     padding: 1.5rem;
+  }
+
+  .selectscreen-user-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .selectscreen-user-button {
+    width: 100%;
+    justify-content: center;
   }
 } 

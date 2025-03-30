@@ -4,7 +4,12 @@ import {
   FaWallet, 
   FaClipboardList, 
   FaChartLine, 
-  FaCalculator 
+  FaCalculator,
+  FaUserCircle,
+  FaCog,
+  FaStar,
+  FaStackExchange,
+  FaBook
 } from 'react-icons/fa';
 import '../styles/SelectScreen.css';
 
@@ -22,11 +27,23 @@ const TOOL_CONFIG = {
     icon: <FaClipboardList size={40} color="#2196F3" />,
     text: 'Financial Quiz'
   },
-  simulation: {
+  assetMarketSimulation: {
     enabled: true,
     path: '/simulation',
     icon: <FaChartLine size={40} color="#FF9800" />,
-    text: 'Simulation'
+    text: 'Asset Market Simulation'
+  },
+  stockMarketSimulator: {
+    enabled: true,
+    path: '/stock-market-simulator',
+    icon: <FaStackExchange size={40} color="#E91E63" />,
+    text: 'Stock Market Simulator'
+  },
+  learningResources: {
+    enabled: true,
+    path: '/financial-literacy',
+    icon: <FaBook size={40} color="#9C27B0" />,
+    text: 'Learning Resources'
   },
   investmentCalculator: {
     enabled: true,
@@ -80,6 +97,23 @@ const SelectScreen = () => {
                 </div>
               )
             ))}
+          </div>
+
+          <div className="selectscreen-user-actions">
+            <button 
+              onClick={() => handleNavigation('/profile')} 
+              className="selectscreen-user-button selectscreen-profile-button"
+            >
+              <FaUserCircle size={24} />
+              <span>Profile</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('/settings')} 
+              className="selectscreen-user-button selectscreen-settings-button"
+            >
+              <FaCog size={24} />
+              <span>Settings</span>
+            </button>
           </div>
         </main>
 

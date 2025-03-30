@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
 // Debug logging
 console.log('Environment Variables:', {
@@ -54,6 +54,12 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const firebaseAuth = getAuth(app);
 const db = getFirestore(app);
+
+// Set persistence to LOCAL (persists even after browser is closed)
+setPersistence(firebaseAuth, browserLocalPersistence)
+  .catch((error) => {
+    console.error("Error setting auth persistence:", error);
+  });
 
 // Save stock data to Firestore
 export const saveStockDataToFirestore = async (symbol, data) => {
