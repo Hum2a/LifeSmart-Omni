@@ -102,8 +102,8 @@ const InvestingCourse = () => {
       <header className="investing-course-header">
         <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="LifeSmart Logo" className="investing-course-logo" />
         <nav className="investing-course-header-links">
-          <button onClick={() => navigate('/stock-trading-select')} className="investing-course-nav-link">
-            Stock Trading Tool
+          <button onClick={() => navigate('/financial-literacy')} className="investing-course-nav-link">
+            Back to Home
           </button>
         </nav>
       </header>
