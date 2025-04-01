@@ -109,14 +109,33 @@ const useChart = (groups, simulationYears, fixedColors) => {
           }
         },
         maintainAspectRatio: true,
-        animation: {
-          duration: 0,
-          easing: 'linear'
+        animation: false,
+        transitions: {
+          active: {
+            animation: {
+              duration: 750
+            }
+          }
         },
+        elements: {
+          line: {
+            tension: 0.4
+          },
+          point: {
+            radius: 4,
+            hoverRadius: 6
+          }
+        }
       },
     };
 
     chartInstanceRef.current = new Chart(ctx, chartConfig);
+
+    // Enable animations after initial render
+    chartInstanceRef.current.options.animation = {
+      duration: 750,
+      easing: 'linear'
+    };
   }, [groups, simulationYears, fixedColors, destroyChart, calculateYAxisScale]);
 
   const updateChart = useCallback(() => {
@@ -136,11 +155,14 @@ const useChart = (groups, simulationYears, fixedColors) => {
 
     const yAxisScale = calculateYAxisScale(groups);
 
+    // Update data and options separately
     chartInstanceRef.current.data.labels = labels;
     chartInstanceRef.current.data.datasets = datasets;
     chartInstanceRef.current.options.scales.y.min = yAxisScale.min;
     chartInstanceRef.current.options.scales.y.max = yAxisScale.max;
-    chartInstanceRef.current.update('none');
+    
+    // Use a specific update mode that preserves animations
+    chartInstanceRef.current.update('active');
   }, [groups, simulationYears, fixedColors, calculateYAxisScale]);
 
   useEffect(() => {
@@ -159,6 +181,7 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   const [isSimulating, setIsSimulating] = useState(false);
   const [allQuarters, setAllQuarters] = useState([]);
   const simulationRef = useRef(null);
+  const pausedRef = useRef(false);
 
   const calculateAllQuarters = useCallback(() => {
     const totalQuarters = simulationYears * 4;
@@ -217,17 +240,26 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
 
   const nextQuarter = useCallback(() => {
     const nextIndex = currentQuarterIndex + 1;
-    if (nextIndex >= allQuarters.length) return;
+    if (nextIndex >= allQuarters.length) {
+      setIsSimulating(false);
+      return;
+    }
 
     setCurrentQuarterIndex(nextIndex);
     setGroups(allQuarters[nextIndex]);
-  }, [currentQuarterIndex, allQuarters]);
+  }, [currentQuarterIndex, allQuarters, setGroups]);
 
   const runFullSimulation = useCallback(() => {
     if (isSimulating) return;
+    
+    pausedRef.current = false;
     setIsSimulating(true);
 
     const runNextQuarter = () => {
+      if (pausedRef.current) {
+        return;
+      }
+
       setCurrentQuarterIndex(prevIndex => {
         const nextIndex = prevIndex + 1;
         if (nextIndex >= allQuarters.length) {
@@ -241,9 +273,10 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
     };
 
     runNextQuarter();
-  }, [isSimulating, allQuarters, simulationSpeed]);
+  }, [isSimulating, allQuarters, simulationSpeed, setGroups]);
 
   const pauseSimulation = useCallback(() => {
+    pausedRef.current = true;
     setIsSimulating(false);
     if (simulationRef.current) {
       clearTimeout(simulationRef.current);
@@ -424,31 +457,32 @@ const Simulation = () => {
         <button 
           onClick={nextQuarter} 
           className="simulationpage-modern-button"
-          disabled={currentQuarterIndex >= simulationYears * 4}
+          disabled={currentQuarterIndex >= simulationYears * 4 || isSimulating}
         >
           Next Quarter
         </button>
         <button 
           onClick={runFullSimulation} 
           className="simulationpage-modern-button"
-          disabled={isSimulating}
+          disabled={isSimulating || currentQuarterIndex >= simulationYears * 4}
         >
           Run Full Simulation
         </button>
-        <button 
-          onClick={() => setIsSimulating(false)} 
-          className="simulationpage-modern-button" 
-          style={{ display: isSimulating ? 'block' : 'none' }}
-        >
-          Pause Simulation
-        </button>
-        <button 
-          onClick={runFullSimulation} 
-          className="simulationpage-modern-button" 
-          style={{ display: isSimulating ? 'none' : 'block' }}
-        >
-          Resume Simulation
-        </button>
+        {isSimulating ? (
+          <button 
+            onClick={setIsSimulating} 
+            className="simulationpage-modern-button"
+          >
+            Pause Simulation
+          </button>
+        ) : currentQuarterIndex > 0 && currentQuarterIndex < simulationYears * 4 ? (
+          <button 
+            onClick={runFullSimulation} 
+            className="simulationpage-modern-button"
+          >
+            Resume Simulation
+          </button>
+        ) : null}
         <input 
           type="number" 
           value={simulationSpeed} 
