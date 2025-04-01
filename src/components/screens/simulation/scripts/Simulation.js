@@ -400,7 +400,30 @@ const Simulation = () => {
     try {
       await setDoc(doc(db, uid, 'Asset Market Simulations', 'Simulations', 'Simulation 1', "Results", "Final"), { finalValues });
       await setDoc(doc(db, uid, 'Asset Market Simulations', 'Simulations', 'Simulation 1', "Results", "Quarters"), { quarterResults });
-      navigate('/simulation-results');
+      
+      // Pass the data directly to the results screen
+      navigate('/simulation-results', {
+        state: {
+          teams: groups.map(g => g.name),
+          teamData: finalValues.reduce((acc, val) => {
+            acc[val.name] = {
+              savings: 0, // Add if you have this data
+              investments: [{
+                currentValue: val.equity + val.bonds + val.realestate + val.commodities + val.other
+              }],
+              debt: 0, // Add if you have this data
+              equity: val.equity,
+              bonds: val.bonds,
+              realestate: val.realestate,
+              commodities: val.commodities,
+              other: val.other
+            };
+            return acc;
+          }, {}),
+          quarterResults: quarterResults,
+          quizScores: {} // Add if you have quiz scores
+        }
+      });
     } catch (error) {
       console.error("Error saving simulation results:", error);
     }
