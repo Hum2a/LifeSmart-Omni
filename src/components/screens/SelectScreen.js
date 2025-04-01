@@ -20,36 +20,42 @@ import Modal from '../common/Modal';
 const TOOL_CONFIG = {
   budgetTool: {
     enabled: true,
+    in_development: false,
     path: '/budget-tool',
     icon: <FaWallet size={40} color="#4CAF50" />,
     text: 'Budget Tool'
   },
   financialQuiz: {
     enabled: true,
+    in_development: true,
     path: '/quiz',
     icon: <FaClipboardList size={40} color="#2196F3" />,
     text: 'Financial Quiz'
   },
   assetMarketSimulation: {
     enabled: true,
+    in_development: true,
     path: '/simulation',
     icon: <FaChartLine size={40} color="#FF9800" />,
     text: 'Asset Market Simulation'
   },
   stockMarketSimulator: {
     enabled: true,
+    in_development: true,
     path: '/stock-market-simulator',
     icon: <FaStackExchange size={40} color="#E91E63" />,
     text: 'Stock Market Simulator'
   },
   learningResources: {
     enabled: true,
+    in_development: false,
     path: '/financial-literacy',
     icon: <FaBook size={40} color="#9C27B0" />,
     text: 'Learning Resources'
   },
   investmentCalculator: {
     enabled: true,
+    in_development: false,
     path: '/investment-calculator',
     icon: <FaCalculator size={40} color="#9C27B0" />,
     text: 'Investment Calculator'
@@ -104,6 +110,9 @@ const SelectScreen = () => {
                     onClick={() => handleNavigation(config.path)} 
                     className="selectscreen-tool-button"
                   >
+                    {config.in_development && (
+                      <div className="selectscreen-in-development">In Development</div>
+                    )}
                     <span className="selectscreen-tool-icon">{config.icon}</span>
                     <span className="selectscreen-tool-text">{config.text}</span>
                   </button>
