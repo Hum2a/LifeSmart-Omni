@@ -1,188 +1,165 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { firebaseAuth, db } from '../../../../firebase/initFirebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import '../styles/InvestingCourse.css';
+import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import InvestingCourseContent from './InvestingCourseContent';
+import InvestingCourseExam from './InvestingCourseExam';
+import './styles/InvestingCourse.css';
 
 const InvestingCourse = () => {
   const navigate = useNavigate();
-  const [currentSection, setCurrentSection] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [completed, setCompleted] = useState(false);
-
-  const sections = [
-    {
-      title: "Understanding Stock Markets",
-      content: "Stock markets are platforms where shares of publicly traded companies are issued, bought, and sold. They provide companies with access to capital and investors with opportunities to own a portion of these companies.",
-      quiz: {
-        question: "What is a stock market?",
-        options: [
-          "A place to buy groceries",
-          "A platform for trading company shares",
-          "A bank for storing money",
-          "A government office"
-        ],
-        correctAnswer: 1
-      }
-    },
-    {
-      title: "Types of Stocks",
-      content: "Common stocks represent ownership in a company and typically come with voting rights. Preferred stocks often have a fixed dividend and priority over common stocks in case of liquidation.",
-      quiz: {
-        question: "What is the main difference between common and preferred stocks?",
-        options: [
-          "Preferred stocks are cheaper",
-          "Common stocks have voting rights",
-          "Common stocks are more valuable",
-          "Preferred stocks are newer"
-        ],
-        correctAnswer: 1
-      }
-    },
-    {
-      title: "Market Analysis",
-      content: "Fundamental analysis involves evaluating a company's financial statements and business model, while technical analysis focuses on price patterns and market trends.",
-      quiz: {
-        question: "What is fundamental analysis?",
-        options: [
-          "Studying price patterns",
-          "Evaluating company financials",
-          "Following market trends",
-          "Predicting weather"
-        ],
-        correctAnswer: 1
-      }
-    },
-    {
-      title: "Investment Strategies",
-      content: "Different investment strategies include value investing (buying undervalued stocks), growth investing (buying stocks with high growth potential), and dividend investing (focusing on stocks that pay regular dividends).",
-      quiz: {
-        question: "What is value investing?",
-        options: [
-          "Buying expensive stocks",
-          "Buying undervalued stocks",
-          "Selling all stocks",
-          "Ignoring stock prices"
-        ],
-        correctAnswer: 1
-      }
-    }
-  ];
+  const [showContent, setShowContent] = useState(false);
+  const [showExam, setShowExam] = useState(false);
+  const [examEnabled, setExamEnabled] = useState(false);
+  const [passed, setPassed] = useState(false);
+  const [contentCompleted, setContentCompleted] = useState(false);
+  const [courseCompleted, setCourseCompleted] = useState(false);
 
   useEffect(() => {
-    checkCompletionStatus();
+    checkExamEligibility();
   }, []);
 
-  const checkCompletionStatus = async () => {
-    const user = firebaseAuth.currentUser;
+  const startCourse = () => {
+    setShowContent(true);
+    setShowExam(false);
+  };
+
+  const startExam = () => {
+    setShowExam(true);
+    setShowContent(false);
+  };
+
+  const checkExamEligibility = async () => {
+    const db = getFirestore();
+    const auth = getAuth();
+    const user = auth.currentUser;
+
     if (user) {
-      const completedRef = doc(db, user.uid, 'Completed Courses');
-      const completedSnap = await getDoc(completedRef);
-      if (completedSnap.exists() && completedSnap.data()['Investing Course']) {
-        setCompleted(true);
+      const courseRef = doc(db, user.uid, 'Financial Literacy Courses', 'Basics of Investing', 'Course Content');
+      const courseDoc = await getDoc(courseRef);
+      if (courseDoc.exists()) {
+        setContentCompleted(courseDoc.data().Completed || false);
       }
-    }
-  };
 
-  const handleAnswer = async (selectedAnswer) => {
-    const currentQuiz = sections[currentSection].quiz;
-    if (selectedAnswer === currentQuiz.correctAnswer) {
-      const newProgress = ((currentSection + 1) / sections.length) * 100;
-      setProgress(newProgress);
-      
-      if (currentSection < sections.length - 1) {
-        setCurrentSection(currentSection + 1);
+      const examRef = doc(db, user.uid, 'Financial Literacy Courses', 'Basics of Investing', 'Exam Results');
+      const examDoc = await getDoc(examRef);
+      if (examDoc.exists()) {
+        setPassed(examDoc.data().Passed || false);
+      }
+
+      const completeRef = doc(db, user.uid, 'Completed Courses');
+      const completeDoc = await getDoc(completeRef);
+      if (completeDoc.exists()) {
+        setCourseCompleted(completeDoc.data()['Basics of Investing'] || false);
+      }
+
+      if (courseCompleted) {
+        navigate('/investing-course');
       } else {
-        setCompleted(true);
-        const user = firebaseAuth.currentUser;
-        if (user) {
-          const completedRef = doc(db, user.uid, 'Completed Courses');
-          await setDoc(completedRef, {
-            'Investing Course': true
-          }, { merge: true });
-
-          // Update total funds
-          const fundsRef = doc(db, user.uid, 'Total Funds');
-          const fundsSnap = await getDoc(fundsRef);
-          if (fundsSnap.exists()) {
-            const currentFunds = fundsSnap.data().totalFunds;
-            await setDoc(fundsRef, {
-              totalFunds: currentFunds + 200
-            });
-          }
-        }
-        setModalMessage("Congratulations! You've completed the Investing Course and earned £200!");
-        setShowModal(true);
+        setExamEnabled(contentCompleted && !passed);
       }
-    } else {
-      setModalMessage("Incorrect answer. Please try again.");
-      setShowModal(true);
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    if (completed) {
-      navigate('/investing-course-exam');
+  const completeCourse = async () => {
+    const db = getFirestore();
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const fundsRef = doc(db, user.uid, 'Total Funds');
+      const userDoc = await getDoc(fundsRef);
+
+      const ccRef = doc(db, user.uid, 'Completed Courses');
+      await setDoc(ccRef, {
+        'Basics of Investing': true
+      });
+
+      if (userDoc.exists()) {
+        const totalFunds = userDoc.data().totalFunds || 0;
+        await updateDoc(fundsRef, {
+          totalFunds: totalFunds + 100
+        });
+
+        navigate('/stock-trading-select');
+      }
     }
+  };
+
+  const handleComplete = () => {
+    checkExamEligibility();
+    setShowContent(false);
+    setShowExam(false);
+  };
+
+  const goBack = () => {
+    setShowContent(false);
+    setShowExam(false);
   };
 
   return (
-    <div className="investing-course">
+    <div className="investing-course-container">
       <header className="investing-course-header">
-        <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="Logo" className="investing-course-logo" />
-        <nav className="investing-course-nav">
-          <button onClick={() => navigate('/portfolio-display')} className="investing-course-nav-link">
-            Back to Portfolio
+        <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="LifeSmart Logo" className="investing-course-logo" />
+        <nav className="investing-course-header-links">
+          <button onClick={() => navigate('/stock-trading-select')} className="investing-course-nav-link">
+            Stock Trading Tool
           </button>
         </nav>
       </header>
 
       <main className="investing-course-main">
-        <div className="investing-course-progress">
-          <div 
-            className="investing-course-progress-bar"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-
-        <div className="investing-course-content">
-          <h1 className="investing-course-title">
-            {sections[currentSection].title}
-          </h1>
-          
-          <div className="investing-course-text">
-            {sections[currentSection].content}
-          </div>
-
-          <div className="investing-course-quiz">
-            <h2>Quiz</h2>
-            <p>{sections[currentSection].quiz.question}</p>
-            <div className="investing-course-options">
-              {sections[currentSection].quiz.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswer(index)}
-                  className="investing-course-option"
-                >
-                  {option}
+        <div className={`investing-course-fade-transition ${showContent || showExam ? 'investing-course-slide-fade-enter' : ''}`}>
+          {!showContent && !showExam && (
+            <div className="investing-course-intro-content">
+              <div className="investing-course-animate-text">
+                <h1>Master the Art of Investing</h1>
+                <p>
+                  Embark on a journey to financial literacy with our comprehensive investing course. 
+                  Learn the fundamentals, develop your strategy, and gain the confidence to make informed investment decisions.
+                </p>
+              </div>
+              <div className="investing-course-buttons">
+                <button onClick={startCourse} className="investing-course-animate-button">
+                  Start Learning
                 </button>
-              ))}
+                <button 
+                  className={`investing-course-animate-button ${!examEnabled || passed ? 'investing-course-disabled' : ''}`}
+                  disabled={!examEnabled || passed}
+                  onClick={startExam}
+                >
+                  Take Exam
+                </button>
+                {contentCompleted && passed && (
+                  <button onClick={completeCourse} className="investing-course-animate-button">
+                    Complete Course
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      </main>
 
-      {showModal && (
-        <div className="investing-course-modal">
-          <div className="investing-course-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={handleCloseModal}>Close</button>
+        {(showContent || showExam) && (
+          <div className="investing-course-slide-fade-enter">
+            <button onClick={goBack} className="investing-course-back-button">
+              ← Back to Course Overview
+            </button>
           </div>
-        </div>
-      )}
+        )}
+
+        {showContent && (
+          <div className="investing-course-slide-fade-enter">
+            <InvestingCourseContent onComplete={handleComplete} />
+          </div>
+        )}
+
+        {showExam && (
+          <div className="investing-course-slide-fade-enter">
+            <InvestingCourseExam onBackToCourse={handleComplete} />
+          </div>
+        )}
+      </main>
     </div>
   );
 };
