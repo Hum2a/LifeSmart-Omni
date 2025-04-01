@@ -11,6 +11,7 @@ import {
 import { firebaseAuth, db } from '../../../../firebase/initFirebase';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import '../styles/StockTradingSelect.css';
+import StockMarketDisplay from './StockMarketDisplay';
 
 const StockTradingSelect = () => {
   const navigate = useNavigate();
@@ -126,79 +127,79 @@ const StockTradingSelect = () => {
   }
 
   return (
-    <div className="stocktrading-select-container">
-      <div className="stocktrading-select-content">
-        <header className="stocktrading-select-header">
-          <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="Logo" className="stocktrading-select-logo" />
-          <nav className="stocktrading-select-header-links">
-            {profile?.admin && (
-              <button onClick={() => navigate('/groupcreation')} className="stocktrading-select-nav-link">
-                Group Creation
-              </button>
-            )}
-            <button onClick={handleLogout} className="stocktrading-select-nav-link">
-              Log Out
-            </button>
-          </nav>
-        </header>
-
-        <main className="stocktrading-select-main-content">
-          <h1 className="stocktrading-select-title">Stock Trading</h1>
-          {profile && (
-            <div className="stocktrading-select-welcome-message">
-              Welcome back, {profile.firstName}!
-            </div>
-          )}
-
-          <div className="stocktrading-select-actions">
-            <button 
-              onClick={handleCreatePortfolio}
-              className="stocktrading-select-create-button"
-            >
-              <FaPlus /> Create Your Portfolio
-            </button>
-          </div>
-
-          <div className="stocktrading-select-portfolios">
-            {filteredPortfolios.length === 0 ? (
-              <div className="stocktrading-select-empty">
-                <p>No portfolios found. Create your first portfolio to get started!</p>
+    <div className="stock-trading-select">
+      <header className="stock-trading-select-header">
+        <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="Logo" className="stock-trading-select-logo" />
+        <nav className="stock-trading-select-header-links">
+          <button onClick={() => navigate('/sticky-note-creator')} className="stock-trading-select-nav-link">
+            Create Sticky Note
+          </button>
+          <button onClick={() => navigate('/')} className="stock-trading-select-nav-link">
+            Home
+          </button>
+        </nav>
+      </header>
+      <div className="stocktrading-select-container">
+        <div className="stocktrading-select-content">
+          <main className="stocktrading-select-main-content">
+            <h1 className="stocktrading-select-title">Stock Trading</h1>
+            {profile && (
+              <div className="stocktrading-select-welcome-message">
+                Welcome back, {profile.firstName}!
               </div>
-            ) : (
-              filteredPortfolios.map(portfolio => (
-                <div 
-                  key={portfolio.id} 
-                  className="stocktrading-select-portfolio-card"
-                  onClick={() => handleViewPortfolio(portfolio.id)}
-                >
-                  <div className="stocktrading-select-portfolio-header">
-                    <h3>{portfolio.name}</h3>
-                    <span className="stocktrading-select-portfolio-date">
-                      Created: {new Date(portfolio.createdAt?.toDate()).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="stocktrading-select-portfolio-stats">
-                    <div className="stocktrading-select-portfolio-stat">
-                      <FaList className="stocktrading-select-stat-icon" />
-                      <span>{portfolio.stocks?.length || 0} Stocks</span>
-                    </div>
-                    <div className="stocktrading-select-portfolio-stat">
-                      <FaChartBar className="stocktrading-select-stat-icon" />
-                      <span>Value: £{portfolio.totalValue?.toFixed(2) || '0.00'}</span>
-                    </div>
-                  </div>
-                </div>
-              ))
             )}
-          </div>
 
-          {userFunds !== null && (
-            <div className="stocktrading-select-total-funds">
-              <p>Total Funds: £{userFunds}</p>
+            <div className="stocktrading-select-actions">
+              <button 
+                onClick={handleCreatePortfolio}
+                className="stocktrading-select-create-button"
+              >
+                <FaPlus /> Create Your Portfolio
+              </button>
             </div>
-          )}
-        </main>
+
+            <div className="stocktrading-select-portfolios">
+              {filteredPortfolios.length === 0 ? (
+                <div className="stocktrading-select-empty">
+                  <p>No portfolios found. Create your first portfolio to get started!</p>
+                </div>
+              ) : (
+                filteredPortfolios.map(portfolio => (
+                  <div 
+                    key={portfolio.id} 
+                    className="stocktrading-select-portfolio-card"
+                    onClick={() => handleViewPortfolio(portfolio.id)}
+                  >
+                    <div className="stocktrading-select-portfolio-header">
+                      <h3>{portfolio.name}</h3>
+                      <span className="stocktrading-select-portfolio-date">
+                        Created: {new Date(portfolio.createdAt?.toDate()).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="stocktrading-select-portfolio-stats">
+                      <div className="stocktrading-select-portfolio-stat">
+                        <FaList className="stocktrading-select-stat-icon" />
+                        <span>{portfolio.stocks?.length || 0} Stocks</span>
+                      </div>
+                      <div className="stocktrading-select-portfolio-stat">
+                        <FaChartBar className="stocktrading-select-stat-icon" />
+                        <span>Value: £{portfolio.totalValue?.toFixed(2) || '0.00'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {userFunds !== null && (
+              <div className="stocktrading-select-total-funds">
+                <p>Total Funds: £{userFunds}</p>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
+      <StockMarketDisplay />
     </div>
   );
 };

@@ -27,14 +27,14 @@ const TOOL_CONFIG = {
   },
   financialQuiz: {
     enabled: true,
-    in_development: true,
+    in_development: false,
     path: '/quiz',
     icon: <FaClipboardList size={40} color="#2196F3" />,
     text: 'Financial Quiz'
   },
   assetMarketSimulation: {
     enabled: true,
-    in_development: true,
+    in_development: false,
     path: '/simulation',
     icon: <FaChartLine size={40} color="#FF9800" />,
     text: 'Asset Market Simulation'

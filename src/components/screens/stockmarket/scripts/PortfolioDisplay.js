@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { firebaseAuth, db } from '../../../../firebase/initFirebase';
-import { doc, getDoc, getDocs, collection, query, orderBy, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, query, orderBy, setDoc, deleteDoc, where } from 'firebase/firestore';
 import { format, differenceInDays } from 'date-fns';
 import { FaArrowLeft, FaChartLine, FaChartPie, FaChartBar, FaSync, FaInfoCircle } from 'react-icons/fa';
 import { Line, Pie } from 'react-chartjs-2';
@@ -102,6 +102,7 @@ const PortfolioDisplay = () => {
   const [showModal, setShowModal] = useState(false);
   const [showFinancialCoursesCard, setShowFinancialCoursesCard] = useState(true);
   const [stickyNotes, setStickyNotes] = useState([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     const initializeComponent = async () => {
@@ -687,18 +688,49 @@ const PortfolioDisplay = () => {
     return format(date, 'MMM dd, yyyy');
   };
 
+  const handleDeletePortfolio = async () => {
+    try {
+      const user = firebaseAuth.currentUser;
+      if (!user) return;
+
+      // Delete the initial portfolio
+      const portfolioRef = doc(db, user.uid, 'Stock Trading Platform', 'Portfolio', 'Initial Portfolio');
+      await deleteDoc(portfolioRef);
+
+      // Delete all daily portfolio records
+      const portfolioCollection = collection(db, user.uid, 'Stock Trading Platform', 'Portfolio');
+      const portfolioQuery = query(portfolioCollection, where('date', '>=', new Date(0)));
+      const querySnapshot = await getDocs(portfolioQuery);
+      
+      const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      // Navigate back to stock trading select
+      navigate('/stock-market-simulator');
+    } catch (error) {
+      console.error('Error deleting portfolio:', error);
+      setError('Failed to delete portfolio. Please try again.');
+    }
+  };
+
   return (
     <div className="portfolio-display">
       <header className="portfolio-display-header">
         <img src={require('../../../../assets/icons/LifeSmartLogo.png')} alt="Logo" className="portfolio-display-logo" />
         <nav className="portfolio-display-header-links">
           {(isAdmin || isDeveloper) && (
-            <button onClick={() => navigate('/stock-trading-select')} className="portfolio-display-nav-link">
+            <button onClick={() => navigate('/stock-market-simulator')} className="portfolio-display-nav-link">
               Stock Trading Tool
             </button>
           )}
           <button onClick={handleRefresh} className="portfolio-display-refresh-button">
             <FaSync /> Refresh Data
+          </button>
+          <button 
+            onClick={() => setShowDeleteConfirm(true)} 
+            className="portfolio-display-delete-button"
+          >
+            Delete Portfolio
           </button>
         </nav>
       </header>
@@ -841,6 +873,29 @@ const PortfolioDisplay = () => {
           </div>
         )}
       </main>
+
+      {showDeleteConfirm && (
+        <div className="portfolio-display-modal">
+          <div className="portfolio-display-modal-content">
+            <h3>Delete Portfolio</h3>
+            <p>Are you sure you want to delete your portfolio? This action cannot be undone.</p>
+            <div className="portfolio-display-modal-buttons">
+              <button 
+                onClick={handleDeletePortfolio}
+                className="portfolio-display-modal-delete-button"
+              >
+                Delete
+              </button>
+              <button 
+                onClick={() => setShowDeleteConfirm(false)}
+                className="portfolio-display-modal-cancel-button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

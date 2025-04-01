@@ -527,6 +527,68 @@
   background-color: #2980b9;
 }
 
+.portfolio-display-delete-button {
+  background-color: #dc3545;
+  color: #fff;
+  padding: 0.5em 1.5em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.portfolio-display-delete-button:hover {
+  background-color: #c82333;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.portfolio-display-delete-button:active {
+  background-color: #bd2130;
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-display-modal-buttons {
+  display: flex;
+  gap: 1em;
+  justify-content: flex-end;
+  margin-top: 1.5em;
+}
+
+.portfolio-display-modal-delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.portfolio-display-modal-delete-button:hover {
+  background-color: #c82333;
+}
+
+.portfolio-display-modal-cancel-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.portfolio-display-modal-cancel-button:hover {
+  background-color: #5a6268;
+}
+
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   .portfolio-display-summary {

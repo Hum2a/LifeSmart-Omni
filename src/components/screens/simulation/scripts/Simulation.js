@@ -4,6 +4,7 @@ import { Chart } from 'chart.js/auto';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import '../styles/Simulation.css';
+import lifesmartlogo from '../../../../assets/icons/LifeSmartLogo.png';
 
 // Custom hook for chart management
 const useChart = (groups, simulationYears, fixedColors) => {
@@ -532,7 +533,7 @@ const Simulation = () => {
   return (
     <div>
       <header className="simulationpage-header">
-        <img src="/images/LifeSmartLogo.png" alt="Logo" className="simulationpage-logo" />
+        <img src={lifesmartlogo} alt="Logo" className="simulationpage-logo" />
       </header>
 
       <div className="simulationpage-sim-chart-container">

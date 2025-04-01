@@ -28,6 +28,7 @@ import InvestingCourseExam from '../screens/learning/investingCourse/InvestingCo
 import PortfolioCreation from '../screens/stockmarket/scripts/PortfolioCreation';
 import PortfolioDisplay from '../screens/stockmarket/scripts/PortfolioDisplay';
 import StockTradingSelect from '../screens/stockmarket/scripts/StockTradingSelect';
+import StickyNoteCreator from '../screens/stockmarket/scripts/StickyNoteCreator'; 
 
 // Tools and Calculators
 import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
@@ -65,6 +66,7 @@ const Navigation = () => {
           <Route path="/portfolio-creation" element={<PortfolioCreation />} />
           <Route path="/portfolio-display" element={<PortfolioDisplay />} />
           <Route path="/stock-market-simulator" element={<StockTradingSelect />} />
+          <Route path="/sticky-note-creator" element={<StickyNoteCreator />} />
 
           {/* Financial Tools */}
           <Route path="/investment-calculator" element={<InvestmentCalculator />} />
