@@ -1,123 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { firebaseAuth, db } from '../../../../../firebase/initFirebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import '../styles/InvestingCourseExamResults.css';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import './styles/InvestingCourseExamResults.css';
 
-const InvestingCourseExamResults = () => {
-  const navigate = useNavigate();
-  const [examResults, setExamResults] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const InvestingCourseExamResults = ({ onBackToCourse }) => {
+  const [results, setResults] = useState([]);
+  const [score, setScore] = useState(0);
+  const [passed, setPassed] = useState(false);
 
   useEffect(() => {
-    fetchExamResults();
+    fetchResults();
   }, []);
 
-  const fetchExamResults = async () => {
-    try {
-      const user = firebaseAuth.currentUser;
-      if (user) {
-        const examResultsRef = doc(db, user.uid, 'Exam Results');
-        const examResultsSnap = await getDoc(examResultsRef);
-        
-        if (examResultsSnap.exists() && examResultsSnap.data()['Investing Course Exam']) {
-          setExamResults(examResultsSnap.data()['Investing Course Exam']);
-          
-          // If passed the exam, update total funds
-          if (examResultsSnap.data()['Investing Course Exam'].score >= 4) {
-            const fundsRef = doc(db, user.uid, 'Total Funds');
-            const fundsSnap = await getDoc(fundsRef);
-            if (fundsSnap.exists()) {
-              const currentFunds = fundsSnap.data().totalFunds;
-              await setDoc(fundsRef, {
-                totalFunds: currentFunds + 300
-              });
-            }
+  const fetchResults = async () => {
+    const db = getFirestore();
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const examRef = doc(db, user.uid, 'Financial Literacy Courses', 'Basics of Investing', 'Exam Results');
+      const examDoc = await getDoc(examRef);
+
+      if (examDoc.exists()) {
+        const answers = examDoc.data();
+        const correctAnswers = {
+          1: 'B',
+          2: 'B',
+          3: 'B',
+          4: 'B',
+          5: 'B',
+          6: 'A',
+          7: 'B',
+          8: 'B',
+          9: 'A',
+          10: 'B'
+        };
+        let currentScore = 0;
+        const resultsArray = [];
+
+        for (let i = 1; i <= 10; i++) {
+          const userAnswer = answers[`Question ${i}`];
+          const correctAnswer = correctAnswers[i];
+          const correct = userAnswer === correctAnswer;
+          if (correct) {
+            currentScore++;
           }
-        } else {
-          setError('No exam results found');
+          resultsArray.push({
+            question: i,
+            userAnswer,
+            correctAnswer,
+            correct
+          });
         }
+
+        setScore(currentScore);
+        setPassed(currentScore >= 7);
+        setResults(resultsArray);
+        await updatePassStatus(currentScore >= 7 ? 'Passed' : 'Failed', examRef);
       }
-    } catch (err) {
-      setError('Error fetching exam results');
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleBackToPortfolio = () => {
-    navigate('/portfolio-display');
+  const updatePassStatus = async (status, examRef) => {
+    await setDoc(examRef, { [status]: true }, { merge: true });
   };
 
-  if (loading) {
-    return (
-      <div className="investing-course-exam-results">
-        <div className="investing-course-exam-results-loading">
-          Loading results...
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="investing-course-exam-results">
-        <div className="investing-course-exam-results-error">
-          {error}
-        </div>
-      </div>
-    );
-  }
-
-  const percentage = (examResults.score / examResults.totalQuestions) * 100;
-  const passed = examResults.score >= 4;
-
   return (
-    <div className="investing-course-exam-results">
-      <header className="investing-course-exam-results-header">
-        <img src={require('../../../../../assets/icons/LifeSmartLogo.png')} alt="Logo" className="investing-course-exam-results-logo" />
-        <nav className="investing-course-exam-results-nav">
-          <button onClick={handleBackToPortfolio} className="investing-course-exam-results-nav-link">
-            Back to Portfolio
-          </button>
-        </nav>
-      </header>
-
-      <main className="investing-course-exam-results-main">
-        <div className="investing-course-exam-results-content">
-          <h1 className="investing-course-exam-results-title">
-            Exam Results
-          </h1>
-
-          <div className="investing-course-exam-results-card">
-            <div className="investing-course-exam-results-score">
-              <div className="investing-course-exam-results-percentage">
-                {percentage}%
-              </div>
-              <div className="investing-course-exam-results-details">
-                <p>Score: {examResults.score} out of {examResults.totalQuestions}</p>
-                <p>Date: {new Date(examResults.date).toLocaleDateString()}</p>
-              </div>
-            </div>
-
-            <div className="investing-course-exam-results-status">
-              {passed ? (
-                <>
-                  <h2>Congratulations!</h2>
-                  <p>You've passed the exam and earned £300!</p>
-                </>
-              ) : (
-                <>
-                  <h2>Not Quite There</h2>
-                  <p>You need at least 4 correct answers to pass. Keep practicing!</p>
-                </>
-              )}
-            </div>
+    <div className="results-container">
+      <div className="score-card">
+        <h2>Exam Results</h2>
+        <p className="score">Your Score: {score} / 10</p>
+        <p className="status">{passed ? 'Congratulations, you passed!' : 'Unfortunately, you did not pass.'}</p>
+      </div>
+      <div className="results-list">
+        {results.map((result, index) => (
+          <div key={index} className="result-card">
+            <p className="question-text">Question {result.question}</p>
+            <p className={result.correct ? 'correct-answer' : 'incorrect-answer'}>
+              Your answer: {result.userAnswer}
+            </p>
+            {!result.correct && (
+              <p className="correct-answer">
+                Correct answer: {result.correctAnswer}
+              </p>
+            )}
           </div>
-        </div>
-      </main>
+        ))}
+      </div>
+      <button onClick={onBackToCourse} className="back-button">Back to Course</button>
     </div>
   );
 };
