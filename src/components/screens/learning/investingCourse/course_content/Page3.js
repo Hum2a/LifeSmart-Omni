@@ -1,25 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page3 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>How the Stock Market Works</h2>
-      <div className="investing-course-page-content">
-        <p>
-          The stock market is a platform where stocks are bought and sold. It's a complex system that matches buyers with sellers 
-          and determines stock prices through supply and demand.
-        </p>
-        <p>
-          Key concepts:
-        </p>
-        <ul>
-          <li>Stock exchanges (NYSE, NASDAQ)</li>
-          <li>Market orders vs. limit orders</li>
-          <li>Bid and ask prices</li>
-          <li>Market makers and liquidity</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/3.png'} 
+          alt="Asset Classes" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

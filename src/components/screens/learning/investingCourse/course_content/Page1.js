@@ -1,25 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page1 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Introduction to Investing</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Investing is the act of allocating resources, usually money, with the expectation of generating an income or profit over time. 
-          In this course, you'll learn the fundamentals of investing in the stock market.
-        </p>
-        <p>
-          Key concepts we'll cover:
-        </p>
-        <ul>
-          <li>Understanding what stocks are</li>
-          <li>How the stock market works</li>
-          <li>Basic investment strategies</li>
-          <li>Risk management</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/1.png'} 
+          alt="Introduction to Investing" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,25 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page5 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Investment Strategies</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Different investment strategies suit different goals and risk tolerances. Understanding these strategies helps you make 
-          better investment decisions.
-        </p>
-        <p>
-          Common strategies:
-        </p>
-        <ul>
-          <li>Value investing - Buying undervalued stocks</li>
-          <li>Growth investing - Focusing on companies with high growth potential</li>
-          <li>Dividend investing - Seeking stocks with regular dividend payments</li>
-          <li>Index investing - Following market indices</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/5.png'} 
+          alt="Bonds and Fixed Income" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

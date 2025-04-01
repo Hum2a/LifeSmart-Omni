@@ -1,24 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page9 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Investment Psychology</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Understanding investment psychology helps you avoid common emotional pitfalls and make more rational investment decisions.
-        </p>
-        <p>
-          Common psychological factors:
-        </p>
-        <ul>
-          <li>Fear and greed - Managing emotional responses</li>
-          <li>Confirmation bias - Seeking information that confirms beliefs</li>
-          <li>Overconfidence - Avoiding excessive risk-taking</li>
-          <li>Loss aversion - Understanding risk perception</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/9.png'} 
+          alt="Investment Risks" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

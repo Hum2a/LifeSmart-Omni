@@ -1,25 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page8 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Portfolio Management</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Portfolio management involves creating and maintaining a collection of investments that align with your financial goals 
-          and risk tolerance.
-        </p>
-        <p>
-          Key aspects:
-        </p>
-        <ul>
-          <li>Asset allocation - Balancing different types of investments</li>
-          <li>Rebalancing - Maintaining desired investment mix</li>
-          <li>Performance monitoring - Tracking investment returns</li>
-          <li>Tax efficiency - Managing tax implications</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/8.png'} 
+          alt="Alternative Investments" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,24 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page7 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Market Analysis</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Market analysis helps investors make informed decisions. There are two main types of analysis: fundamental and technical.
-        </p>
-        <p>
-          Types of analysis:
-        </p>
-        <ul>
-          <li>Fundamental analysis - Evaluating company financials and business model</li>
-          <li>Technical analysis - Studying price patterns and market trends</li>
-          <li>Market sentiment analysis - Understanding investor psychology</li>
-          <li>Economic analysis - Assessing broader market conditions</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/7.png'} 
+          alt="Commodities" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

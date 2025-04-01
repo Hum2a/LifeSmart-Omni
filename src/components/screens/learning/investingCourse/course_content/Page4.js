@@ -1,25 +1,22 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page4 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Understanding Stock Prices</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Stock prices are influenced by various factors, including company performance, market conditions, and investor sentiment. 
-          Understanding these factors is crucial for making informed investment decisions.
-        </p>
-        <p>
-          Factors affecting stock prices:
-        </p>
-        <ul>
-          <li>Company earnings and financial health</li>
-          <li>Industry trends and competition</li>
-          <li>Economic conditions</li>
-          <li>Market sentiment and news</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/4.png'} 
+          alt="Stocks and Equities" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };

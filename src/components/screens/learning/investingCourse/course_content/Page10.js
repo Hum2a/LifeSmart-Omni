@@ -1,26 +1,24 @@
 import React from 'react';
+import './styles/CoursePage.css';
 
 const Page10 = ({ onNext, onComplete }) => {
   return (
     <div className="investing-course-page">
-      <h2>Long-term Investing</h2>
-      <div className="investing-course-page-content">
-        <p>
-          Long-term investing focuses on building wealth over time through consistent investment strategies and patience.
-        </p>
-        <p>
-          Key principles:
-        </p>
-        <ul>
-          <li>Time in the market vs. timing the market</li>
-          <li>Compound interest and its benefits</li>
-          <li>Regular investment contributions</li>
-          <li>Staying invested during market volatility</li>
-        </ul>
+      <div className="course-image-container">
+        <img 
+          src={process.env.PUBLIC_URL + '/images/Investing mini course/10.png'} 
+          alt="Risk vs Return" 
+          className="course-image"
+        />
       </div>
-      <button onClick={onNext}>Next</button>
+      <div className="course-navigation">
+        <button onClick={onNext} className="next-button">
+          Next
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Page10; 
+export default Page10;
