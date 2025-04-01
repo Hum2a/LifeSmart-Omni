@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/BudgetTool.css';
-import BudgetSpreadsheet from './BudgetSpreadsheet';
+import BudgetSpreadsheet, { downloadSpreadsheet } from './BudgetSpreadsheet';
 import SpreadsheetModal from './SpreadsheetModal';
 import * as XLSX from 'xlsx';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -52,7 +52,7 @@ const BudgetTool = () => {
     additionalIncome: '',
     
     // Housing Expenses
-    housingType: 'neither',  // Changed from 'neither' to 'rent'
+    housingType: 'rent',
     rent: '',
     mortgage: '',
     propertyTax: '',
@@ -60,10 +60,7 @@ const BudgetTool = () => {
     utilities: '',
     
     // Transportation
-    carPayment: '',
-    carInsurance: '',
-    gas: '',
-    publicTransportation: '',
+    transportation: '',
     
     // Food & Dining
     groceries: '',
@@ -79,7 +76,6 @@ const BudgetTool = () => {
     entertainment: '',
     shopping: '',
     subscriptions: '',
-    personalCareBudget: '',
     travel: '',
     charity: '',
     
@@ -97,12 +93,14 @@ const BudgetTool = () => {
     needsChangeMonth: '',
     wantsChange: 'no',
     wantsChangeMonth: '',
-    monthlyProjections: Array(6).fill().map(() => ({
-      income: '',
-      needs: '',
-      wants: '',
-      savings: '',
-    })),
+    monthlyProjections: Array(6).fill({
+      income: 0,
+      needs: 0,
+      wants: 0,
+      needsDetails: {},
+      wantsDetails: {},
+      savingsDetails: {}
+    }),
     canReduceWants: '',
   });
 
@@ -956,7 +954,6 @@ const BudgetTool = () => {
       Number(formData.entertainment || 0) + 
       Number(formData.shopping || 0) + 
       Number(formData.subscriptions || 0) + 
-      Number(formData.personalCareBudget || 0) + 
       Number(formData.travel || 0) +
       Number(formData.charity || 0);
 
@@ -1066,6 +1063,10 @@ const BudgetTool = () => {
         setShowSpreadsheet(false); // Hide spreadsheet modal
       }
     }
+  };
+
+  const handleDownloadSpreadsheet = () => {
+    downloadSpreadsheet(formData);
   };
 
   const renderSavingsInfo = () => {
@@ -1503,7 +1504,7 @@ const BudgetTool = () => {
                 Return to Home
               </button>
               <button
-                onClick={downloadBudgetSpreadsheet}
+                onClick={handleDownloadSpreadsheet}
                 className="budgettool-button budgettool-button-primary"
               >
                 Download Spreadsheet
@@ -1713,7 +1714,7 @@ const BudgetTool = () => {
               </button>
             )}
             <button
-              onClick={currentStep === questions.length ? downloadBudgetSpreadsheet : handleNext}
+              onClick={currentStep === questions.length ? handleDownloadSpreadsheet : handleNext}
               className="budgettool-button budgettool-button-primary"
             >
               {currentStep === questions.length ? 'Download Spreadsheet' : 'Next'}

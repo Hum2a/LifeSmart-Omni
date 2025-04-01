@@ -1,142 +1,156 @@
 .budgetspreadsheet-container {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  color: #ffffff;
+  background-color: #f8fafc;
 }
 
 .budgetspreadsheet-content {
-  width: 100%;
-  max-width: 1200px;
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 2.5rem;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
 }
 
 .budgetspreadsheet-header {
+  margin-bottom: 2rem;
   text-align: center;
-  margin-bottom: 3rem;
 }
 
-.budgetspreadsheet-title {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, #4CAF50, #2196F3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.budgetspreadsheet-header h1 {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
 }
 
-.budgetspreadsheet-subtitle {
-  font-size: 1.1rem;
-  color: #cccccc;
+.budgetspreadsheet-header p {
+  color: #64748b;
+  font-size: 1rem;
 }
 
-.budgetspreadsheet-tables {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.budgetspreadsheet-section {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-
-.budgetspreadsheet-section-title {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #ffffff;
-  text-align: center;
+.budgetspreadsheet-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
 }
 
 .budgetspreadsheet-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  font-size: 0.875rem;
 }
 
 .budgetspreadsheet-table th,
 .budgetspreadsheet-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1rem;
+  text-align: right;
+  border: 1px solid #e2e8f0;
 }
 
 .budgetspreadsheet-table th {
-  background: rgba(255, 255, 255, 0.05);
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.budgetspreadsheet-table .fixed-column {
+  position: sticky;
+  left: 0;
+  background-color: #f8fafc;
+  z-index: 5;
+  text-align: left;
   font-weight: 500;
-  color: #ffffff;
+  color: #1e293b;
 }
 
-.budgetspreadsheet-table td {
-  color: #cccccc;
+.budgetspreadsheet-table .section-header {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-.budgetspreadsheet-total {
-  background: rgba(255, 255, 255, 0.05);
-  font-weight: 500;
+.budgetspreadsheet-table .section-header td {
+  text-align: left;
+  padding-left: 1rem;
 }
 
-.budgetspreadsheet-total td {
-  color: #ffffff;
-}
-
-.budgetspreadsheet-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.budgetspreadsheet-summary-item {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 8px;
+.column-subheader {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
 }
 
-.budgetspreadsheet-summary-label {
-  font-size: 1rem;
-  color: #cccccc;
+.predicted {
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
-.budgetspreadsheet-summary-value {
+.actual {
+  background-color: #fff;
+  color: #1e293b;
+}
+
+.budgetspreadsheet-spending-log {
+  margin-top: 3rem;
+}
+
+.budgetspreadsheet-spending-log h2 {
   font-size: 1.5rem;
-  font-weight: 500;
-  color: #ffffff;
+  color: #1e293b;
+  margin-bottom: 1rem;
 }
 
+.budgetspreadsheet-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.budgetspreadsheet-log-table th,
+.budgetspreadsheet-log-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.budgetspreadsheet-log-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Hover effects */
+.budgetspreadsheet-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.budgetspreadsheet-table tbody tr:hover .fixed-column {
+  background-color: #f1f5f9;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .budgetspreadsheet-container {
+    padding: 1rem;
+  }
+
   .budgetspreadsheet-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
-  .budgetspreadsheet-title {
-    font-size: 2rem;
-  }
-
-  .budgetspreadsheet-subtitle {
-    font-size: 1rem;
+  .budgetspreadsheet-header h1 {
+    font-size: 1.5rem;
   }
 
   .budgetspreadsheet-table th,
   .budgetspreadsheet-table td {
-    padding: 0.8rem;
-    font-size: 0.9rem;
-  }
-
-  .budgetspreadsheet-summary {
-    grid-template-columns: 1fr;
+    padding: 0.5rem;
+    font-size: 0.75rem;
   }
 } 
