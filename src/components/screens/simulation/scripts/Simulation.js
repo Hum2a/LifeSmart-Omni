@@ -23,18 +23,13 @@ const useChart = (groups, simulationYears, fixedColors) => {
     const minValue = Math.min(...allValues);
     const maxValue = Math.max(...allValues);
 
-    // Calculate the scale
-    const minScale = Math.max(0, minValue - 10000); // £10,000 below the minimum
-    const maxScale = maxValue + 10000; // £10,000 above the maximum
-
-    // Ensure £100,000 is in the middle of the scale
-    const targetMiddle = 100000;
-    const currentMiddle = (minScale + maxScale) / 2;
-    const adjustment = targetMiddle - currentMiddle;
+    // Add padding to the scale (10% of the range)
+    const range = maxValue - minValue;
+    const padding = range * 0.1;
 
     return {
-      min: Math.max(0, minScale + adjustment),
-      max: maxScale + adjustment
+      min: Math.max(0, minValue - padding),
+      max: maxValue + padding
     };
   }, []);
 
@@ -164,7 +159,6 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   const [isSimulating, setIsSimulating] = useState(false);
   const [allQuarters, setAllQuarters] = useState([]);
   const simulationRef = useRef(null);
-  const isUpdatingRef = useRef(false);
 
   const calculateAllQuarters = useCallback(() => {
     const totalQuarters = simulationYears * 4;
@@ -221,43 +215,33 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
     };
   }, [calculateAllQuarters]);
 
-  const updateToQuarter = useCallback((targetIndex) => {
-    if (targetIndex >= allQuarters.length || isUpdatingRef.current) return;
-    
-    isUpdatingRef.current = true;
-    setGroups(allQuarters[targetIndex]);
-    setCurrentQuarterIndex(targetIndex);
-    
-    // Reset the updating flag after a short delay
-    setTimeout(() => {
-      isUpdatingRef.current = false;
-    }, 50);
-  }, [allQuarters, setGroups]);
-
   const nextQuarter = useCallback(() => {
-    if (isUpdatingRef.current) return;
-    updateToQuarter(currentQuarterIndex + 1);
-  }, [currentQuarterIndex, updateToQuarter]);
+    const nextIndex = currentQuarterIndex + 1;
+    if (nextIndex >= allQuarters.length) return;
+
+    setCurrentQuarterIndex(nextIndex);
+    setGroups(allQuarters[nextIndex]);
+  }, [currentQuarterIndex, allQuarters]);
 
   const runFullSimulation = useCallback(() => {
-    if (isSimulating || isUpdatingRef.current) return;
+    if (isSimulating) return;
     setIsSimulating(true);
 
-    const totalQuarters = simulationYears * 4;
-    let currentIndex = currentQuarterIndex;
-
     const runNextQuarter = () => {
-      if (currentIndex < totalQuarters && !isUpdatingRef.current) {
-        currentIndex++;
-        updateToQuarter(currentIndex);
+      setCurrentQuarterIndex(prevIndex => {
+        const nextIndex = prevIndex + 1;
+        if (nextIndex >= allQuarters.length) {
+          setIsSimulating(false);
+          return prevIndex;
+        }
+        setGroups(allQuarters[nextIndex]);
         simulationRef.current = setTimeout(runNextQuarter, simulationSpeed);
-      } else {
-        setIsSimulating(false);
-      }
+        return nextIndex;
+      });
     };
 
     runNextQuarter();
-  }, [isSimulating, simulationYears, currentQuarterIndex, updateToQuarter, simulationSpeed]);
+  }, [isSimulating, allQuarters, simulationSpeed]);
 
   const pauseSimulation = useCallback(() => {
     setIsSimulating(false);
