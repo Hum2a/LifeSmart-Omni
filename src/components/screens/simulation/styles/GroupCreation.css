@@ -22,15 +22,14 @@
 }
 
 /* Base Styles */
-body {
-  margin: auto;
-  background: linear-gradient(135deg, #f6f2ee 0%, #e9e4e0 100%);
-}
-
 .GroupCreation-dashboard {
   display: grid;
   min-height: 100vh;
   animation: GroupCreation-fadeIn 0.5s ease-out;
+  background: linear-gradient(135deg, #f6f2ee 0%, #e9e4e0 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 .GroupCreation-header-content {
