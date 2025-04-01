@@ -46,13 +46,14 @@ const useChart = (groups, simulationYears, fixedColors) => {
     const labels = ['Initial Value', ...Array.from({ length: simulationYears * 4 }, (_, i) => `Q${i + 1}`)];
     
     const datasets = groups.map((group, index) => ({
-      label: group.name,
+      label: `${group.icon} ${group.name}`,
       data: [...group.totalPortfolioValues.quarters],
       borderColor: fixedColors[index % fixedColors.length],
       fill: false,
       cubicInterpolationMode: 'monotone',
       tension: 0.4,
       borderDash: index > 5 ? [5, 5] : [],
+      icon: group.icon
     }));
 
     const yAxisScale = calculateYAxisScale(groups);
@@ -68,6 +69,21 @@ const useChart = (groups, simulationYears, fixedColors) => {
             labels: {
               font: { size: 18, weight: 'bold' },
               color: '#333',
+              usePointStyle: true,
+              pointStyle: 'circle',
+              padding: 20,
+              generateLabels: function(chart) {
+                const datasets = chart.data.datasets;
+                return datasets.map((dataset, i) => ({
+                  text: dataset.label,
+                  fillStyle: dataset.borderColor,
+                  strokeStyle: dataset.borderColor,
+                  lineWidth: 2,
+                  pointStyle: 'circle',
+                  hidden: false,
+                  index: i
+                }));
+              }
             },
           },
           title: {
@@ -122,8 +138,43 @@ const useChart = (groups, simulationYears, fixedColors) => {
             tension: 0.4
           },
           point: {
-            radius: 4,
-            hoverRadius: 6
+            radius: 20,
+            hoverRadius: 22,
+            backgroundColor: 'white',
+            borderWidth: 2,
+            borderColor: function(context) {
+              return context.dataset.borderColor;
+            },
+            drawActiveBackground: false,
+            pointStyle: function(context) {
+              // Create an off-screen canvas for the point
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              const radius = 20; // Use fixed radius instead of context.options.radius
+              const size = radius * 2;
+              canvas.width = size;
+              canvas.height = size;
+
+              // Draw white circle background
+              ctx.beginPath();
+              ctx.arc(size/2, size/2, radius - 2, 0, Math.PI * 2); // Use fixed borderWidth of 2
+              ctx.fillStyle = 'white';
+              ctx.fill();
+
+              // Draw border
+              ctx.strokeStyle = context.dataset.borderColor;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+
+              // Draw emoji
+              ctx.font = '20px Arial';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillStyle = 'black';
+              ctx.fillText(context.dataset.icon, size/2, size/2);
+
+              return canvas;
+            }
           }
         }
       },
@@ -144,24 +195,23 @@ const useChart = (groups, simulationYears, fixedColors) => {
     const labels = ['Initial Value', ...Array.from({ length: simulationYears * 4 }, (_, i) => `Q${i + 1}`)];
     
     const datasets = groups.map((group, index) => ({
-      label: group.name,
+      label: `${group.icon} ${group.name}`,
       data: [...group.totalPortfolioValues.quarters],
       borderColor: fixedColors[index % fixedColors.length],
       fill: false,
       cubicInterpolationMode: 'monotone',
       tension: 0.4,
       borderDash: index > 5 ? [5, 5] : [],
+      icon: group.icon
     }));
 
     const yAxisScale = calculateYAxisScale(groups);
 
-    // Update data and options separately
     chartInstanceRef.current.data.labels = labels;
     chartInstanceRef.current.data.datasets = datasets;
     chartInstanceRef.current.options.scales.y.min = yAxisScale.min;
     chartInstanceRef.current.options.scales.y.max = yAxisScale.max;
     
-    // Use a specific update mode that preserves animations
     chartInstanceRef.current.update('active');
   }, [groups, simulationYears, fixedColors, calculateYAxisScale]);
 
@@ -302,6 +352,11 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   };
 };
 
+const AVAILABLE_ICONS = [
+  '🏢', '🏦', '🏪', '🏭', '🏨', '🏫', '🏛️', '🏰', '🏯', '🏣',
+  '🚀', '💼', '💎', '💰', '📈', '📊', '🎯', '🎲', '🎮', '🎨'
+];
+
 const Simulation = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -311,6 +366,8 @@ const Simulation = () => {
   const [simulationYears, setSimulationYears] = useState(1);
   const [assetChanges, setAssetChanges] = useState([]);
   const [simulationSpeed, setSimulationSpeed] = useState(750);
+  const [showIconSelector, setShowIconSelector] = useState(false);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(null);
 
   const fixedColors = [
     '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
@@ -326,6 +383,22 @@ const Simulation = () => {
     runFullSimulation
   } = useSimulation(groups, assetChanges, simulationYears, setGroups, simulationSpeed);
 
+  const handleIconSelect = (icon) => {
+    if (selectedGroupIndex === null) return;
+    
+    setGroups(prevGroups => {
+      const newGroups = [...prevGroups];
+      newGroups[selectedGroupIndex] = {
+        ...newGroups[selectedGroupIndex],
+        icon: icon
+      };
+      return newGroups;
+    });
+    
+    setShowIconSelector(false);
+    setSelectedGroupIndex(null);
+  };
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -334,9 +407,10 @@ const Simulation = () => {
         
         if (location.state) {
           const { groups: passedGroups } = location.state;
-          const transformedGroups = passedGroups.map(group => ({
+          const transformedGroups = passedGroups.map((group, index) => ({
             id: group.name,
             name: group.name,
+            icon: group.icon || AVAILABLE_ICONS[index % AVAILABLE_ICONS.length],
             initialValues: {
               equity: parseFloat(group.equity) || 0,
               bonds: parseFloat(group.bonds) || 0,
@@ -463,6 +537,51 @@ const Simulation = () => {
 
       <div className="simulationpage-sim-chart-container">
         <canvas id="portfolioChart" ref={chartRef}></canvas>
+        
+        <div className="team-icons-container">
+          {groups.map((group, index) => (
+            <div 
+              key={group.id} 
+              className="team-icon-wrapper"
+              onClick={() => {
+                setSelectedGroupIndex(index);
+                setShowIconSelector(true);
+              }}
+            >
+              <span className="team-icon">{group.icon}</span>
+              <span className="team-name">{group.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {showIconSelector && (
+          <div className="icon-selector-modal">
+            <div className="icon-selector-content">
+              <h3>Select Icon for {groups[selectedGroupIndex]?.name}</h3>
+              <div className="icon-grid">
+                {AVAILABLE_ICONS.map((icon, index) => (
+                  <button
+                    key={index}
+                    className="icon-button"
+                    onClick={() => handleIconSelect(icon)}
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+              <button 
+                className="close-button"
+                onClick={() => {
+                  setShowIconSelector(false);
+                  setSelectedGroupIndex(null);
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
         <button 
           onClick={nextQuarter} 
           className="simulationpage-modern-button"
