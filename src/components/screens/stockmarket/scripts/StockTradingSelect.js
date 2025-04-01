@@ -134,7 +134,7 @@ const StockTradingSelect = () => {
           <button onClick={() => navigate('/sticky-note-creator')} className="stock-trading-select-nav-link">
             Create Sticky Note
           </button>
-          <button onClick={() => navigate('/')} className="stock-trading-select-nav-link">
+          <button onClick={() => navigate('/select')} className="stock-trading-select-nav-link">
             Home
           </button>
         </nav>
