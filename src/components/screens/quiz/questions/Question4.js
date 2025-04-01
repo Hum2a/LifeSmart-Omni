@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Question4.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 import moneyBars from '../../../../assets/icons/moneybars.png';
+import InvestmentCalculator from '../../../widgets/InvestmentCalculator';
 
 const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
@@ -204,11 +205,10 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <h4>Correct Answer:</h4>
           <p className="question4-correct-answer">B. Government bonds</p>
           <p onClick={toggleDetailedAnswer} className="question4-toggle-detailed-answer">
-            Click to see detailed answer
-            <span>{detailedAnswerShown ? '⬆️' : '⬇️'}</span>
+            Click to {detailedAnswerShown ? 'hide detailed answer ⬆️' : 'see detailed answer ⬇️'}
           </p>
 
-          {/* Expanded Answer (Detailed Explanation) */}
+          {/* Expanded Answer with Investment Calculator */}
           {detailedAnswerShown && (
             <div className="question4-expanded-answer">
               <p>Government bonds are a good choice for Ben because:</p>
@@ -218,6 +218,13 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                 <li>They are backed by the government</li>
                 <li>They are suitable for long-term savings</li>
               </ul>
+              
+              {/* Investment Calculator Widget */}
+              <div className="question4-calculator-widget">
+                <h3>Try our Investment Calculator</h3>
+                <p>See how different investment strategies could grow your money over time:</p>
+                <InvestmentCalculator />
+              </div>
             </div>
           )}
 
