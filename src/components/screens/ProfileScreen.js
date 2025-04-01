@@ -9,7 +9,9 @@ import {
   FaArrowLeft,
   FaSave,
   FaEye,
-  FaEyeSlash
+  FaEyeSlash,
+  FaSchool,
+  FaUserTag
 } from 'react-icons/fa';
 import { firebaseAuth, db } from '../../firebase/initFirebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -25,17 +27,15 @@ const ProfileScreen = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    phone: '',
+    class: '',
+    school: '',
+    groupCode: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-    notifications: {
-      email: true,
-      push: true,
-      sms: false
-    }
   });
 
   useEffect(() => {
@@ -48,38 +48,18 @@ const ProfileScreen = () => {
         }
 
         // Get user document from Firestore
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userDoc = await getDoc(doc(db, user.userUID || user.uid, "Profile"));
         
-        // Initialize default data from Firebase Auth
-        const defaultData = {
-          name: user.displayName || '',
-          email: user.email || '',
-          phone: user.phoneNumber || '',
-          notifications: {
-            email: true,
-            push: true,
-            sms: false
-          }
-        };
-
-        // If Firestore document exists, merge with Firebase Auth data
         if (userDoc.exists()) {
-          const firestoreData = userDoc.data();
+          const userData = userDoc.data();
           setFormData(prev => ({
             ...prev,
-            ...defaultData,
-            ...firestoreData,
-            notifications: {
-              ...defaultData.notifications,
-              ...(firestoreData.notifications || {})
-            }
-          }));
-        } else {
-          // If no Firestore document exists, create one with default data
-          await updateDoc(doc(db, 'users', user.uid), defaultData);
-          setFormData(prev => ({
-            ...prev,
-            ...defaultData
+            firstName: userData.firstName || '',
+            lastName: userData.lastName || '',
+            email: userData.email || '',
+            class: userData.class || userData.Y12 || '',
+            school: userData.school || userData.WCGS || '',
+            groupCode: userData.groupCode || userData.DEVELOPER || '',
           }));
         }
       } catch (err) {
@@ -94,21 +74,11 @@ const ProfileScreen = () => {
   }, [navigate]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        notifications: {
-          ...prev.notifications,
-          [name]: checked
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -124,10 +94,13 @@ const ProfileScreen = () => {
       }
 
       // Update user profile in Firestore
-      await updateDoc(doc(db, 'users', user.uid), {
-        name: formData.name,
-        phone: formData.phone,
-        notifications: formData.notifications
+      await updateDoc(doc(db, user.userUID || user.uid, "Profile"), {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        class: formData.class,
+        school: formData.school,
+        groupCode: formData.groupCode,
+        email: formData.email,
       });
 
       setSuccess('Profile updated successfully');
@@ -192,7 +165,7 @@ const ProfileScreen = () => {
         <header className="profilescreen-header">
           <button 
             className="profilescreen-back-button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/select')}
           >
             <FaArrowLeft /> Back to Home
           </button>
@@ -222,12 +195,26 @@ const ProfileScreen = () => {
               <div className="profilescreen-form-group">
                 <label>
                   <FaUserCircle className="profilescreen-icon" />
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  className="profilescreen-input"
+                />
+              </div>
+
+              <div className="profilescreen-form-group">
+                <label>
+                  <FaUserCircle className="profilescreen-icon" />
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
                   onChange={handleInputChange}
                   className="profilescreen-input"
                 />
@@ -249,13 +236,41 @@ const ProfileScreen = () => {
 
               <div className="profilescreen-form-group">
                 <label>
-                  <FaPhone className="profilescreen-icon" />
-                  Phone Number
+                  <FaSchool className="profilescreen-icon" />
+                  School
                 </label>
                 <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
+                  type="text"
+                  name="school"
+                  value={formData.school}
+                  onChange={handleInputChange}
+                  className="profilescreen-input"
+                />
+              </div>
+
+              <div className="profilescreen-form-group">
+                <label>
+                  <FaUserTag className="profilescreen-icon" />
+                  Class
+                </label>
+                <input
+                  type="text"
+                  name="class"
+                  value={formData.class}
+                  onChange={handleInputChange}
+                  className="profilescreen-input"
+                />
+              </div>
+
+              <div className="profilescreen-form-group">
+                <label>
+                  <FaUserTag className="profilescreen-icon" />
+                  Group Code
+                </label>
+                <input
+                  type="text"
+                  name="groupCode"
+                  value={formData.groupCode}
                   onChange={handleInputChange}
                   className="profilescreen-input"
                 />
@@ -344,51 +359,6 @@ const ProfileScreen = () => {
                 <FaLock /> Change Password
               </button>
             </form>
-          </section>
-
-          {/* Notification Preferences Section */}
-          <section className="profilescreen-section">
-            <h2>Notification Preferences</h2>
-            <div className="profilescreen-notifications">
-              <div className="profilescreen-notification-item">
-                <label className="profilescreen-checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="email"
-                    checked={formData.notifications.email}
-                    onChange={handleInputChange}
-                    className="profilescreen-checkbox"
-                  />
-                  <span>Email Notifications</span>
-                </label>
-              </div>
-
-              <div className="profilescreen-notification-item">
-                <label className="profilescreen-checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="push"
-                    checked={formData.notifications.push}
-                    onChange={handleInputChange}
-                    className="profilescreen-checkbox"
-                  />
-                  <span>Push Notifications</span>
-                </label>
-              </div>
-
-              <div className="profilescreen-notification-item">
-                <label className="profilescreen-checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="sms"
-                    checked={formData.notifications.sms}
-                    onChange={handleInputChange}
-                    className="profilescreen-checkbox"
-                  />
-                  <span>SMS Notifications</span>
-                </label>
-              </div>
-            </div>
           </section>
         </div>
       </div>
