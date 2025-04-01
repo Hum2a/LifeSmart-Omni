@@ -11,7 +11,7 @@ import SimulationPage from '../screens/simulation/scripts/Simulation';
 import ResultsScreen from '../screens/simulation/scripts/ResultsScreen';
 import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import InvestmentCalculator from '../screens/calculator/InvestmentCalculator';
-import BudgetTool from '../screens/budget/BudgetTool';
+import BudgetTool from '../screens/budget/scripts/BudgetTool';
 import SimSetup from '../screens/quiz/sim/SimSetup';
 import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';

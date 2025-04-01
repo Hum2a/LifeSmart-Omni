@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/BudgetSpreadsheet.css';
+import '../styles/BudgetSpreadsheet.css';
 import ExcelJS from 'exceljs';
 
 // Create downloadSpreadsheet as a standalone function

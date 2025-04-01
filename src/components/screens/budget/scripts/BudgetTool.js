@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/BudgetTool.css';
+import '../styles/BudgetTool.css';
 import BudgetSpreadsheet, { downloadSpreadsheet } from './BudgetSpreadsheet';
 import SpreadsheetModal from './SpreadsheetModal';
 import * as XLSX from 'xlsx';
