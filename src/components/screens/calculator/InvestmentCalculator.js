@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Chart } from 'chart.js/auto';
 import { FaCalculator, FaChartLine, FaPiggyBank } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './InvestmentCalculator.css';
 
 const InvestmentCalculator = () => {
+  const navigate = useNavigate();
   const [initialInvestment, setInitialInvestment] = useState(0);
   const [monthlyContribution, setMonthlyContribution] = useState(500);
   const [investmentPeriod, setInvestmentPeriod] = useState(10);
@@ -75,28 +77,35 @@ const InvestmentCalculator = () => {
             title: {
               display: true,
               text: 'Years',
-              color: '#333',
+              color: '#fff',
               font: {
                 size: 14,
                 weight: 'bold'
               }
             },
             grid: {
-              display: false
+              display: false,
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#fff'
             }
           },
           y: {
             title: {
               display: true,
               text: 'Value (£)',
-              color: '#333',
+              color: '#fff',
               font: {
                 size: 14,
                 weight: 'bold'
               }
             },
             grid: {
-              color: 'rgba(0, 0, 0, 0.05)'
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#fff'
             }
           }
         }
@@ -131,6 +140,9 @@ const InvestmentCalculator = () => {
   return (
     <div className="investment-calculator-page">
       <header className="calculator-header">
+        <div className="logo" onClick={() => navigate('/select')}>
+          <h2>LifeSmart</h2>
+        </div>
         <div className="header-content">
           <div className="header-icon">
             <FaCalculator />
