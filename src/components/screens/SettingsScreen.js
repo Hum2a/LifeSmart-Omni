@@ -12,7 +12,7 @@ import {
   FaCog
 } from 'react-icons/fa';
 import { firebaseAuth, db } from '../../firebase/initFirebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../styles/SettingsScreen.css';
 
 const SettingsScreen = () => {
@@ -40,18 +40,16 @@ const SettingsScreen = () => {
           return;
         }
 
-        const settingsDoc = await getDoc(doc(db, 'users', user.uid));
+        const settingsDoc = await getDoc(doc(db, user.uid, 'Settings'));
         
-        if (settingsDoc.exists() && settingsDoc.data().settings) {
+        if (settingsDoc.exists()) {
           setSettings(prev => ({
             ...prev,
-            ...settingsDoc.data().settings
+            ...settingsDoc.data()
           }));
         } else {
           // If no settings exist, create default settings
-          await updateDoc(doc(db, 'users', user.uid), {
-            settings: settings
-          });
+          await setDoc(doc(db, user.uid, 'Settings'), settings);
         }
       } catch (err) {
         setError('Error loading settings');
@@ -83,10 +81,7 @@ const SettingsScreen = () => {
         return;
       }
 
-      await updateDoc(doc(db, 'users', user.uid), {
-        settings: settings
-      });
-
+      await setDoc(doc(db, user.uid, 'Settings'), settings);
       setSuccess('Settings updated successfully');
     } catch (err) {
       setError('Error updating settings');
@@ -110,7 +105,7 @@ const SettingsScreen = () => {
         <header className="settingsscreen-header">
           <button 
             className="settingsscreen-back-button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/select')}
           >
             <FaArrowLeft /> Back to Home
           </button>
