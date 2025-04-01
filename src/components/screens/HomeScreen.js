@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../firebase/auth';
 import { FaGoogle, FaApple } from 'react-icons/fa';
@@ -19,7 +19,22 @@ const HomeScreen = () => {
   });
   
   const navigate = useNavigate();
-  const { signIn, register, signInWithGoogle, signInWithApple } = useAuth();
+  const { signIn, register, signInWithGoogle, signInWithApple, currentUser } = useAuth();
+
+  // Check for existing authentication and redirect if found
+  useEffect(() => {
+    if (currentUser) {
+      setModalConfig({
+        title: 'Welcome Back!',
+        message: 'You have been automatically logged in.',
+        type: 'success'
+      });
+      setModalOpen(true);
+      setTimeout(() => {
+        navigate('/select');
+      }, 2000);
+    }
+  }, [currentUser, navigate]);
 
   const showSignInForm = () => {
     setIsSignInMode(true);
@@ -58,7 +73,7 @@ const HomeScreen = () => {
         setModalOpen(true);
         setTimeout(() => {
           navigate('/select');
-        }, 1500);
+        }, 2000);
       } else {
         const user = await register(email, password);
         console.log("Registered user:", user);
@@ -70,7 +85,7 @@ const HomeScreen = () => {
         setModalOpen(true);
         setTimeout(() => {
           navigate('/select');
-        }, 1500);
+        }, 2000);
       }
       closeForm();
     } catch (error) {
@@ -102,7 +117,7 @@ const HomeScreen = () => {
       setModalOpen(true);
       setTimeout(() => {
         navigate('/select');
-      }, 1500);
+      }, 2000);
     } catch (error) {
       console.error(`${provider} sign-in error:`, error.message);
       setModalConfig({

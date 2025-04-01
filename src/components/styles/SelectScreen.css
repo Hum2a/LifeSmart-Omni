@@ -235,6 +235,15 @@
   background: linear-gradient(135deg, rgba(156, 39, 176, 0.3), rgba(156, 39, 176, 0.2));
 }
 
+.selectscreen-logout-button {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(244, 67, 54, 0.1));
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.selectscreen-logout-button:hover {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.2));
+}
+
 @media (max-width: 768px) {
   .selectscreen-select-title {
     font-size: 2.5rem;
