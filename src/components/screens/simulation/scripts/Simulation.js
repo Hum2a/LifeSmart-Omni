@@ -182,6 +182,7 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   const [allQuarters, setAllQuarters] = useState([]);
   const simulationRef = useRef(null);
   const pausedRef = useRef(false);
+  const calculatedQuartersRef = useRef([]);
 
   const calculateAllQuarters = useCallback(() => {
     const totalQuarters = simulationYears * 4;
@@ -202,14 +203,21 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
 
       const updatedGroups = calculatedQuarters[quarterIndex].map(group => {
         let totalValue = 0;
-        const newQuarterlyValues = { ...group.quarterlyValues };
+        const newQuarterlyValues = {
+          equity: [...group.quarterlyValues.equity],
+          bonds: [...group.quarterlyValues.bonds],
+          realestate: [...group.quarterlyValues.realestate],
+          commodities: [...group.quarterlyValues.commodities],
+          other: [...group.quarterlyValues.other]
+        };
 
+        // Calculate new values for each asset type
         Object.keys(assetChangesForQuarter).forEach(assetType => {
           const growthRate = assetChangesForQuarter[assetType] / 100;
           const assetKey = assetType.toLowerCase();
-          const currentValue = group.quarterlyValues[assetKey][quarterIndex];
+          const currentValue = newQuarterlyValues[assetKey][quarterIndex];
           const newValue = currentValue * (1 + growthRate);
-          newQuarterlyValues[assetKey].push(newValue);
+          newQuarterlyValues[assetKey] = [...newQuarterlyValues[assetKey].slice(0, quarterIndex + 1), newValue];
           totalValue += newValue;
         });
 
@@ -218,7 +226,7 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
           quarterlyValues: newQuarterlyValues,
           totalPortfolioValues: {
             ...group.totalPortfolioValues,
-            quarters: [...group.totalPortfolioValues.quarters, totalValue]
+            quarters: [...group.totalPortfolioValues.quarters.slice(0, quarterIndex + 1), totalValue]
           }
         };
       });
@@ -226,6 +234,7 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
       calculatedQuarters.push(updatedGroups);
     }
 
+    calculatedQuartersRef.current = calculatedQuarters;
     setAllQuarters(calculatedQuarters);
   }, [groups, assetChanges, simulationYears]);
 
@@ -240,14 +249,14 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
 
   const nextQuarter = useCallback(() => {
     const nextIndex = currentQuarterIndex + 1;
-    if (nextIndex >= allQuarters.length) {
+    if (nextIndex >= calculatedQuartersRef.current.length) {
       setIsSimulating(false);
       return;
     }
 
     setCurrentQuarterIndex(nextIndex);
-    setGroups(allQuarters[nextIndex]);
-  }, [currentQuarterIndex, allQuarters, setGroups]);
+    setGroups(calculatedQuartersRef.current[nextIndex]);
+  }, [currentQuarterIndex, setGroups]);
 
   const runFullSimulation = useCallback(() => {
     if (isSimulating) return;
@@ -262,18 +271,18 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
 
       setCurrentQuarterIndex(prevIndex => {
         const nextIndex = prevIndex + 1;
-        if (nextIndex >= allQuarters.length) {
+        if (nextIndex >= calculatedQuartersRef.current.length) {
           setIsSimulating(false);
           return prevIndex;
         }
-        setGroups(allQuarters[nextIndex]);
+        setGroups(calculatedQuartersRef.current[nextIndex]);
         simulationRef.current = setTimeout(runNextQuarter, simulationSpeed);
         return nextIndex;
       });
     };
 
     runNextQuarter();
-  }, [isSimulating, allQuarters, simulationSpeed, setGroups]);
+  }, [isSimulating, simulationSpeed, setGroups]);
 
   const pauseSimulation = useCallback(() => {
     pausedRef.current = true;
