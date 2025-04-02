@@ -1501,7 +1501,7 @@ const BudgetTool = () => {
                 onClick={() => setIsConfirmModalOpen(true)}
                 className="budgettool-button budgettool-button-secondary"
               >
-                Return to Home
+                Return to Select
               </button>
               <button
                 onClick={handleDownloadSpreadsheet}
@@ -1705,14 +1705,12 @@ const BudgetTool = () => {
             Previous
           </button>
           <div className="budgettool-navigation-right">
-            {currentStep === questions.length && (
-              <button
-                onClick={() => setIsConfirmModalOpen(true)}
-                className="budgettool-button budgettool-button-secondary"
-              >
-                Return to Home
-              </button>
-            )}
+            <button
+              onClick={() => setIsConfirmModalOpen(true)}
+              className="budgettool-button budgettool-button-secondary"
+            >
+              Return to Select
+            </button>
             <button
               onClick={currentStep === questions.length ? handleDownloadSpreadsheet : handleNext}
               className="budgettool-button budgettool-button-primary"
