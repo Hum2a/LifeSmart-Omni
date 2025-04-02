@@ -11,7 +11,9 @@ import {
   FaEye,
   FaEyeSlash,
   FaSchool,
-  FaUserTag
+  FaUserTag,
+  FaPoundSign,
+  FaFire
 } from 'react-icons/fa';
 import { firebaseAuth, db } from '../../firebase/initFirebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -36,6 +38,8 @@ const ProfileScreen = () => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
+    totalFunds: 0,
+    loginStreak: 0
   });
 
   useEffect(() => {
@@ -49,6 +53,8 @@ const ProfileScreen = () => {
 
         // Get user document from Firestore
         const userDoc = await getDoc(doc(db, user.userUID || user.uid, "Profile"));
+        const fundsDoc = await getDoc(doc(db, user.userUID || user.uid, "Total Funds"));
+        const streakDoc = await getDoc(doc(db, user.userUID || user.uid, "Login Streak"));
         
         if (userDoc.exists()) {
           const userData = userDoc.data();
@@ -60,6 +66,20 @@ const ProfileScreen = () => {
             class: userData.class || userData.Y12 || '',
             school: userData.school || userData.WCGS || '',
             groupCode: userData.groupCode || userData.DEVELOPER || '',
+          }));
+        }
+
+        if (fundsDoc.exists()) {
+          setFormData(prev => ({
+            ...prev,
+            totalFunds: fundsDoc.data().totalFunds || 0
+          }));
+        }
+
+        if (streakDoc.exists()) {
+          setFormData(prev => ({
+            ...prev,
+            loginStreak: streakDoc.data().streak || 0
           }));
         }
       } catch (err) {
@@ -273,6 +293,32 @@ const ProfileScreen = () => {
                   value={formData.groupCode}
                   onChange={handleInputChange}
                   className="profilescreen-input"
+                />
+              </div>
+
+              <div className="profilescreen-form-group">
+                <label>
+                  <FaPoundSign className="profilescreen-icon" />
+                  Total Funds
+                </label>
+                <input
+                  type="text"
+                  value={`£${formData.totalFunds.toLocaleString()}`}
+                  disabled
+                  className="profilescreen-input profilescreen-input-disabled"
+                />
+              </div>
+
+              <div className="profilescreen-form-group">
+                <label>
+                  <FaFire className="profilescreen-icon" />
+                  Login Streak
+                </label>
+                <input
+                  type="text"
+                  value={`${formData.loginStreak} days`}
+                  disabled
+                  className="profilescreen-input profilescreen-input-disabled"
                 />
               </div>
 
