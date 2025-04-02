@@ -11,6 +11,8 @@ import SettingsScreen from '../screens/auth/SettingsScreen';
 import AdminHome from '../screens/admin/scripts/AdminHome';
 import AdminAnalytics from '../screens/admin/scripts/AdminAnalytics';
 import AdminUserManagement from '../screens/admin/scripts/AdminUserManagement';
+import AdminSystemSettings from '../screens/admin/scripts/AdminSystemSettings';
+import AdminDatabaseManagement from '../screens/admin/scripts/AdminDatabaseManagement';
 
 // Quiz related screens
 import QuizLandingPage from '../screens/quiz/QuizLandingPage';
@@ -54,6 +56,9 @@ const Navigation = () => {
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/users" element={<AdminUserManagement />} />
+          <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
+          <Route path="/admin/database" element={<AdminDatabaseManagement />} />
+          
           {/* Quiz System */}
           <Route path="/quiz-landing" element={<QuizLandingPage />} />
           <Route path="/quiz" element={<FinancialQuiz />} />

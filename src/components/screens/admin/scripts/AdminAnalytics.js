@@ -23,6 +23,13 @@ import {
   ArcElement
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { 
+  getAnalytics,
+  logEvent,
+  setAnalyticsCollectionEnabled,
+  setUserId,
+  setUserProperties
+} from 'firebase/analytics';
 import '../styles/AdminAnalytics.css';
 
 // Register ChartJS components
@@ -47,29 +54,53 @@ const AdminAnalytics = () => {
     userEngagement: [],
     featureUsage: {},
     errorRates: [],
-    dailyActiveUsers: []
+    dailyActiveUsers: [],
+    sessionTimes: []
   });
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       try {
-        // Track page view
         trackFeatureView('admin_analytics');
         
-        // In a real implementation, you would fetch this data from Firebase Analytics
-        // For now, we'll use mock data
-        setAnalyticsData({
-          userEngagement: [65, 75, 70, 80, 85, 90, 95],
-          featureUsage: {
-            'Budget Tool': 45,
-            'Financial Quiz': 30,
-            'Asset Market': 25,
-            'Stock Simulator': 35,
-            'Learning Resources': 20
-          },
-          errorRates: [5, 4, 6, 3, 2, 4, 3],
-          dailyActiveUsers: [120, 132, 145, 162, 158, 175, 180]
+        // Get Analytics instance
+        const analyticsInstance = getAnalytics();
+        
+        // Enable analytics collection
+        await setAnalyticsCollectionEnabled(analyticsInstance, true);
+        
+        // Set admin user properties
+        if (currentUser) {
+          setUserId(analyticsInstance, currentUser.uid);
+          setUserProperties(analyticsInstance, {
+            user_role: 'admin',
+            admin_section: 'analytics'
+          });
+        }
+        
+        // Log admin analytics view
+        logEvent(analyticsInstance, 'admin_analytics_view', {
+          timestamp: new Date().toISOString(),
+          admin_id: currentUser?.uid
         });
+        
+        // For now, we'll use mock data since we can't directly query analytics data
+        // In a real implementation, this would come from your backend API
+        const mockData = {
+          userEngagement: [120, 150, 180, 160, 200, 170, 190],
+          featureUsage: {
+            'Dashboard': 450,
+            'Profile': 320,
+            'Settings': 280,
+            'Reports': 210,
+            'Tools': 180
+          },
+          errorRates: [5, 3, 4, 2, 3, 4, 3],
+          dailyActiveUsers: [150, 180, 200, 170, 220, 190, 210],
+          sessionTimes: 25 // Average session time in minutes
+        };
+        
+        setAnalyticsData(mockData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching analytics:', error);
@@ -79,7 +110,7 @@ const AdminAnalytics = () => {
     };
 
     fetchAnalyticsData();
-  }, [trackFeatureView, trackError]);
+  }, [trackFeatureView, trackError, currentUser]);
 
   const chartOptions = {
     responsive: true,
@@ -88,6 +119,14 @@ const AdminAnalytics = () => {
       legend: {
         position: 'top',
       }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
+      }
     }
   };
 
@@ -95,7 +134,7 @@ const AdminAnalytics = () => {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
-        label: 'User Engagement',
+        label: 'User Interactions',
         data: analyticsData.userEngagement,
         borderColor: '#4CAF50',
         backgroundColor: 'rgba(76, 175, 80, 0.5)',
@@ -108,7 +147,7 @@ const AdminAnalytics = () => {
     labels: Object.keys(analyticsData.featureUsage),
     datasets: [
       {
-        label: 'Feature Usage',
+        label: 'Feature Views',
         data: Object.values(analyticsData.featureUsage),
         backgroundColor: [
           'rgba(76, 175, 80, 0.7)',
@@ -125,13 +164,20 @@ const AdminAnalytics = () => {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
-        label: 'Error Rates',
+        label: 'Errors',
         data: analyticsData.errorRates,
         borderColor: '#f44336',
         backgroundColor: 'rgba(244, 67, 54, 0.5)',
         tension: 0.4
       }
     ]
+  };
+
+  const calculateTrend = (data) => {
+    if (data.length < 2) return 0;
+    const first = data[0];
+    const last = data[data.length - 1];
+    return ((last - first) / first) * 100;
   };
 
   if (loading) {
@@ -167,25 +213,29 @@ const AdminAnalytics = () => {
           <div className="adminanalytics-card">
             <FaUsers className="adminanalytics-card-icon" />
             <div className="adminanalytics-card-content">
-              <h3>Total Users</h3>
+              <h3>Daily Active Users</h3>
               <p className="adminanalytics-card-value">{analyticsData.dailyActiveUsers[6]}</p>
-              <span className="adminanalytics-card-trend positive">+12% this week</span>
+              <span className={`adminanalytics-card-trend ${calculateTrend(analyticsData.dailyActiveUsers) >= 0 ? 'positive' : 'negative'}`}>
+                {calculateTrend(analyticsData.dailyActiveUsers) >= 0 ? '+' : ''}{calculateTrend(analyticsData.dailyActiveUsers).toFixed(1)}% this week
+              </span>
             </div>
           </div>
           <div className="adminanalytics-card">
             <FaClock className="adminanalytics-card-icon" />
             <div className="adminanalytics-card-content">
               <h3>Avg. Session Time</h3>
-              <p className="adminanalytics-card-value">12m 30s</p>
-              <span className="adminanalytics-card-trend positive">+5% this week</span>
+              <p className="adminanalytics-card-value">{analyticsData.sessionTimes}m</p>
+              <span className="adminanalytics-card-trend positive">Last 7 days</span>
             </div>
           </div>
           <div className="adminanalytics-card">
             <FaExclamationTriangle className="adminanalytics-card-icon" />
             <div className="adminanalytics-card-content">
               <h3>Error Rate</h3>
-              <p className="adminanalytics-card-value">{analyticsData.errorRates[6]}%</p>
-              <span className="adminanalytics-card-trend negative">+1% this week</span>
+              <p className="adminanalytics-card-value">{analyticsData.errorRates[6]}</p>
+              <span className={`adminanalytics-card-trend ${calculateTrend(analyticsData.errorRates) <= 0 ? 'positive' : 'negative'}`}>
+                {calculateTrend(analyticsData.errorRates) >= 0 ? '+' : ''}{calculateTrend(analyticsData.errorRates).toFixed(1)}% this week
+              </span>
             </div>
           </div>
         </div>

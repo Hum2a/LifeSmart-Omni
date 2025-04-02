@@ -79,7 +79,7 @@ const AdminHome = () => {
     {
       title: 'System Settings',
       icon: <FaCog size={24} />,
-      path: '/admin/settings',
+      path: '/admin/system-settings',
       description: 'Configure system-wide settings and parameters'
     },
     {
