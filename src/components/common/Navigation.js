@@ -4,8 +4,13 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
 import SelectScreen from '../screens/SelectScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import ProfileScreen from '../screens/auth/ProfileScreen';
+import SettingsScreen from '../screens/auth/SettingsScreen';
+
+// Admin related screens
+import AdminHome from '../screens/admin/scripts/AdminHome';
+import AdminAnalytics from '../screens/admin/scripts/AdminAnalytics';
+import AdminUserManagement from '../screens/admin/scripts/AdminUserManagement';
 
 // Quiz related screens
 import QuizLandingPage from '../screens/quiz/QuizLandingPage';
@@ -45,6 +50,10 @@ const Navigation = () => {
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/settings" element={<SettingsScreen />} />
 
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminHome />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/users" element={<AdminUserManagement />} />
           {/* Quiz System */}
           <Route path="/quiz-landing" element={<QuizLandingPage />} />
           <Route path="/quiz" element={<FinancialQuiz />} />

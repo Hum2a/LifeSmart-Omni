@@ -11,9 +11,9 @@ import {
   FaToggleOff,
   FaCog
 } from 'react-icons/fa';
-import { firebaseAuth, db } from '../../firebase/initFirebase';
+import { firebaseAuth, db } from '../../../firebase/initFirebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import '../styles/SettingsScreen.css';
+import '../../styles/SettingsScreen.css';
 
 const SettingsScreen = () => {
   const navigate = useNavigate();

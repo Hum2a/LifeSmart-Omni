@@ -344,4 +344,13 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.selectscreen-admin-button {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.1));
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.selectscreen-admin-button:hover {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 193, 7, 0.2));
 } 

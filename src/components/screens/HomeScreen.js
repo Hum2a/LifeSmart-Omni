@@ -4,7 +4,7 @@ import { useAuth } from '../../firebase/auth';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import '../styles/HomeScreen.css';
-import Modal from '../common/Modal';
+import Modal from '../widgets/modals/Modal';
 
 const HomeScreen = () => {
   const [showForm, setShowForm] = useState(false);

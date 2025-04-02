@@ -4,7 +4,7 @@ import { useAuth } from '../../../firebase/auth';
 import { FaGoogle, FaApple } from 'react-icons/fa';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/initFirebase';
-import Modal from '../../common/Modal';
+import Modal from '../../widgets/modals/Modal';
 import '../../styles/HomeScreen.css';
 
 const Register = ({ onClose }) => {

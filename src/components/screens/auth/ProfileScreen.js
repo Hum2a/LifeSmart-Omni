@@ -15,10 +15,10 @@ import {
   FaPoundSign,
   FaFire
 } from 'react-icons/fa';
-import { firebaseAuth, db } from '../../firebase/initFirebase';
+import { firebaseAuth, db } from '../../../firebase/initFirebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import '../styles/ProfileScreen.css';
+import '../../styles/ProfileScreen.css';
 
 const ProfileScreen = () => {
   const navigate = useNavigate();

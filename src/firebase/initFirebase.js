@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
@@ -51,9 +51,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const firebaseAuth = getAuth(app);
+
+// Initialize services
 const db = getFirestore(app);
+const firebaseAuth = getAuth(app);
+const analytics = getAnalytics(app);
 
 // Set persistence to LOCAL (persists even after browser is closed)
 setPersistence(firebaseAuth, browserLocalPersistence)
@@ -103,5 +105,44 @@ export const isDataFetchedForToday = async (symbol) => {
   return false;
 };
 
+// Analytics helper functions
+const logAnalyticsEvent = (eventName, eventParams = {}) => {
+  try {
+    logEvent(analytics, eventName, {
+      timestamp: new Date().toISOString(),
+      ...eventParams
+    });
+    console.log('Analytics event logged:', eventName, eventParams);
+  } catch (error) {
+    console.error('Error logging analytics event:', error);
+  }
+};
+
+// Common analytics events
+export const analyticsEvents = {
+  // Auth events
+  LOGIN: 'user_login',
+  LOGOUT: 'user_logout',
+  REGISTER: 'user_register',
+  
+  // Feature usage
+  FEATURE_VIEW: 'feature_view',
+  FEATURE_INTERACTION: 'feature_interaction',
+  
+  // Admin events
+  ADMIN_ACCESS: 'admin_access',
+  ADMIN_ACTION: 'admin_action',
+  
+  // Error events
+  ERROR_OCCURRED: 'error_occurred',
+  
+  // Navigation events
+  PAGE_VIEW: 'page_view',
+  
+  // Tool usage
+  TOOL_START: 'tool_start',
+  TOOL_COMPLETE: 'tool_complete'
+};
+
 // Export the Firebase app instance and other services
-export { app, analytics, firebaseAuth, db }; 
+export { app, db, firebaseAuth, analytics, logAnalyticsEvent }; 

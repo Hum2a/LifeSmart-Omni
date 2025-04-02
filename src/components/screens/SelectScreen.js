@@ -17,7 +17,7 @@ import {
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/initFirebase';
 import '../styles/SelectScreen.css';
-import Modal from '../common/Modal';
+import Modal from '../widgets/modals/Modal';
 
 // Configuration object for tool availability
 const TOOL_CONFIG = {
@@ -71,6 +71,7 @@ const SelectScreen = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -87,6 +88,12 @@ const SelectScreen = () => {
           console.log("No authenticated user found after auth initialized, redirecting to home");
           navigate('/', { replace: true });
           return;
+        }
+        
+        // Check if user is admin
+        const userDoc = await getDoc(doc(db, currentUser.uid, "Profile"));
+        if (userDoc.exists()) {
+          setIsAdmin(userDoc.data().admin === true);
         }
         
         // Only fetch streak if we have a user
@@ -197,6 +204,15 @@ const SelectScreen = () => {
                 <FaCog size={24} />
                 <span>Settings</span>
               </button>
+              {isAdmin && (
+                <button 
+                  onClick={() => handleNavigation('/admin')} 
+                  className="selectscreen-user-button selectscreen-admin-button"
+                >
+                  <FaCog size={24} />
+                  <span>Admin Controls</span>
+                </button>
+              )}
               <button 
                 onClick={handleLogout} 
                 className="selectscreen-user-button selectscreen-logout-button"
