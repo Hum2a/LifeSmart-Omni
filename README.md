@@ -4,42 +4,109 @@
   <img src="src/assets/logo.png" alt="LifeSmart Logo" width="200"/>
   
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
-  [![Firebase](https://img.shields.io/badge/Firebase-10.7.0-orange.svg)](https://firebase.google.com/)
+  [![Firebase](https://img.shields.io/badge/Firebase-11.6.0-orange.svg)](https://firebase.google.com/)
+  [![Chart.js](https://img.shields.io/badge/Chart.js-4.4.8-green.svg)](https://www.chartjs.org/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-  A modern financial education platform helping users make smarter financial decisions through interactive tools and personalized guidance.
+  A comprehensive financial education platform empowering users to make informed financial decisions through interactive tools, personalized guidance, and real-world simulations.
 </div>
 
 ## 🌟 Features
 
-### Currently Available
-- **Budget Tool**: Interactive budgeting assistant that helps users create and manage their personal budget
-  - Step-by-step budget creation process
-  - Personalized budget recommendations
-  - Visual budget breakdown
-  - Exportable budget spreadsheet
+### Core Features
+- **Budget Tool**: Advanced budgeting assistant with interactive features
+  - Step-by-step budget creation wizard
+  - AI-powered budget recommendations
+  - Visual budget breakdown with Chart.js
+  - Exportable budget reports (Excel/CSV)
+  - Real-time expense tracking
+  - Category-based spending analysis
 
-### Coming Soon
-- **Financial Quiz**: Test your financial knowledge with interactive quizzes
-- **Investment Simulation**: Make investment decisions and see their impact over time
-- **Investment Calculator**: Calculate potential returns on investments with different parameters
+- **Stock Market Simulation**
+  - Real-time market data integration
+  - Virtual trading environment
+  - Portfolio tracking
+  - Historical performance analysis
+  - Risk assessment tools
+
+- **Learning Center**
+  - Interactive financial education modules
+  - Progress tracking
+  - Achievement system
+  - Personalized learning paths
+
+- **Quiz System**
+  - Knowledge assessment tests
+  - Topic-specific quizzes
+  - Performance analytics
+  - Certification system
+
+- **Investment Calculator**
+  - Compound interest calculations
+  - Retirement planning
+  - Investment growth projections
+  - Risk analysis tools
+
+### Administrative Features
+- User management dashboard
+- Content management system
+- Analytics and reporting
+- System configuration tools
 
 ## 🚀 Tech Stack
 
-- **Frontend Framework**: React.js 18
-- **Routing**: React Router v6
-- **Styling**: CSS3 with modern features (Flexbox, Grid, CSS Variables)
+### Frontend
+- **Core Framework**: React.js 18.2.0
+- **Routing**: React Router v6.21.0
+- **State Management**: React Hooks
+- **Styling**: 
+  - CSS3 with modern features (Flexbox, Grid, CSS Variables)
+  - Framer Motion for animations
+  - React Transition Group for smooth transitions
+
+### Backend & Services
 - **Authentication**: Firebase Authentication
 - **Database**: Firebase Firestore
-- **Deployment**: Firebase Hosting
+- **Analytics**: Firebase Analytics
+- **Hosting**: Firebase Hosting
 
-## 🛠️ Getting Started
+### Data Visualization & Processing
+- **Charts**: Chart.js with react-chartjs-2
+- **Spreadsheet Processing**: ExcelJS and XLSX
+- **Date Handling**: date-fns
+- **HTTP Client**: Axios
+
+## 🛠️ Project Structure
+
+```
+src/
+├── components/
+│   ├── screens/           # Main screen components
+│   │   ├── admin/        # Administrative dashboard
+│   │   ├── auth/         # Authentication screens
+│   │   ├── budget/       # Budget management
+│   │   ├── calculator/   # Financial calculators
+│   │   ├── learning/     # Educational content
+│   │   ├── quiz/         # Assessment system
+│   │   ├── simulation/   # Stock market simulation
+│   │   └── stockmarket/  # Market analysis tools
+│   ├── common/           # Shared components
+│   ├── widgets/          # Reusable UI components
+│   └── styles/           # Component-specific styles
+├── hooks/                # Custom React hooks
+├── services/             # API and service integrations
+├── utils/                # Utility functions
+├── firebase/             # Firebase configuration
+└── assets/              # Static assets
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js (v14 or later)
 - npm (v6 or later)
 - Firebase account and project setup
+- Modern web browser with JavaScript enabled
 
 ### Installation
 
@@ -54,8 +121,8 @@
    npm install
    ```
 
-3. **Set up environment variables**
-   Create a `.env` file in the root directory with the following variables:
+3. **Environment Setup**
+   Create a `.env` file in the root directory:
    ```env
    REACT_APP_FIREBASE_API_KEY=your_api_key
    REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -66,38 +133,36 @@
    REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
    ```
 
-4. **Start the development server**
+4. **Development Server**
    ```bash
    npm start
    ```
 
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
+5. **Production Build**
+   ```bash
+   npm run build
+   ```
 
-## 📁 Project Structure
+## 🧪 Testing
 
+The project includes comprehensive testing setup:
+- Jest for unit testing
+- React Testing Library for component testing
+- User event simulation
+- DOM testing utilities
+
+Run tests with:
+```bash
+npm test
 ```
-src/
-├── components/
-│   ├── screens/           # Main screen components
-│   │   ├── budget/       # Budget tool components
-│   │   ├── quiz/         # Quiz components (coming soon)
-│   │   └── simulation/   # Simulation components (coming soon)
-│   ├── widgets/          # Reusable UI components
-│   └── styles/           # Component-specific styles
-├── firebase/             # Firebase configuration
-├── assets/              # Images and other static assets
-└── utils/               # Utility functions
-```
 
-## 🎯 Usage
+## 📱 Browser Support
 
-1. **Home Screen**: Access the main dashboard
-2. **Budget Tool**: Create and manage your personal budget
-   - Follow the step-by-step process
-   - Get personalized recommendations
-   - Export your budget as a spreadsheet
-3. **Coming Soon Features**: Stay tuned for new tools and features
+The application supports all modern browsers:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
 ## 🤝 Contributing
 
@@ -109,19 +174,37 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+### Development Guidelines
+- Follow the existing code style
+- Write meaningful commit messages
+- Include tests for new features
+- Update documentation as needed
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🔒 Security
 
-- Original LifeSmart project for inspiration
-- Firebase for providing robust backend services
-- All contributors who have helped shape this project
+- All API keys and sensitive data are stored in environment variables
+- Firebase security rules are implemented for data access control
+- Regular security audits are performed
+- HTTPS is enforced in production
 
 ## 📞 Support
 
-For support, please open an issue in the GitHub repository or contact the development team.
+For support:
+- Open an issue in the GitHub repository
+- Contact the development team
+- Check the documentation
+- Join our community forum
+
+## 🔄 Updates & Maintenance
+
+- Regular dependency updates
+- Security patches
+- Feature enhancements
+- Performance optimizations
 
 ---
 
