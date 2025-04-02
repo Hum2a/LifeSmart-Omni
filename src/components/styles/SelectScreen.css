@@ -261,6 +261,44 @@
   pointer-events: none;
 }
 
+.selectscreen-streak-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 87, 34, 0.2);
+  border: 1px solid rgba(255, 87, 34, 0.3);
+  border-radius: 20px;
+  display: inline-flex;
+  animation: selectscreen-glow 2s infinite alternate;
+}
+
+.selectscreen-streak-icon {
+  color: #FF5722;
+  font-size: 1.5rem;
+}
+
+.selectscreen-streak-count {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@keyframes selectscreen-glow {
+  from {
+    box-shadow: 0 0 5px rgba(255, 87, 34, 0.2),
+                0 0 10px rgba(255, 87, 34, 0.2),
+                0 0 15px rgba(255, 87, 34, 0.2);
+  }
+  to {
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.4),
+                0 0 20px rgba(255, 87, 34, 0.4),
+                0 0 30px rgba(255, 87, 34, 0.4);
+  }
+}
+
 @media (max-width: 768px) {
   .selectscreen-select-title {
     font-size: 2.5rem;
@@ -282,5 +320,28 @@
   .selectscreen-user-button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+.selectscreen-loading {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.selectscreen-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #4CAF50;
+  animation: selectscreen-spin 1s ease-in-out infinite;
+}
+
+@keyframes selectscreen-spin {
+  to {
+    transform: rotate(360deg);
   }
 } 

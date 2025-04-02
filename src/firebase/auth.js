@@ -24,31 +24,43 @@ appleProvider.addScope('name');
 
 // Custom hook for authentication
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser);
+    console.log("Setting up auth state listener");
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      console.log("Auth state changed:", user ? `User logged in: ${user.email}` : "No user");
+      setCurrentUser(user);
       setLoading(false);
     }, (error) => {
+      console.error("Auth state change error:", error);
       setError(error);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Cleanup subscription
+    return () => {
+      console.log("Cleaning up auth state listener");
+      unsubscribe();
+    };
   }, []);
 
   // Sign in with email and password
   const signIn = async (email, password) => {
     try {
       setError(null);
+      setLoading(true);
       const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+      console.log("Sign in successful:", userCredential.user.email);
       return userCredential.user;
     } catch (error) {
+      console.error("Sign in error:", error);
       setError(error.message);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,8 +69,10 @@ export const useAuth = () => {
     try {
       setError(null);
       const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+      setCurrentUser(userCredential.user);
       return userCredential.user;
     } catch (error) {
+      console.error("Register error:", error);
       setError(error.message);
       throw error;
     }
@@ -67,8 +81,10 @@ export const useAuth = () => {
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
+      setCurrentUser(result.user);
       return result.user;
     } catch (error) {
+      console.error("Google sign in error:", error);
       throw new Error(getErrorMessage(error.code));
     }
   };
@@ -76,8 +92,10 @@ export const useAuth = () => {
   const signInWithApple = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, appleProvider);
+      setCurrentUser(result.user);
       return result.user;
     } catch (error) {
+      console.error("Apple sign in error:", error);
       throw new Error(getErrorMessage(error.code));
     }
   };
@@ -86,14 +104,16 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await signOut(firebaseAuth);
+      setCurrentUser(null);
     } catch (error) {
+      console.error("Logout error:", error);
       setError(error.message);
       throw error;
     }
   };
 
   return {
-    user,
+    currentUser,
     loading,
     error,
     signIn,

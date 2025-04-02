@@ -17,11 +17,20 @@ const HomeScreen = () => {
   });
   
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, loading: authLoading } = useAuth();
 
   // Check for existing authentication and redirect if found
   useEffect(() => {
-    if (currentUser) {
+    console.log("HomeScreen auth state:", { currentUser, authLoading });
+    
+    // Don't do anything while auth is loading
+    if (authLoading) {
+      return;
+    }
+
+    // Only redirect if we have a user and auth is done loading
+    if (currentUser && !authLoading) {
+      console.log("User already logged in, redirecting to select screen");
       setModalConfig({
         title: 'Welcome Back!',
         message: 'You have been automatically logged in.',
@@ -29,10 +38,24 @@ const HomeScreen = () => {
       });
       setModalOpen(true);
       setTimeout(() => {
-        navigate('/select');
+        navigate('/select', { replace: true });
       }, 2000);
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, authLoading, navigate]);
+
+  // Show loading while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="homescreen-loading">
+        <div className="homescreen-loading-spinner"></div>
+      </div>
+    );
+  }
+
+  // If we have a user, show nothing while waiting for redirect
+  if (currentUser) {
+    return null;
+  }
 
   const showSignInForm = () => {
     setIsSignInMode(true);

@@ -25,36 +25,54 @@ const Login = ({ onClose }) => {
       const streakRef = doc(db, userId, "Login Streak");
       const streakDoc = await getDoc(streakRef);
       
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set to start of day
+      // Get current date in user's local timezone
+      const now = new Date();
+      const currentDate = now.toISOString();
       
-      const currentDate = today.toISOString().split('T')[0];
+      console.log("Updating login streak with current date:", currentDate);
       
       if (streakDoc.exists()) {
         const { lastLogin, streak } = streakDoc.data();
-        const lastLoginDate = new Date(lastLogin);
-        lastLoginDate.setHours(0, 0, 0, 0);
+        console.log("Previous login data:", { lastLogin, streak });
         
-        const timeDiff = today.getTime() - lastLoginDate.getTime();
+        // Convert lastLogin to Date object
+        const lastLoginDate = new Date(lastLogin);
+        
+        // Set both dates to midnight for comparison
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastDay = new Date(lastLoginDate.getFullYear(), lastLoginDate.getMonth(), lastLoginDate.getDate());
+        
+        const timeDiff = today.getTime() - lastDay.getTime();
         const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+        
+        console.log("Days difference:", daysDiff);
         
         let newStreak;
         
-        // Only increment streak if last login was exactly yesterday
+        // Only increment streak if last login was yesterday
         if (daysDiff === 1) {
           newStreak = streak + 1;
+          console.log("Incrementing streak to:", newStreak);
+        } else if (daysDiff === 0) {
+          // Same day login, maintain streak
+          newStreak = streak;
+          console.log("Same day login, maintaining streak at:", newStreak);
         } else {
-          // Reset streak for same-day logins or gaps larger than 1 day
+          // More than 1 day gap, reset streak
           newStreak = 1;
+          console.log("Resetting streak to 1 due to gap of", daysDiff, "days");
         }
         
-        // Always update lastLogin to current date
+        // Always update lastLogin to current timestamp
         await setDoc(streakRef, {
-          lastLogin: currentDate,  // This will be updated every login
+          lastLogin: currentDate,
           streak: newStreak
         });
+        
+        console.log("Updated login streak:", { lastLogin: currentDate, streak: newStreak });
       } else {
         // First time login, start streak at 1
+        console.log("First time login, creating streak document");
         await setDoc(streakRef, {
           lastLogin: currentDate,
           streak: 1
@@ -80,9 +98,10 @@ const Login = ({ onClose }) => {
         type: 'success'
       });
       setModalOpen(true);
-      setTimeout(() => {
-        navigate('/select');
-      }, 2000);
+      
+      // Wait for modal to be visible before navigating
+      await new Promise(resolve => setTimeout(resolve, 500));
+      navigate('/select', { replace: true });
     } catch (error) {
       console.error("Authentication error:", error.message);
       setModalConfig({
@@ -113,9 +132,10 @@ const Login = ({ onClose }) => {
         type: 'success'
       });
       setModalOpen(true);
-      setTimeout(() => {
-        navigate('/select');
-      }, 2000);
+      
+      // Wait for modal to be visible before navigating
+      await new Promise(resolve => setTimeout(resolve, 500));
+      navigate('/select', { replace: true });
     } catch (error) {
       console.error(`${provider} sign-in error:`, error.message);
       setModalConfig({

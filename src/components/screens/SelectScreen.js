@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../firebase/auth';
 import { 
@@ -11,8 +11,11 @@ import {
   FaStar,
   FaStackExchange,
   FaBook,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaFire
 } from 'react-icons/fa';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase/initFirebase';
 import '../styles/SelectScreen.css';
 import Modal from '../common/Modal';
 
@@ -64,8 +67,43 @@ const TOOL_CONFIG = {
 
 const SelectScreen = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { currentUser, loading: authLoading, logout } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [streak, setStreak] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        console.log("Checking auth state:", { currentUser, authLoading });
+        
+        // Don't do anything while auth is loading
+        if (authLoading) {
+          return;
+        }
+
+        // If auth is done loading and no user, redirect
+        if (!currentUser) {
+          console.log("No authenticated user found after auth initialized, redirecting to home");
+          navigate('/', { replace: true });
+          return;
+        }
+        
+        // Only fetch streak if we have a user
+        console.log("Fetching streak data for user:", currentUser.uid);
+        const streakDoc = await getDoc(doc(db, currentUser.uid, "Login Streak"));
+        if (streakDoc.exists()) {
+          setStreak(streakDoc.data().streak || 0);
+        }
+      } catch (error) {
+        console.error("Error in auth check:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [currentUser, authLoading, navigate]);
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -76,12 +114,26 @@ const SelectScreen = () => {
       setShowLogoutModal(true);
       await logout();
       setTimeout(() => {
-        navigate('/');
+        navigate('/', { replace: true });
       }, 2000);
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
+
+  // Show loading spinner while either auth is initializing or we're loading data
+  if (authLoading || loading) {
+    return (
+      <div className="selectscreen-loading">
+        <div className="selectscreen-loading-spinner"></div>
+      </div>
+    );
+  }
+
+  // Only render the main content if we have a user and auth is done loading
+  if (!currentUser && !authLoading) {
+    return null;
+  }
 
   return (
     <>
@@ -99,6 +151,10 @@ const SelectScreen = () => {
               <span className="selectscreen-title-smart">Smart</span>
             </h1>
             <p className="selectscreen-tagline">Choose your financial journey</p>
+            <div className="selectscreen-streak-display">
+              <FaFire className="selectscreen-streak-icon" />
+              <span className="selectscreen-streak-count">{streak} Day{streak !== 1 ? 's' : ''}</span>
+            </div>
           </header>
 
           <main className="selectscreen-select-main">
