@@ -1,7 +1,7 @@
 # LifeSmart - Financial Education Platform
 
 <div align="center">
-  <img src="src/assets/logo.png" alt="LifeSmart Logo" width="200"/>
+  <img src="src/assets/icons/LifeSmartLogo.png" alt="LifeSmart Logo" width="200"/>
   
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
   [![Firebase](https://img.shields.io/badge/Firebase-11.6.0-orange.svg)](https://firebase.google.com/)
