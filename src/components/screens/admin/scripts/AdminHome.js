@@ -10,7 +10,8 @@ import {
   FaCog, 
   FaDatabase,
   FaUserShield,
-  FaArrowLeft
+  FaArrowLeft,
+  FaKey
 } from 'react-icons/fa';
 import '../styles/AdminHome.css';
 
@@ -68,26 +69,37 @@ const AdminHome = () => {
       title: 'User Management',
       icon: <FaUsers size={24} />,
       path: '/admin/users',
-      description: 'Manage user accounts and permissions'
+      description: 'Manage user accounts and permissions',
+      inDevelopment: false
     },
     {
       title: 'Analytics',
       icon: <FaChartLine size={24} />,
       path: '/admin/analytics',
-      description: 'View platform usage statistics and metrics'
+      description: 'View platform usage statistics and metrics',
+      inDevelopment: true
     },
     {
       title: 'System Settings',
       icon: <FaCog size={24} />,
       path: '/admin/system-settings',
-      description: 'Configure system-wide settings and parameters'
+      description: 'Configure system-wide settings and parameters',
+      inDevelopment: true
     },
     {
       title: 'Database Management',
       icon: <FaDatabase size={24} />,
       path: '/admin/database',
-      description: 'Manage database operations and backups'
-    }
+      description: 'Manage database operations and backups',
+      inDevelopment: true
+    },
+    {
+      title: 'Login Codes',
+      icon: <FaKey size={24} />,
+      path: '/admin/login-codes',
+      description: 'Generate and manage login codes for users',
+      inDevelopment: false
+    },
   ];
 
   if (loading || authLoading) {
@@ -126,9 +138,14 @@ const AdminHome = () => {
           {adminFeatures.map((feature, index) => (
             <button
               key={index}
-              onClick={() => handleFeatureClick(feature)}
-              className="adminhome-feature-card"
+              onClick={() => !feature.inDevelopment && handleFeatureClick(feature)}
+              className={`adminhome-feature-card ${feature.inDevelopment ? 'in-development' : ''}`}
             >
+              {feature.inDevelopment && (
+                <div className="adminhome-development-banner">
+                  In Development
+                </div>
+              )}
               <div className="adminhome-feature-icon">
                 {feature.icon}
               </div>

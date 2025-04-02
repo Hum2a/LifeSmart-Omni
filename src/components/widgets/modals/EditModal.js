@@ -15,7 +15,8 @@ const EditModal = ({ isOpen, onClose, userId, onSave }) => {
     isActive: true,
     admin: false,
     developer: false,
-    user: true
+    user: true,
+    totalFunds: 0
   });
 
   useEffect(() => {
@@ -46,7 +47,8 @@ const EditModal = ({ isOpen, onClose, userId, onSave }) => {
             isActive: userData.isActive !== false,
             admin: userData.admin || false,
             developer: userData.developer || false,
-            user: userData.user !== false
+            user: userData.user !== false,
+            totalFunds: userData.totalFunds || 0
           });
         }
       } catch (error) {
@@ -132,6 +134,18 @@ const EditModal = ({ isOpen, onClose, userId, onSave }) => {
                     name="email"
                     value={userData.email}
                     onChange={handleChange}
+                  />
+                </div>
+                <div className="edit-modal-field">
+                  <label htmlFor="totalFunds">Total Funds (£)</label>
+                  <input
+                    type="number"
+                    id="totalFunds"
+                    name="totalFunds"
+                    value={userData.totalFunds}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
                   />
                 </div>
               </div>

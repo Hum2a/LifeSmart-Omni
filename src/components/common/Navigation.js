@@ -13,6 +13,7 @@ import AdminAnalytics from '../screens/admin/scripts/AdminAnalytics';
 import AdminUserManagement from '../screens/admin/scripts/AdminUserManagement';
 import AdminSystemSettings from '../screens/admin/scripts/AdminSystemSettings';
 import AdminDatabaseManagement from '../screens/admin/scripts/AdminDatabaseManagement';
+import AdminLoginCodes from '../screens/admin/scripts/AdminLoginCodes'; 
 
 // Quiz related screens
 import QuizLandingPage from '../screens/quiz/QuizLandingPage';
@@ -58,7 +59,9 @@ const Navigation = () => {
           <Route path="/admin/users" element={<AdminUserManagement />} />
           <Route path="/admin/system-settings" element={<AdminSystemSettings />} />
           <Route path="/admin/database" element={<AdminDatabaseManagement />} />
+          <Route path="/admin/login-codes" element={<AdminLoginCodes />} />
           
+
           {/* Quiz System */}
           <Route path="/quiz-landing" element={<QuizLandingPage />} />
           <Route path="/quiz" element={<FinancialQuiz />} />
