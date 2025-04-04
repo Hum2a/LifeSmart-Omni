@@ -2,6 +2,25 @@ import React from 'react';
 import '../styles/BudgetSpreadsheet.css';
 import ExcelJS from 'exceljs';
 
+// Define categories at component level
+const needsCategories = [
+  { label: "Housing Payment", key: "housingPayment" },
+  { label: "Utilities", key: "utilities" },
+  { label: "Transportation", key: "transportation" },
+  { label: "Groceries", key: "groceries" },
+  { label: "Health Insurance", key: "healthInsurance" },
+  { label: "Medical Expenses", key: "medicalExpenses" }
+];
+
+const wantsCategories = [
+  { label: "Subscriptions", key: "subscriptions" },
+  { label: "Takeaway/eating out", key: "diningOut" },
+  { label: "Gym and sport", key: "gymMembership" },
+  { label: "Shopping", key: "shopping" },
+  { label: "Entertainment (events and activities)", key: "entertainment" },
+  { label: "Gifts, charity and other", key: "charity" }
+];
+
 // Create downloadSpreadsheet as a standalone function
 export const downloadSpreadsheet = async (formData) => {
   const workbook = new ExcelJS.Workbook();
@@ -31,52 +50,26 @@ export const downloadSpreadsheet = async (formData) => {
 
   // Helper function to calculate totals for each category
   const calculateTotals = (monthIndex) => {
-    const monthData = formData.monthlyProjections[monthIndex] || {};
-
-    const totalNeeds = monthData.needs || (
-      Number(formData.rent || formData.mortgage || 0) +
-      Number(formData.utilities || 0) +
-      Number(formData.transportation || 0) +
-      Number(formData.groceries || 0) +
-      Number(formData.healthInsurance || 0) +
-      Number(formData.medicalExpenses || 0)
-    );
-
-    const totalWants = monthData.wants || (
-      Number(formData.subscriptions || 0) +
-      Number(formData.diningOut || 0) +
-      Number(formData.gymMembership || 0) +
-      Number(formData.shopping || 0) +
-      Number(formData.entertainment || 0) +
-      Number(formData.travel || 0) +
-      Number(formData.charity || 0)
-    );
-
-    const totalIncome = monthData.income || (
-      Number(formData.monthlyIncome || 0) +
-      Number(formData.additionalIncome || 0)
-    );
-
-    const fundsRemaining = totalIncome - totalNeeds - totalWants;
-
-    const savings = {
-      sinkingFund: monthData.savingsDetails?.sinkingFund || Number(formData.sinkingFund || 0),
-      goalFund: monthData.savingsDetails?.goalFund || Number(formData.goalFund || 0),
-      emergencyFund: monthData.savingsDetails?.emergencyFund || Number(formData.emergencyFund || 0)
-    };
-
+    const needs = needsCategories.reduce((total, { key }) => 
+      total + Number(getPredictedValue(monthIndex, 'needs', key) || 0), 0);
+    
+    const wants = wantsCategories.reduce((total, { key }) => 
+      total + Number(getPredictedValue(monthIndex, 'wants', key) || 0), 0);
+    
+    const income = Number(formData.monthlyProjections[monthIndex]?.income || formData.monthlyIncome || 0);
+    const fundsRemaining = income - needs - wants;
+    
     const distribution = {
-      needs: totalIncome > 0 ? (totalNeeds / totalIncome) * 100 : 0,
-      wants: totalIncome > 0 ? (totalWants / totalIncome) * 100 : 0,
-      savings: totalIncome > 0 ? (fundsRemaining / totalIncome) * 100 : 0
+      needs: (needs / income) * 100 || 0,
+      wants: (wants / income) * 100 || 0,
+      remaining: (fundsRemaining / income) * 100 || 0
     };
 
     return {
-      totalIncome,
-      totalNeeds,
-      totalWants,
+      needs,
+      wants,
+      income,
       fundsRemaining,
-      savings,
       distribution
     };
   };
@@ -159,15 +152,6 @@ export const downloadSpreadsheet = async (formData) => {
 
   // NEEDS SECTION
   addSectionHeader("TOTAL 'NEEDS' SPENDING");
-  const needsCategories = [
-    { label: "Rent", key: "rent" },
-    { label: "Bills (utilities, bills, internet)", key: "utilities" },
-    { label: "Transport", key: "transportation" },
-    { label: "Groceries (basic)", key: "groceries" },
-    { label: "Health (contact lenses)", key: "medicalExpenses" },
-    { label: "Unexpected", key: "unexpected" }
-  ];
-
   needsCategories.forEach(({ label, key }) => {
     const values = [];
     months.forEach((_, index) => {
@@ -181,25 +165,10 @@ export const downloadSpreadsheet = async (formData) => {
 
   // WANTS SECTION
   addSectionHeader("TOTAL 'WANTS' SPENDING");
-  const wantsCategories = [
-    { label: "Subscriptions", key: "subscriptions" },
-    { label: "Takeaway/eating out", key: "diningOut" },
-    { label: "Gym and sport", key: "gymMembership" },
-    { label: "Shopping (clothes and accessories)", key: "shopping" },
-    { label: "Shopping (tech, books and other)", key: "shopping" },
-    { label: "Entertainment (events and activities)", key: "entertainment" },
-    { label: "Gifts and charity", key: "charity" },
-    { label: "Other", key: "other" },
-    { label: "Large spend (sinking fund)", key: "sinkingFund" }
-  ];
-
   wantsCategories.forEach(({ label, key }) => {
     const values = [];
     months.forEach((_, index) => {
-      const totals = calculateTotals(index);
       values.push(
-        key === "other" ? 0 : 
-        key === "sinkingFund" ? totals.savings.sinkingFund :
         getPredictedValue(index, 'wants', key),
         null
       );
@@ -216,60 +185,39 @@ export const downloadSpreadsheet = async (formData) => {
   });
   addDataRow('Funds remaining', fundsRemainingValues);
 
-  // SAVINGS SECTION
-  addSectionHeader('TOTAL SAVINGS');
-  const savingsCategories = [
-    { label: "Sinking Fund", key: "sinkingFund" },
-    { label: "Goal Fund", key: "goalFund" },
-    { label: "Emergency fund (gatehouse)", key: "emergencyFund" }
-  ];
-
-  savingsCategories.forEach(({ label, key }) => {
-    const values = [];
-    months.forEach((_, index) => {
-      const totals = calculateTotals(index);
-      values.push(totals.savings[key], null);
-    });
-    addDataRow(label, values);
-  });
-
   // DISTRIBUTION SECTION
   addSectionHeader('Distribution');
-  ['Needs (50%)', 'Wants (30%)', 'Savings (20%)'].forEach((label, idx) => {
+  const distributionCategories = [
+    { label: "Needs %", key: "needs" },
+    { label: "Wants %", key: "wants" },
+    { label: "Remaining %", key: "remaining" }
+  ];
+
+  distributionCategories.forEach(({ label, key }) => {
     const values = [];
     months.forEach((_, index) => {
       const totals = calculateTotals(index);
-      const dist = ['needs', 'wants', 'savings'][idx];
-      values.push(`${totals.distribution[dist].toFixed(1)}%`, null);
+      values.push(
+        totals.distribution[key].toFixed(1) + '%',
+        null
+      );
     });
-    const row = worksheet.addRow([label, ...values]);
-    row.eachCell((cell, colNumber) => {
-      if (colNumber > 1) {
-        cell.alignment = { horizontal: 'right' };
-      }
-    });
+    addDataRow(label, values);
   });
 
   // FUND BALANCES
   addSectionHeader('Fund Balances');
-  const balanceCategories = [
-    { label: "Sinking Fund balance", key: "sinkingFund" },
-    { label: "Goal Fund balance", key: "goalFund" },
-    { label: "Emergency Fund balance", key: "emergencyFund" }
-  ];
-
-  balanceCategories.forEach(({ label, key }) => {
-    const values = [];
-    months.forEach((_, index) => {
-      let cumulativeBalance = Number(formData[key] || 0);
-      for (let i = 0; i <= index; i++) {
-        const monthData = formData.monthlyProjections[i] || {};
-        cumulativeBalance += Number(monthData.savingsDetails?.[key] || formData[key] || 0);
-      }
-      values.push(cumulativeBalance, null);
-    });
-    addDataRow(label, values);
+  const balanceValues = [];
+  months.forEach((_, index) => {
+    // Calculate cumulative balance using the same logic as the online spreadsheet
+    let cumulativeBalance = Number(formData.totalSavings || 0);
+    for (let i = 0; i <= index; i++) {
+      const monthData = formData.monthlyProjections[i] || {};
+      cumulativeBalance += Number(monthData.savingsDetails?.total || formData.totalSavings || 0);
+    }
+    balanceValues.push(cumulativeBalance, null);
   });
+  addDataRow('Total Savings balance', balanceValues);
 
   // Apply borders to all cells
   worksheet.eachRow((row) => {
@@ -347,52 +295,26 @@ const BudgetSpreadsheet = ({ formData }) => {
 
   // Helper function to calculate totals for each category
   const calculateTotals = (monthIndex) => {
-    const monthData = formData.monthlyProjections[monthIndex] || {};
-
-    const totalIncome = monthData.income || (
-      Number(formData.monthlyIncome || 0) +
-      Number(formData.additionalIncome || 0)
-    );
-
-    const totalNeeds = monthData.needs || (
-      Number(formData.rent || formData.mortgage || 0) +
-      Number(formData.utilities || 0) +
-      Number(formData.transportation || 0) +
-      Number(formData.groceries || 0) +
-      Number(formData.healthInsurance || 0) +
-      Number(formData.medicalExpenses || 0)
-    );
-
-    const totalWants = monthData.wants || (
-      Number(formData.subscriptions || 0) +
-      Number(formData.diningOut || 0) +
-      Number(formData.gymMembership || 0) +
-      Number(formData.shopping || 0) +
-      Number(formData.entertainment || 0) +
-      Number(formData.travel || 0) +
-      Number(formData.charity || 0)
-    );
-
-    const fundsRemaining = totalIncome - totalNeeds - totalWants;
-
-    const savings = {
-      sinkingFund: monthData.savingsDetails?.sinkingFund || Number(formData.sinkingFund || 0),
-      goalFund: monthData.savingsDetails?.goalFund || Number(formData.goalFund || 0),
-      emergencyFund: monthData.savingsDetails?.emergencyFund || Number(formData.emergencyFund || 0)
-    };
-
+    const needs = needsCategories.reduce((total, { key }) => 
+      total + Number(getPredictedValue(monthIndex, 'needs', key) || 0), 0);
+    
+    const wants = wantsCategories.reduce((total, { key }) => 
+      total + Number(getPredictedValue(monthIndex, 'wants', key) || 0), 0);
+    
+    const income = Number(formData.monthlyProjections[monthIndex]?.income || formData.monthlyIncome || 0);
+    const fundsRemaining = income - needs - wants;
+    
     const distribution = {
-      needs: totalIncome > 0 ? (totalNeeds / totalIncome) * 100 : 0,
-      wants: totalIncome > 0 ? (totalWants / totalIncome) * 100 : 0,
-      savings: totalIncome > 0 ? (fundsRemaining / totalIncome) * 100 : 0
+      needs: (needs / income) * 100 || 0,
+      wants: (wants / income) * 100 || 0,
+      remaining: (fundsRemaining / income) * 100 || 0
     };
 
     return {
-      totalIncome,
-      totalNeeds,
-      totalWants,
+      needs,
+      wants,
+      income,
       fundsRemaining,
-      savings,
       distribution
     };
   };
@@ -467,10 +389,10 @@ const BudgetSpreadsheet = ({ formData }) => {
                 <td colSpan={13}>TOTAL 'NEEDS' SPENDING</td>
               </tr>
               <tr>
-                <td className="fixed-column">Rent</td>
+                <td className="fixed-column">Housing Payment</td>
                 {months.map((_, index) => (
                   <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'rent'))}</td>
+                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'housingPayment'))}</td>
                     <td className="actual"></td>
                   </React.Fragment>
                 ))}
@@ -511,15 +433,6 @@ const BudgetSpreadsheet = ({ formData }) => {
                   </React.Fragment>
                 ))}
               </tr>
-              <tr>
-                <td className="fixed-column">Unexpected</td>
-                {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">£0.00</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
-                ))}
-              </tr>
 
               {/* WANTS SECTION */}
               <tr className="section-header">
@@ -553,16 +466,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 ))}
               </tr>
               <tr>
-                <td className="fixed-column">Shopping (clothes and accessories)</td>
-                {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'shopping'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
-                ))}
-              </tr>
-              <tr>
-                <td className="fixed-column">Shopping (tech, books and other)</td>
+                <td className="fixed-column">Shopping</td>
                 {months.map((_, index) => (
                   <React.Fragment key={index}>
                     <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'shopping'))}</td>
@@ -580,34 +484,13 @@ const BudgetSpreadsheet = ({ formData }) => {
                 ))}
               </tr>
               <tr>
-                <td className="fixed-column">Gifts and charity</td>
+                <td className="fixed-column">Gifts, charity and other</td>
                 {months.map((_, index) => (
                   <React.Fragment key={index}>
                     <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'charity'))}</td>
                     <td className="actual"></td>
                   </React.Fragment>
                 ))}
-              </tr>
-              <tr>
-                <td className="fixed-column">Other</td>
-                {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">£0.00</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
-                ))}
-              </tr>
-              <tr>
-                <td className="fixed-column">Large spend (sinking fund)</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(totals.savings.sinkingFund)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
               </tr>
 
               {/* FUNDS REMAINING */}
@@ -627,53 +510,12 @@ const BudgetSpreadsheet = ({ formData }) => {
                 })}
               </tr>
 
-              {/* SAVINGS SECTION */}
-              <tr className="section-header">
-                <td colSpan={13}>TOTAL SAVINGS</td>
-              </tr>
-              <tr>
-                <td className="fixed-column">Sinking Fund</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(totals.savings.sinkingFund)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-              <tr>
-                <td className="fixed-column">Goal Fund</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(totals.savings.goalFund)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-              <tr>
-                <td className="fixed-column">Emergency fund (gatehouse)</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(totals.savings.emergencyFund)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-
               {/* DISTRIBUTION SECTION */}
               <tr className="section-header">
                 <td colSpan={13}>Distribution</td>
               </tr>
               <tr>
-                <td className="fixed-column">Needs (50%)</td>
+                <td className="fixed-column">Needs %</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
@@ -685,7 +527,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 })}
               </tr>
               <tr>
-                <td className="fixed-column">Wants (30%)</td>
+                <td className="fixed-column">Wants %</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
@@ -697,12 +539,12 @@ const BudgetSpreadsheet = ({ formData }) => {
                 })}
               </tr>
               <tr>
-                <td className="fixed-column">Savings (20%)</td>
+                <td className="fixed-column">Remaining %</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
                     <React.Fragment key={index}>
-                      <td className="predicted">{totals.distribution.savings.toFixed(1)}%</td>
+                      <td className="predicted">{totals.distribution.remaining.toFixed(1)}%</td>
                       <td className="actual"></td>
                     </React.Fragment>
                   );
@@ -714,14 +556,14 @@ const BudgetSpreadsheet = ({ formData }) => {
                 <td colSpan={13}>Fund Balances</td>
               </tr>
               <tr>
-                <td className="fixed-column">Sinking Fund balance</td>
+                <td className="fixed-column">Total Savings balance</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   // Calculate cumulative balance by adding monthly contributions
-                  let cumulativeBalance = Number(formData.sinkingFund || 0);
+                  let cumulativeBalance = Number(formData.totalSavings || 0);
                   for (let i = 0; i <= index; i++) {
                     const monthData = formData.monthlyProjections[i] || {};
-                    cumulativeBalance += Number(monthData.savingsDetails?.sinkingFund || formData.sinkingFund || 0);
+                    cumulativeBalance += Number(monthData.savingsDetails?.total || formData.totalSavings || 0);
                   }
                   return (
                     <React.Fragment key={index}>
@@ -730,69 +572,6 @@ const BudgetSpreadsheet = ({ formData }) => {
                     </React.Fragment>
                   );
                 })}
-              </tr>
-              <tr>
-                <td className="fixed-column">Goal Fund balance</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  // Calculate cumulative balance by adding monthly contributions
-                  let cumulativeBalance = Number(formData.goalFund || 0);
-                  for (let i = 0; i <= index; i++) {
-                    const monthData = formData.monthlyProjections[i] || {};
-                    cumulativeBalance += Number(monthData.savingsDetails?.goalFund || formData.goalFund || 0);
-                  }
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(cumulativeBalance)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-              <tr>
-                <td className="fixed-column">Emergency Fund balance</td>
-                {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  // Calculate cumulative balance by adding monthly contributions
-                  let cumulativeBalance = Number(formData.emergencyFund || 0);
-                  for (let i = 0; i <= index; i++) {
-                    const monthData = formData.monthlyProjections[i] || {};
-                    cumulativeBalance += Number(monthData.savingsDetails?.emergencyFund || formData.emergencyFund || 0);
-                  }
-                  return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(cumulativeBalance)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Large spending log */}
-        <div className="budgetspreadsheet-spending-log">
-          <h2>Large spending log</h2>
-          <table className="budgetspreadsheet-log-table">
-            <thead>
-              <tr>
-                <th>Details</th>
-                <th>Amount</th>
-                <th>Details</th>
-                <th>Amount</th>
-                <th>Details</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
               </tr>
             </tbody>
           </table>

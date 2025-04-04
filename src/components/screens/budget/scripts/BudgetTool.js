@@ -53,6 +53,7 @@ const BudgetTool = () => {
     
     // Housing Expenses
     housingType: 'rent',
+    housingPayment: '',
     rent: '',
     mortgage: '',
     propertyTax: '',
@@ -145,11 +146,11 @@ const BudgetTool = () => {
                   if (e.target.checked) {
                     newFormData.housingType = 'mortgage';
                     newFormData.mortgage = newFormData.housingPayment;
-                    newFormData.rent = 0;
+                    newFormData.rent = ''; // Clear rent when switching to mortgage
                   } else {
                     newFormData.housingType = 'rent';
                     newFormData.rent = newFormData.housingPayment;
-                    newFormData.mortgage = 0;
+                    newFormData.mortgage = ''; // Clear mortgage when switching to rent
                   }
                   return newFormData;
                 }
@@ -162,11 +163,11 @@ const BudgetTool = () => {
                   if (e.target.checked) {
                     newFormData.housingType = 'rent';
                     newFormData.rent = newFormData.housingPayment;
-                    newFormData.mortgage = 0;
+                    newFormData.mortgage = ''; // Clear mortgage when switching to rent
                   } else {
                     newFormData.housingType = 'mortgage';
                     newFormData.mortgage = newFormData.housingPayment;
-                    newFormData.rent = 0;
+                    newFormData.rent = ''; // Clear rent when switching to mortgage
                   }
                   return newFormData;
                 }
@@ -276,7 +277,7 @@ const BudgetTool = () => {
         },
         {
           id: 'charity',
-          label: 'How much do you spend on charity?',
+          label: 'How much do you spend on charity, gifts, etc.?',
           type: 'number',
           placeholder: 'Enter amount',
         },
@@ -287,7 +288,7 @@ const BudgetTool = () => {
       questions: [
         {
           id: 'hasSavingsPot',
-          label: 'Do you currently have a savings pot?',
+          label: 'Do you currently have any savings?',
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
@@ -295,122 +296,25 @@ const BudgetTool = () => {
           ],
         },
         {
-          id: 'savingsPotType',
-          label: 'Do you have multiple savings pots or everything in one?',
-          type: 'select',
-          options: [
-            { value: 'one', label: 'One' },
-            { value: 'multiple', label: 'Multiple' },
-          ],
-          showIf: (data) => data.hasSavingsPot === 'yes',
-        },
-        {
-          id: 'emergencyFund',
-          label: 'How much do you currently have in your Emergency Fund?',
+          id: 'totalSavings',
+          label: 'How much money do you have in total in all of your savings pots?',
           type: 'number',
           placeholder: 'Enter amount',
           showIf: (data) => data.hasSavingsPot === 'yes',
-        },
-        {
-          id: 'sinkingFund',
-          label: 'How much do you currently have in your Sinking Fund?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.hasSavingsPot === 'yes',
-        },
-        {
-          id: 'goalFund',
-          label: 'How much do you currently have in your Goal/Investment Fund?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.hasSavingsPot === 'yes',
-        },
+        }
       ],
       renderCustomContent: (formData) => {
         if (formData.hasSavingsPot === 'no') {
           return (
             <div className="budgettool-savings-info">
-              <h3 className="budgettool-savings-title">Understanding Savings Pots</h3>
+              <h3 className="budgettool-savings-title">Understanding Savings</h3>
               <p className="budgettool-savings-text">
-                Having a structured approach to savings is crucial for financial stability. We recommend setting up three distinct savings pots:
+                Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month.
+                This will help you build an emergency fund, save for future purchases, and work towards your long-term financial goals.
               </p>
-              <div className="budgettool-savings-pots">
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🛡️</div>
-                  <h4>Emergency Fund</h4>
-                  <p>3-6 months of essential expenses for unexpected situations</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🎯</div>
-                  <h4>Sinking Fund</h4>
-                  <p>For planned future expenses like holidays or home repairs</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">💎</div>
-                  <h4>Goal/Investment Fund</h4>
-                  <p>For long-term goals and wealth building</p>
-                </div>
-              </div>
             </div>
           );
         }
-
-        if (formData.savingsPotType === 'one') {
-          return (
-            <div className="budgettool-savings-info">
-              <h3 className="budgettool-savings-title">Multiple Savings Pots</h3>
-              <p className="budgettool-savings-text">
-                While having a single savings pot is a good start, it's important to build up multiple savings pots that have different roles. Here's how we suggest you structure your savings:
-              </p>
-              <div className="budgettool-savings-pots">
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🛡️</div>
-                  <h4>Emergency Fund</h4>
-                  <p>3-6 months of essential expenses for unexpected situations</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🎯</div>
-                  <h4>Sinking Fund</h4>
-                  <p>For planned future expenses like holidays or home repairs</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">💎</div>
-                  <h4>Goal/Investment Fund</h4>
-                  <p>For long-term goals and wealth building</p>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        if (formData.savingsPotType === 'multiple') {
-          return (
-            <div className="budgettool-savings-info">
-              <h3 className="budgettool-savings-title">Great Job!</h3>
-              <p className="budgettool-savings-text">
-                You're on the right track with multiple savings pots. Let's review your current savings structure:
-              </p>
-              <div className="budgettool-savings-pots">
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🛡️</div>
-                  <h4>Emergency Fund</h4>
-                  <p>3-6 months of essential expenses for unexpected situations</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🎯</div>
-                  <h4>Sinking Fund</h4>
-                  <p>For planned future expenses like holidays or home repairs</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">💎</div>
-                  <h4>Goal/Investment Fund</h4>
-                  <p>For long-term goals and wealth building</p>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
         return null;
       }
     },
@@ -663,51 +567,19 @@ const BudgetTool = () => {
                     </thead>
                     <tbody>
                       <tr>
-                        <td>{formData.housingType === 'mortgage' ? 'Mortgage Payment' : 'Rent Payment'}</td>
+                        <td>Housing Payment</td>
                         {nextMonths.map((_, index) => (
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.housing || (formData.housingType === 'mortgage' ? Number(formData.mortgage || 0) : Number(formData.rent || 0))}
+                              value={formData.monthlyProjections[index]?.needsDetails?.housing || Number(formData.housingPayment || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.housing', e.target.value)}
                               className="budgettool-input"
-                              placeholder={`£${(formData.housingType === 'mortgage' ? Number(formData.mortgage || 0) : Number(formData.rent || 0)).toFixed(2)}`}
+                              placeholder={`£${Number(formData.housingPayment || 0).toFixed(2)}`}
                             />
                           </td>
                         ))}
                       </tr>
-                      {formData.housingType === 'mortgage' && (
-                        <>
-                          <tr>
-                            <td>Property Tax</td>
-                            {nextMonths.map((_, index) => (
-                              <td key={index}>
-                                <input
-                                  type="number"
-                                  value={formData.monthlyProjections[index]?.needsDetails?.propertyTax || ''}
-                                  onChange={(e) => handleAmountChange(index, 'needsDetails.propertyTax', e.target.value)}
-                                  placeholder={`£${Number(formData.propertyTax || 0).toFixed(2)}`}
-                                  className="budgettool-input"
-                                />
-                              </td>
-                            ))}
-                          </tr>
-                          <tr>
-                            <td>Home Insurance</td>
-                            {nextMonths.map((_, index) => (
-                              <td key={index}>
-                                <input
-                                  type="number"
-                                  value={formData.monthlyProjections[index]?.needsDetails?.homeInsurance || ''}
-                                  onChange={(e) => handleAmountChange(index, 'needsDetails.homeInsurance', e.target.value)}
-                                  placeholder={`£${Number(formData.homeInsurance || 0).toFixed(2)}`}
-                                  className="budgettool-input"
-                                />
-                              </td>
-                            ))}
-                          </tr>
-                        </>
-                      )}
                       <tr>
                         <td>Utilities</td>
                         {nextMonths.map((_, index) => (
@@ -920,45 +792,26 @@ const BudgetTool = () => {
   const calculateBudgetSummary = () => {
     // Calculate total income
     const totalIncome = Number(formData.monthlyIncome || 0) + Number(formData.additionalIncome || 0);
-    
-    // Get housing payment based on type
-    const housingPayment = formData.housingType === 'mortgage' ? Number(formData.mortgage || 0) : Number(formData.rent || 0);
-    
+
     // Calculate total needs
-    const needs = 
-      // Housing
-      housingPayment + 
-      (formData.housingType === 'mortgage' ? Number(formData.propertyTax || 0) + Number(formData.homeInsurance || 0) : 0) + 
+    const needs = Number(formData.housingPayment || 0) +
       Number(formData.utilities || 0) +
-      // Transportation
-      Number(formData.transportation || 0) + 
-      Number(formData.carInsurance || 0) + 
-      Number(formData.gas || 0) + 
-      Number(formData.publicTransportation || 0) +
-      // Food & Dining (groceries are needs)
+      Number(formData.transportation || 0) +
       Number(formData.groceries || 0) +
-      // Personal Care (health related)
-      Number(formData.healthInsurance || 0) + 
-      Number(formData.medicalExpenses || 0) +
-      // Other Loans
-      Number(formData.otherLoanPayment || 0);
-    
+      Number(formData.healthInsurance || 0) +
+      Number(formData.medicalExpenses || 0);
+
     // Calculate total wants
-    const wants = 
-      // Food & Dining (dining out and takeout are wants)
-      Number(formData.diningOut || 0) + 
-      // Personal Care (non-health related)
-      Number(formData.gymMembership || 0) + 
-      Number(formData.personalCare || 0) +
-      // Entertainment & Leisure
-      Number(formData.entertainment || 0) + 
-      Number(formData.shopping || 0) + 
-      Number(formData.subscriptions || 0) + 
+    const wants = Number(formData.subscriptions || 0) +
+      Number(formData.diningOut || 0) +
+      Number(formData.gymMembership || 0) +
+      Number(formData.shopping || 0) +
+      Number(formData.entertainment || 0) +
       Number(formData.travel || 0) +
       Number(formData.charity || 0);
 
     // Calculate total savings
-    const totalSavings = Number(formData.emergencyFund || 0) + Number(formData.sinkingFund || 0) + Number(formData.goalFund || 0);
+    const totalSavings = Number(formData.totalSavings || 0);
     
     // Calculate percentages
     const needsPercentage = totalIncome > 0 ? (needs / totalIncome) * 100 : 0;
@@ -975,7 +828,7 @@ const BudgetTool = () => {
       wantsPercentage,
       savingsPercentage,
       remainingPercentage,
-      housingPayment
+      housingPayment: Number(formData.housingPayment || 0)
     };
   };
 
@@ -984,12 +837,38 @@ const BudgetTool = () => {
       const newProjections = [...prev.monthlyProjections];
       if (!newProjections[monthIndex]) {
         newProjections[monthIndex] = {
-          wantsDetails: {},  // Initialize wantsDetails if it doesn't exist
+          needsDetails: {},  // Initialize needsDetails
+          wantsDetails: {},  // Initialize wantsDetails
         };
       }
 
-      // If updating wants details, recalculate total wants
-      if (field.startsWith('wantsDetails.')) {
+      // If updating needs details
+      if (field.startsWith('needsDetails.')) {
+        const needsKey = field.split('.')[1];
+        newProjections[monthIndex] = {
+          ...newProjections[monthIndex],
+          needsDetails: {
+            ...newProjections[monthIndex].needsDetails || {},
+            [needsKey]: Number(value) || 0
+          }
+        };
+        
+        // Calculate total needs from all needs categories
+        const totalNeeds = Object.values({
+          housing: Number(formData.housingPayment || 0),
+          utilities: Number(formData.utilities || 0),
+          transportation: Number(formData.transportation || 0),
+          groceries: Number(formData.groceries || 0),
+          healthInsurance: Number(formData.healthInsurance || 0),
+          medicalExpenses: Number(formData.medicalExpenses || 0),
+          ...newProjections[monthIndex].needsDetails
+        }).reduce((sum, val) => sum + (Number(val) || 0), 0);
+        
+        // Update the total needs for this month
+        newProjections[monthIndex].needs = totalNeeds;
+      }
+      // If updating wants details
+      else if (field.startsWith('wantsDetails.')) {
         const wantsKey = field.split('.')[1];
         newProjections[monthIndex] = {
           ...newProjections[monthIndex],
@@ -1031,13 +910,22 @@ const BudgetTool = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
-    if (name === 'housingPayment') {
-      // When housing payment changes, update either rent or mortgage based on current type
+    if (name === 'monthlyIncome') {
+      setFormData(prev => ({
+        ...prev,
+        monthlyIncome: value
+      }));
+    } else if (name === 'housingPayment') {
+      setFormData(prev => ({
+        ...prev,
+        housingPayment: value,
+        [prev.housingType]: value // Update either rent or mortgage based on housingType
+      }));
+    } else if (name === 'rent' || name === 'mortgage') {
       setFormData(prev => ({
         ...prev,
         [name]: value,
-        rent: prev.housingType === 'rent' ? value : prev.rent,
-        mortgage: prev.housingType === 'mortgage' ? value : prev.mortgage
+        housingPayment: value // Update the active payment field
       }));
     } else {
       setFormData(prev => ({
