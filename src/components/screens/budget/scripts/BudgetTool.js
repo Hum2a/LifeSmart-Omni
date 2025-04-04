@@ -7,7 +7,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
 // Developer Testing Configuration
-const DEV_TESTING_ENABLED = true; // Toggle this to enable/disable developer testing features
+const DEV_TESTING_ENABLED = false; // Toggle this to enable/disable developer testing features
 
 // Random number generation helper functions
 const generateRandomAmount = (min = 100, max = 5000) => {
