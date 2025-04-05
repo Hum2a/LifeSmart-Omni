@@ -9,7 +9,8 @@ const needsCategories = [
   { label: "Transportation", key: "transportation" },
   { label: "Groceries", key: "groceries" },
   { label: "Health Insurance", key: "healthInsurance" },
-  { label: "Medical Expenses", key: "medicalExpenses" }
+  { label: "Medical Expenses", key: "medicalExpenses" },
+  { label: "Loan Payments", key: "otherLoanPayment" }
 ];
 
 const wantsCategories = [
@@ -38,6 +39,10 @@ export const downloadSpreadsheet = async (formData) => {
     
     if (subcategory) {
       if (category === 'needs') {
+        // Special handling for loan payments
+        if (subcategory === 'otherLoanPayment') {
+          return monthData.needsDetails?.loanPayments || formData.otherLoanPayment || 0;
+        }
         return monthData.needsDetails?.[subcategory] || formData[subcategory] || 0;
       } else if (category === 'wants') {
         return monthData.wantsDetails?.[subcategory] || formData[subcategory] || 0;
@@ -209,12 +214,15 @@ export const downloadSpreadsheet = async (formData) => {
   addSectionHeader('Fund Balances');
   const balanceValues = [];
   months.forEach((_, index) => {
-    // Calculate cumulative balance by adding monthly funds remaining
+    // Start with initial savings
     let cumulativeBalance = Number(formData.totalSavings || 0);
+    
+    // Add up all funds remaining from previous months
     for (let i = 0; i <= index; i++) {
-      const monthTotals = calculateTotals(i);
-      cumulativeBalance += monthTotals.fundsRemaining;
+      const totals = calculateTotals(i);
+      cumulativeBalance += totals.fundsRemaining;
     }
+    
     balanceValues.push(cumulativeBalance, null);
   });
   addDataRow('Total Savings balance', balanceValues);
@@ -258,9 +266,7 @@ const BudgetSpreadsheet = ({ formData }) => {
   };
 
   const formatCurrency = (value) => {
-    // Remove any existing currency symbols and non-breaking spaces
     const cleanValue = String(value || 0).replace(/[£\u00A0]/g, '').trim();
-    // Format without using toLocaleString to avoid any truncation
     return `£${Number(cleanValue).toFixed(2)}`;
   };
 
@@ -274,14 +280,15 @@ const BudgetSpreadsheet = ({ formData }) => {
     return months;
   };
 
-  const months = getNextMonths();
-
-  // Helper function to get the predicted value for a specific field and month
   const getPredictedValue = (monthIndex, category, subcategory = null) => {
     const monthData = formData.monthlyProjections[monthIndex] || {};
     
     if (subcategory) {
       if (category === 'needs') {
+        // Special handling for loan payments
+        if (subcategory === 'otherLoanPayment') {
+          return monthData.needsDetails?.loanPayments || formData.otherLoanPayment || 0;
+        }
         return monthData.needsDetails?.[subcategory] || formData[subcategory] || 0;
       } else if (category === 'wants') {
         return monthData.wantsDetails?.[subcategory] || formData[subcategory] || 0;
@@ -289,11 +296,9 @@ const BudgetSpreadsheet = ({ formData }) => {
         return monthData.savingsDetails?.[subcategory] || formData[subcategory] || 0;
       }
     }
-
     return monthData[category] || 0;
   };
 
-  // Helper function to calculate totals for each category
   const calculateTotals = (monthIndex) => {
     const needs = needsCategories.reduce((total, { key }) => 
       total + Number(getPredictedValue(monthIndex, 'needs', key) || 0), 0);
@@ -318,6 +323,8 @@ const BudgetSpreadsheet = ({ formData }) => {
       distribution
     };
   };
+
+  const months = getNextMonths();
 
   return (
     <div className="budgetspreadsheet-container">
@@ -350,12 +357,8 @@ const BudgetSpreadsheet = ({ formData }) => {
               <tr>
                 <th className="fixed-column">Category</th>
                 {months.map((month, index) => (
-                  <th key={index} colSpan="2">
+                  <th key={index}>
                     {month}
-                    <div className="column-subheader">
-                      <span>Predicted</span>
-                      <span>Actual</span>
-                    </div>
                   </th>
                 ))}
               </tr>
@@ -363,166 +366,135 @@ const BudgetSpreadsheet = ({ formData }) => {
             <tbody>
               {/* INCOME SECTION */}
               <tr className="section-header">
-                <td colSpan={13}>TOTAL INCOME</td>
+                <td colSpan={7}>
+                  TOTAL INCOME: {formatCurrency(Number(formData.monthlyIncome || 0) + Number(formData.additionalIncome || 0))}
+                </td>
               </tr>
               <tr>
                 <td className="fixed-column">Salary</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(Number(formData.monthlyIncome || 0))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(Number(formData.monthlyIncome || 0))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Other</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(Number(formData.additionalIncome || 0))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(Number(formData.additionalIncome || 0))}</td>
                 ))}
               </tr>
 
               {/* NEEDS SECTION */}
               <tr className="section-header">
-                <td colSpan={13}>TOTAL 'NEEDS' SPENDING</td>
+                <td colSpan={7}>
+                  TOTAL "NEEDS" SPENDING: {formatCurrency(needsCategories.reduce((total, { key }) => 
+                    total + Number(getPredictedValue(0, 'needs', key) || 0), 0))}
+                </td>
               </tr>
               <tr>
                 <td className="fixed-column">Housing Payment</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'housingPayment'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'housingPayment'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Bills (utilities, bills, internet)</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'utilities'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'utilities'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Transport</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'transportation'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'transportation'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Groceries (basic)</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'groceries'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'groceries'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Health (contact lenses)</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'needs', 'medicalExpenses'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'medicalExpenses'))}</td>
+                ))}
+              </tr>
+              <tr>
+                <td className="fixed-column">Loan Payments</td>
+                {months.map((_, index) => (
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'otherLoanPayment'))}</td>
                 ))}
               </tr>
 
               {/* WANTS SECTION */}
               <tr className="section-header">
-                <td colSpan={13}>TOTAL 'WANTS' SPENDING</td>
+                <td colSpan={7}>
+                  TOTAL "WANTS" SPENDING: {formatCurrency(wantsCategories.reduce((total, { key }) => 
+                    total + Number(getPredictedValue(0, 'wants', key) || 0), 0))}
+                </td>
               </tr>
               <tr>
                 <td className="fixed-column">Subscriptions</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'subscriptions'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'subscriptions'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Takeaway/eating out</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'diningOut'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'diningOut'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Gym and sport</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'gymMembership'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'gymMembership'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Shopping</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'shopping'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'shopping'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Entertainment (events and activities)</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'entertainment'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'entertainment'))}</td>
                 ))}
               </tr>
               <tr>
                 <td className="fixed-column">Gifts, charity and other</td>
                 {months.map((_, index) => (
-                  <React.Fragment key={index}>
-                    <td className="predicted">{formatCurrency(getPredictedValue(index, 'wants', 'charity'))}</td>
-                    <td className="actual"></td>
-                  </React.Fragment>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'wants', 'charity'))}</td>
                 ))}
               </tr>
 
               {/* FUNDS REMAINING */}
               <tr className="section-header">
-                <td colSpan={13}>Funds remaining</td>
+                <td colSpan={7}>Funds remaining</td>
               </tr>
               <tr>
                 <td className="fixed-column">Funds remaining</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(totals.fundsRemaining)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
+                    <td key={index}>{formatCurrency(totals.fundsRemaining)}</td>
                   );
                 })}
               </tr>
 
               {/* DISTRIBUTION SECTION */}
               <tr className="section-header">
-                <td colSpan={13}>Distribution</td>
+                <td colSpan={7}>Distribution</td>
               </tr>
               <tr>
                 <td className="fixed-column">Needs %</td>
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{totals.distribution.needs.toFixed(1)}%</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
+                    <td key={index}>{totals.distribution.needs.toFixed(1)}%</td>
                   );
                 })}
               </tr>
@@ -531,10 +503,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{totals.distribution.wants.toFixed(1)}%</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
+                    <td key={index}>{totals.distribution.wants.toFixed(1)}%</td>
                   );
                 })}
               </tr>
@@ -543,33 +512,29 @@ const BudgetSpreadsheet = ({ formData }) => {
                 {months.map((_, index) => {
                   const totals = calculateTotals(index);
                   return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{totals.distribution.remaining.toFixed(1)}%</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
+                    <td key={index}>{totals.distribution.remaining.toFixed(1)}%</td>
                   );
                 })}
               </tr>
 
               {/* FUND BALANCES */}
               <tr className="section-header">
-                <td colSpan={13}>Fund Balances</td>
+                <td colSpan={7}>Fund Balances</td>
               </tr>
               <tr>
                 <td className="fixed-column">Total Savings balance</td>
                 {months.map((_, index) => {
-                  const totals = calculateTotals(index);
-                  // Calculate cumulative balance by adding monthly contributions
+                  // Start with initial savings
                   let cumulativeBalance = Number(formData.totalSavings || 0);
+                  
+                  // Add up all funds remaining from previous months
                   for (let i = 0; i <= index; i++) {
-                    const monthData = formData.monthlyProjections[i] || {};
-                    cumulativeBalance += Number(monthData.savingsDetails?.total || formData.totalSavings || 0);
+                    const totals = calculateTotals(i);
+                    cumulativeBalance += totals.fundsRemaining;
                   }
+                  
                   return (
-                    <React.Fragment key={index}>
-                      <td className="predicted">{formatCurrency(cumulativeBalance)}</td>
-                      <td className="actual"></td>
-                    </React.Fragment>
+                    <td key={index}>{formatCurrency(cumulativeBalance)}</td>
                   );
                 })}
               </tr>

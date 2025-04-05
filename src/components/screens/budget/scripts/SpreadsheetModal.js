@@ -24,7 +24,9 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
       Number(formData.groceries || 0) +
       // Healthcare
       Number(formData.healthInsurance || 0) + 
-      Number(formData.medicalExpenses || 0)
+      Number(formData.medicalExpenses || 0) +
+      // Loan Payments
+      Number(formData.loanPayments || 0)
     ),
     
     // Wants calculations

@@ -8,7 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
 // Developer Testing Configuration
-const DEV_TESTING_ENABLED = false; // Toggle this to enable/disable developer testing features
+const DEV_TESTING_ENABLED = true; // Toggle this to enable/disable developer testing features
 
 // Random number generation helper functions
 const generateRandomAmount = (min = 100, max = 5000) => {
@@ -75,6 +75,12 @@ const BudgetTool = () => {
     gymMembership: '',
     personalCare: '',
     
+    // Loans
+    hasOtherLoans: 'no',
+    otherLoanAmount: '',
+    otherLoanPayment: '',
+    loanPayments: '',
+    
     // Entertainment & Leisure
     entertainment: '',
     shopping: '',
@@ -130,51 +136,12 @@ const BudgetTool = () => {
       questions: [
         {
           id: 'housingPayment',
-          label: 'What is your monthly housing payment?',
+          label: 'What is your monthly housing payment (Rent or Mortgage)?',
           type: 'number',
           placeholder: 'Enter your monthly housing payment',
           validation: (value) => {
             if (!value || value <= 0) return 'Please enter a valid housing payment';
             return null;
-          },
-          housingType: {
-            type: 'checkbox',
-            options: [
-              {
-                label: 'This is a mortgage payment',
-                value: 'mortgage',
-                onChange: (e, formData) => {
-                  const newFormData = { ...formData };
-                  if (e.target.checked) {
-                    newFormData.housingType = 'mortgage';
-                    newFormData.mortgage = newFormData.housingPayment;
-                    newFormData.rent = ''; // Clear rent when switching to mortgage
-                  } else {
-                    newFormData.housingType = 'rent';
-                    newFormData.rent = newFormData.housingPayment;
-                    newFormData.mortgage = ''; // Clear mortgage when switching to rent
-                  }
-                  return newFormData;
-                }
-              },
-              {
-                label: 'This is a rent payment',
-                value: 'rent',
-                onChange: (e, formData) => {
-                  const newFormData = { ...formData };
-                  if (e.target.checked) {
-                    newFormData.housingType = 'rent';
-                    newFormData.rent = newFormData.housingPayment;
-                    newFormData.mortgage = ''; // Clear mortgage when switching to rent
-                  } else {
-                    newFormData.housingType = 'mortgage';
-                    newFormData.mortgage = newFormData.housingPayment;
-                    newFormData.rent = ''; // Clear rent when switching to mortgage
-                  }
-                  return newFormData;
-                }
-              }
-            ]
           }
         },
         {
@@ -302,10 +269,20 @@ const BudgetTool = () => {
           label: 'Do you have your savings in one pot or multiple pots?',
           type: 'select',
           options: [
-            { value: 'one', label: 'One pot' },
+            { value: 'one', label: 'One pot or more pots' },
             { value: 'multiple', label: 'Multiple pots' },
           ],
           showIf: (data) => data.hasSavingsPot === 'yes',
+          renderAfter: (formData) => {
+            if (formData.savingsPotType === 'multiple') {
+              return (
+                <div className="budgettool-success-message">
+                  <p>Yeah, you're on the right track! Having multiple savings pots helps you organize and track your savings goals better.</p>
+                </div>
+              );
+            }
+            return null;
+          }
         },
         {
           id: 'totalSavings',
@@ -364,10 +341,10 @@ const BudgetTool = () => {
         const currentWants = wants;
         const wantsReduction = Math.max(0, currentWants - recommendedWants);
         
-        const recommendedEmergencyFund = needs * 6; // 6 months of needs
-        const minimumEmergencyFund = needs * 3; // 3 months of needs
-        const currentEmergencyFund = Number(formData.emergencyFund) || 0;
-        const emergencyFundGap = Math.max(0, minimumEmergencyFund - currentEmergencyFund);
+        const recommendedMinimumSavings = needs * 3; // 3 months of needs
+        const recommendedIdealSavings = needs * 6; // 6 months of needs
+        const currentSavings = Number(formData.totalSavings) || 0;
+        const savingsGap = Math.max(0, recommendedMinimumSavings - currentSavings);
 
         return (
           <div className="budgettool-analysis">
@@ -471,22 +448,21 @@ const BudgetTool = () => {
               
               <div className="budgettool-analysis-savings">
                 <h4>Savings Recommendations</h4>
-                <p>Emergency Fund:</p>
+                <p>Total Savings Target:</p>
                 <ul className="budgettool-analysis-list">
-                  <li>Minimum target: £{minimumEmergencyFund.toFixed(2)} (3 months of needs)</li>
-                  <li>Ideal target: £{recommendedEmergencyFund.toFixed(2)} (6 months of needs)</li>
-                  <li>Current amount: £{currentEmergencyFund.toFixed(2)}</li>
-                  {emergencyFundGap > 0 && (
+                  <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
+                  <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
+                  <li>Current savings: £{currentSavings.toFixed(2)}</li>
+                  {savingsGap > 0 && (
                     <li className="budgettool-analysis-warning">
-                      You need £{emergencyFundGap.toFixed(2)} more to reach the minimum target
+                      You need £{savingsGap.toFixed(2)} more to reach the minimum target
                     </li>
                   )}
                 </ul>
                 
-                <p>Sinking Fund and Goal Fund:</p>
                 <p className="budgettool-analysis-text">
-                  These funds are flexible and should be based on your personal goals. 
-                  Consider setting specific targets for major purchases, holidays, or long-term investments.
+                  Having savings is crucial for financial stability. We recommend saving at least 20% of your income 
+                  each month to build up your savings and work towards your financial goals.
                 </p>
               </div>
             </div>
@@ -679,6 +655,20 @@ const BudgetTool = () => {
                           </td>
                         ))}
                       </tr>
+                      <tr>
+                        <td>Loan Payments</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.needsDetails?.loanPayments || formData.otherLoanPayment || ''}
+                              onChange={(e) => handleAmountChange(index, 'needsDetails.loanPayments', e.target.value)}
+                              placeholder={`£${Number(formData.otherLoanPayment || 0).toFixed(2)}`}
+                              className="budgettool-input"
+                            />
+                          </td>
+                        ))}
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -828,7 +818,8 @@ const BudgetTool = () => {
       Number(formData.transportation || 0) +
       Number(formData.groceries || 0) +
       Number(formData.healthInsurance || 0) +
-      Number(formData.medicalExpenses || 0);
+      Number(formData.medicalExpenses || 0) +
+      Number(formData.otherLoanPayment || 0);
 
     // Calculate total wants
     const wants = Number(formData.subscriptions || 0) +
@@ -890,6 +881,7 @@ const BudgetTool = () => {
           groceries: Number(formData.groceries || 0),
           healthInsurance: Number(formData.healthInsurance || 0),
           medicalExpenses: Number(formData.medicalExpenses || 0),
+          loanPayments: Number(formData.otherLoanPayment || 0),
           ...newProjections[monthIndex].needsDetails
         }).reduce((sum, val) => sum + (Number(val) || 0), 0);
         
@@ -939,43 +931,42 @@ const BudgetTool = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
-    if (name === 'monthlyIncome') {
-      setFormData(prev => ({
-        ...prev,
-        monthlyIncome: value
-      }));
-    } else if (name === 'housingPayment') {
-      setFormData(prev => ({
-        ...prev,
-        housingPayment: value,
-        [prev.housingType]: value // Update either rent or mortgage based on housingType
-      }));
-    } else if (name === 'rent' || name === 'mortgage') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-        housingPayment: value // Update the active payment field
-      }));
-    } else {
-      setFormData(prev => ({
+    setFormData(prev => {
+      const updates = {
         ...prev,
         [name]: value
-      }));
-    }
+      };
+
+      // When other loan payment changes, update loanPayments field
+      if (name === 'otherLoanPayment') {
+        updates.loanPayments = value;
+      }
+      // When hasOtherLoans changes to 'no', clear loan-related fields
+      if (name === 'hasOtherLoans' && value === 'no') {
+        updates.otherLoanAmount = '';
+        updates.otherLoanPayment = '';
+        updates.loanPayments = '';
+      }
+
+      return updates;
+    });
   };
 
   const handleNext = () => {
     if (currentStep < questions.length - 1) {
       setCurrentStep(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep === questions.length - 1) {
       setCurrentStep(prev => prev + 1); // Move to step 7
       setShowSpreadsheet(true); // Show spreadsheet modal
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (currentStep === questions.length) { // If on step 7
         setShowSpreadsheet(false); // Hide spreadsheet modal
       }
@@ -1079,104 +1070,96 @@ const BudgetTool = () => {
       return null;
     }
 
-    switch (question.type) {
-      case 'number':
-        return (
-          <div className="budgettool-input-group">
-            <input
-              type="number"
-              name={question.id}
-              value={formData[question.id]}
-              onChange={handleInputChange}
-              placeholder={question.placeholder}
-              className="budgettool-input"
-            />
-            {question.housingType && (
-              <div className="budgettool-checkbox-group">
-                {question.housingType.options.map((option, index) => (
-                  <label key={index} className="budgettool-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={formData.housingType === option.value}
-                      onChange={(e) => {
-                        const newFormData = option.onChange(e, formData);
-                        setFormData(newFormData);
-                      }}
-                      className="budgettool-checkbox"
-                    />
-                    {option.label}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      case 'select':
-        return (
-          <select
-            name={question.id}
-            value={formData[question.id]}
-            onChange={handleInputChange}
-            className="budgettool-select"
-          >
-            <option value="">Select option</option>
-            {question.options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        );
-      case 'multiselect':
-        return (
-          <div className="budgettool-multiselect">
-            {question.options.map(option => (
-              <label 
-                key={option.value} 
-                className="budgettool-checkbox-label"
-                data-checked={formData[question.id]?.includes(option.value)}
-              >
-                <input
-                  type="checkbox"
-                  name={question.id}
-                  value={option.value}
-                  checked={formData[question.id]?.includes(option.value) || false}
-                  onChange={(e) => {
-                    const currentValues = formData[question.id] || [];
-                    let newValues;
-                    if (option.value === 'none') {
-                      // If 'none' is selected, clear all other selections
-                      newValues = e.target.checked ? ['none'] : [];
-                    } else {
-                      // If any other option is selected, remove 'none' and toggle the selected option
-                      newValues = currentValues.filter(v => v !== 'none');
-                      if (e.target.checked) {
-                        newValues.push(option.value);
-                      } else {
-                        newValues = newValues.filter(v => v !== option.value);
-                      }
-                    }
-                    setFormData(prev => ({
-                      ...prev,
-                      [question.id]: newValues
-                    }));
-                  }}
-                  className="budgettool-checkbox"
-                />
-                {option.label}
-              </label>
-            ))}
-          </div>
-        );
-      case 'display':
-        return (
-          <div className="budgettool-display-value">
-            {question.getValue(formData)}
-          </div>
-        );
-      default:
-        return null;
-    }
+    return (
+      <div className="budgettool-question">
+        <label className="budgettool-label">{question.label}</label>
+        {(() => {
+          switch (question.type) {
+            case 'number':
+              return (
+                <div className="budgettool-input-group">
+                  <input
+                    type="number"
+                    name={question.id}
+                    value={formData[question.id]}
+                    onChange={handleInputChange}
+                    placeholder={question.placeholder}
+                    className="budgettool-input"
+                  />
+                </div>
+              );
+            case 'select':
+              return (
+                <>
+                  <select
+                    name={question.id}
+                    value={formData[question.id]}
+                    onChange={handleInputChange}
+                    className="budgettool-select"
+                  >
+                    <option value="">Select option</option>
+                    {question.options.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {question.renderAfter && question.renderAfter(formData)}
+                </>
+              );
+            case 'multiselect':
+              return (
+                <div className="budgettool-multiselect">
+                  {question.options.map(option => (
+                    <label 
+                      key={option.value} 
+                      className="budgettool-checkbox-label"
+                      data-checked={formData[question.id]?.includes(option.value)}
+                    >
+                      <input
+                        type="checkbox"
+                        name={question.id}
+                        value={option.value}
+                        checked={formData[question.id]?.includes(option.value) || false}
+                        onChange={(e) => {
+                          const currentValues = formData[question.id] || [];
+                          let newValues;
+                          if (option.value === 'none') {
+                            // If 'none' is selected, clear all other selections
+                            newValues = e.target.checked ? ['none'] : [];
+                          } else {
+                            // If any other option is selected, remove 'none' and toggle the selected option
+                            newValues = currentValues.filter(v => v !== 'none');
+                            if (e.target.checked) {
+                              newValues.push(option.value);
+                            } else {
+                              newValues = newValues.filter(v => v !== option.value);
+                            }
+                          }
+                          setFormData(prev => ({
+                            ...prev,
+                            [question.id]: newValues
+                          }));
+                        }}
+                        className="budgettool-checkbox"
+                      />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
+              );
+            case 'display':
+              return (
+                <div className="budgettool-display-value">
+                  {question.getValue(formData)}
+                </div>
+              );
+            default:
+              return null;
+          }
+        })()}
+      </div>
+    );
   };
 
   // Helper function to format currency values
@@ -1591,7 +1574,6 @@ const BudgetTool = () => {
 
                 return (
                   <div key={index} className="budgettool-question">
-                    <label className="budgettool-label">{question.label}</label>
                     {renderQuestion(question)}
                   </div>
                 );

@@ -294,6 +294,7 @@
   background: rgba(255, 255, 255, 0.05);
   font-weight: 500;
   color: #ffffff;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -306,6 +307,7 @@
 .budgettool-projections-table td:first-child {
   font-weight: 500;
   color: #ffffff;
+  position: -webkit-sticky;
   position: sticky;
   left: 0;
   background: rgba(255, 255, 255, 0.03);
@@ -1112,4 +1114,18 @@
   .budgettool-spreadsheet-step {
     padding: 1rem;
   }
+}
+
+/* Remove number input spinners */
+.budgettool-input[type="number"]::-webkit-inner-spin-button,
+.budgettool-input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.budgettool-input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 } 
