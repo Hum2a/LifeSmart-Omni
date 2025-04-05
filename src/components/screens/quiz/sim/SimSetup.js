@@ -204,24 +204,29 @@ const SimSetup = () => {
       const group = newGroups[index];
       const totalSpendable = getTotalSpendableAmount(group.points);
       
-      let remainingValue = totalSpendable;
-      const values = [];
+      let remainingPercentage = 100;
+      const percentages = [];
       
+      // Generate random percentages that sum to 100
       for (let i = 0; i < 4; i++) {
-        const max = remainingValue - (4 - i) * 1000;
-        const value = Math.floor(Math.random() * max) + 1000;
-        values.push(value);
-        remainingValue -= value;
+        const max = remainingPercentage - (4 - i);
+        const percentage = Math.floor(Math.random() * max) + 1;
+        percentages.push(percentage);
+        remainingPercentage -= percentage;
       }
-      values.push(remainingValue);
+      percentages.push(remainingPercentage);
       
-      for (let i = values.length - 1; i > 0; i--) {
+      // Shuffle the percentages
+      for (let i = percentages.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [values[i], values[j]] = [values[j], values[i]];
+        [percentages[i], percentages[j]] = [percentages[j], percentages[i]];
       }
       
-      Object.keys(group.assets).forEach((key, i) => {
-        group.assets[key] = values[i];
+      // Apply the percentages to each asset type
+      const assetTypes = ['equity', 'bonds', 'realestate', 'commodities', 'other'];
+      assetTypes.forEach((type, i) => {
+        group.percentages[type] = percentages[i];
+        group.assets[type] = (percentages[i] / 100) * totalSpendable;
       });
       
       return newGroups;
@@ -284,30 +289,44 @@ const SimSetup = () => {
   };
 
   const startSimulation = async () => {
-    if (!uid) {
-      alert('No user is logged in. Please sign in.');
-      navigate('/');
+    // Validate that all groups have values before proceeding
+    const hasEmptyValues = groups.some(group => {
+      const totalPercentage = Object.values(group.percentages).reduce(
+        (sum, val) => sum + parseFloat(val || 0),
+        0
+      );
+      return totalPercentage === 0;
+    });
+
+    if (hasEmptyValues) {
+      alert('Please fill in allocation values for each group before starting the simulation.');
       return;
     }
 
-    try {
-      const db = getFirestore();
-      const simulationRef = collection(db, uid, 'Asset Market Simulations', 'Simulations');
-      const simulationDoc = await addDoc(simulationRef, {
-        timestamp: new Date(),
-        groups: groups
-      });
+    // Convert the groups data to match the format used in GroupCreation
+    const formattedGroups = groups.map(group => ({
+      name: group.name,
+      equity: group.assets.equity.toString(),
+      bonds: group.assets.bonds.toString(),
+      realestate: group.assets.realestate.toString(),
+      commodities: group.assets.commodities.toString(),
+      other: group.assets.other.toString(),
+      points: group.points || 0,
+      equityTemp: group.assets.equity.toString(),
+      bondsTemp: group.assets.bonds.toString(),
+      realestateTemp: group.assets.realestate.toString(),
+      commoditiesTemp: group.assets.commodities.toString(),
+      otherTemp: group.assets.other.toString()
+    }));
 
-      navigate('/simulation-page', { 
-        state: { 
-          simulationId: simulationDoc.id,
-          groups: groups
-        }
-      });
-    } catch (error) {
-      console.error('Error starting simulation:', error);
-      alert('Failed to start simulation. Please try again.');
-    }
+    // Navigate to simulation page with groups data
+    navigate('/simulation-page', { 
+      state: { 
+        groups: formattedGroups,
+        maxPortfolioValue,
+        roundTo
+      }
+    });
   };
 
   if (isLoading) {
@@ -391,6 +410,14 @@ const SimSetup = () => {
                       <span className="GroupCreation-group-points">({group.points} points)</span>
                     </h2>
                     <div className="GroupCreation-group-actions">
+                      <button 
+                        onClick={() => generateRandomValues(index)} 
+                        className="GroupCreation-random-btn"
+                        title="Generate Random Values"
+                        disabled={!enableRandomGeneration}
+                      >
+                        <FaDice />
+                      </button>
                       <button onClick={() => editGroupName(index)} className="GroupCreation-edit-group-btn">
                         <FaEdit />
                       </button>
