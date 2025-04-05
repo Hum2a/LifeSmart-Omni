@@ -24,11 +24,7 @@ const AdminLoginCodes = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCode, setNewCode] = useState({
     name: '',
-    isActive: true,
-    createdAt: null,
-    createdBy: '',
-    lastUsed: null,
-    usageCount: 0
+    active: true
   });
 
   useEffect(() => {
@@ -39,7 +35,7 @@ const AdminLoginCodes = () => {
   const fetchCodes = async () => {
     try {
       const codesRef = collection(db, 'Login Codes');
-      const codesQuery = query(codesRef, orderBy('createdAt', 'desc'));
+      const codesQuery = query(codesRef);
       const codesSnap = await getDocs(codesQuery);
       
       const codesData = codesSnap.docs.map(doc => ({
@@ -60,17 +56,13 @@ const AdminLoginCodes = () => {
     e.preventDefault();
     try {
       const codeData = {
-        ...newCode,
-        createdAt: new Date(),
-        createdBy: currentUser.uid,
-        lastUsed: null,
-        usageCount: 0
+        active: true
       };
 
-      await setDoc(doc(db, 'Login Codes', codeData.name), codeData);
-      trackAdminAction('create_login_code', { codeName: codeData.name });
+      await setDoc(doc(db, 'Login Codes', newCode.name), codeData);
+      trackAdminAction('create_login_code', { codeName: newCode.name });
       setShowCreateModal(false);
-      setNewCode({ name: '', isActive: true, createdAt: null, createdBy: '', lastUsed: null, usageCount: 0 });
+      setNewCode({ name: '', active: true });
       fetchCodes();
     } catch (error) {
       console.error('Error creating login code:', error);
@@ -83,7 +75,7 @@ const AdminLoginCodes = () => {
     try {
       const codeRef = doc(db, 'Login Codes', codeId);
       await updateDoc(codeRef, {
-        isActive: !currentStatus
+        active: !currentStatus
       });
       trackAdminAction('toggle_login_code', { codeId, newStatus: !currentStatus });
       fetchCodes();
@@ -156,10 +148,7 @@ const AdminLoginCodes = () => {
               <strong>{codes.length}</strong> Total Codes
             </div>
             <div className="adminlogincodes-stat">
-              <strong>{codes.filter(c => c.isActive).length}</strong> Active Codes
-            </div>
-            <div className="adminlogincodes-stat">
-              <strong>{codes.filter(c => c.lastUsed).length}</strong> Used Codes
+              <strong>{codes.filter(c => c.active).length}</strong> Active Codes
             </div>
           </div>
         </div>
@@ -170,9 +159,6 @@ const AdminLoginCodes = () => {
               <tr>
                 <th>Code</th>
                 <th>Status</th>
-                <th>Created</th>
-                <th>Last Used</th>
-                <th>Usage Count</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -192,36 +178,17 @@ const AdminLoginCodes = () => {
                     </div>
                   </td>
                   <td>
-                    <span className={`adminlogincodes-status ${code.isActive ? 'active' : 'inactive'}`}>
-                      {code.isActive ? 'Active' : 'Inactive'}
+                    <span className={`adminlogincodes-status ${code.active ? 'active' : 'inactive'}`}>
+                      {code.active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td>
-                    {code.createdAt ? new Date(code.createdAt.seconds * 1000).toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    }) : 'N/A'}
-                  </td>
-                  <td>
-                    {code.lastUsed ? new Date(code.lastUsed.seconds * 1000).toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    }) : 'Never'}
-                  </td>
-                  <td>{code.usageCount || 0}</td>
                   <td className="adminlogincodes-actions">
                     <button
-                      onClick={() => handleToggleCode(code.id, code.isActive)}
-                      className={`adminlogincodes-action-button ${code.isActive ? 'deactivate' : 'activate'}`}
-                      title={code.isActive ? 'Deactivate Code' : 'Activate Code'}
+                      onClick={() => handleToggleCode(code.id, code.active)}
+                      className={`adminlogincodes-action-button ${code.active ? 'deactivate' : 'activate'}`}
+                      title={code.active ? 'Deactivate Code' : 'Activate Code'}
                     >
-                      {code.isActive ? <FaBan /> : <FaCheck />}
+                      {code.active ? <FaBan /> : <FaCheck />}
                     </button>
                     <button
                       onClick={() => handleDeleteCode(code.id)}
