@@ -209,11 +209,11 @@ export const downloadSpreadsheet = async (formData) => {
   addSectionHeader('Fund Balances');
   const balanceValues = [];
   months.forEach((_, index) => {
-    // Calculate cumulative balance using the same logic as the online spreadsheet
+    // Calculate cumulative balance by adding monthly funds remaining
     let cumulativeBalance = Number(formData.totalSavings || 0);
     for (let i = 0; i <= index; i++) {
-      const monthData = formData.monthlyProjections[i] || {};
-      cumulativeBalance += Number(monthData.savingsDetails?.total || formData.totalSavings || 0);
+      const monthTotals = calculateTotals(i);
+      cumulativeBalance += monthTotals.fundsRemaining;
     }
     balanceValues.push(cumulativeBalance, null);
   });
