@@ -43,14 +43,14 @@ const TOOL_CONFIG = {
     text: 'Asset Market Simulation'
   },
   stockMarketSimulator: {
-    enabled: true,
+    enabled: false,
     in_development: true,
     path: '/stock-market-simulator',
     icon: <FaStackExchange size={40} color="#E91E63" />,
     text: 'Stock Market Simulator'
   },
   learningResources: {
-    enabled: true,
+    enabled: false,
     in_development: false,
     path: '/financial-literacy',
     icon: <FaBook size={40} color="#9C27B0" />,
