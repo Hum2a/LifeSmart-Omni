@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/BudgetTool.css';
 import BudgetSpreadsheet, { downloadSpreadsheet } from './BudgetSpreadsheet';
 import SpreadsheetModal from './SpreadsheetModal';
@@ -42,6 +43,7 @@ const DEV_RANGES = {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const BudgetTool = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -296,6 +298,16 @@ const BudgetTool = () => {
           ],
         },
         {
+          id: 'savingsPotType',
+          label: 'Do you have your savings in one pot or multiple pots?',
+          type: 'select',
+          options: [
+            { value: 'one', label: 'One pot' },
+            { value: 'multiple', label: 'Multiple pots' },
+          ],
+          showIf: (data) => data.hasSavingsPot === 'yes',
+        },
+        {
           id: 'totalSavings',
           label: 'How much money do you have in total in all of your savings pots?',
           type: 'number',
@@ -312,6 +324,23 @@ const BudgetTool = () => {
                 Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month.
                 This will help you build an emergency fund, save for future purchases, and work towards your long-term financial goals.
               </p>
+              <div className="budgettool-savings-pots">
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🛡️</div>
+                  <h4>Emergency Fund</h4>
+                  <p>3-6 months of essential expenses for unexpected situations</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">🎯</div>
+                  <h4>Sinking Fund</h4>
+                  <p>For planned future expenses like holidays or home repairs</p>
+                </div>
+                <div className="budgettool-savings-pot">
+                  <div className="budgettool-savings-pot-icon">💎</div>
+                  <h4>Goal/Investment Fund</h4>
+                  <p>For long-term goals and wealth building</p>
+                </div>
+              </div>
             </div>
           );
         }
@@ -1404,7 +1433,7 @@ const BudgetTool = () => {
         <ConfirmModal
           isOpen={isConfirmModalOpen}
           onClose={() => setIsConfirmModalOpen(false)}
-          onConfirm={() => window.location.href = '/select'}
+          onConfirm={() => navigate('/select')}
         />
       </div>
     );
@@ -1617,7 +1646,7 @@ const BudgetTool = () => {
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
-        onConfirm={() => window.location.href = '/select'}
+        onConfirm={() => navigate('/select')}
       />
     </div>
   );
