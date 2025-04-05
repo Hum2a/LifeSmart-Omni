@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../firebase/auth';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { db } from '../../../../firebase/initFirebase';
-import { collection, query, getDocs, doc, updateDoc, where, deleteDoc, orderBy, limit } from 'firebase/firestore';
+import { collection, query, getDocs, doc, updateDoc, where, deleteDoc, orderBy, limit, getDoc } from 'firebase/firestore';
 import { 
   FaUserShield,
   FaArrowLeft,
@@ -47,16 +47,15 @@ const AdminUserManagement = () => {
       for (const userDoc of usersSnap.docs) {
         const userData = userDoc.data();
         
-        // Fetch the last login and streak from Login Streak subcollection
+        // Fetch the last login and streak from Login Streak document
         let lastLogin = null;
         let streak = 0;
         try {
-          const loginStreakRef = collection(db, userDoc.id, 'Login Streak');
-          const loginQuery = query(loginStreakRef, orderBy('lastLogin', 'desc'), limit(1));
-          const loginSnap = await getDocs(loginQuery);
+          const loginStreakRef = doc(db, userDoc.id, 'Login Streak');
+          const loginSnap = await getDoc(loginStreakRef);
           
-          if (!loginSnap.empty) {
-            const loginData = loginSnap.docs[0].data();
+          if (loginSnap.exists()) {
+            const loginData = loginSnap.data();
             lastLogin = loginData.lastLogin;
             streak = loginData.streak || 0;
           }
@@ -67,12 +66,11 @@ const AdminUserManagement = () => {
         // Fetch total funds
         let totalFunds = 0;
         try {
-          const fundsRef = collection(db, userDoc.id, 'Total Funds');
-          const fundsQuery = query(fundsRef, orderBy('timestamp', 'desc'), limit(1));
-          const fundsSnap = await getDocs(fundsQuery);
+          const fundsRef = doc(db, userDoc.id, 'Total Funds');
+          const fundsSnap = await getDoc(fundsRef);
           
-          if (!fundsSnap.empty) {
-            totalFunds = fundsSnap.docs[0].data().amount || 0;
+          if (fundsSnap.exists()) {
+            totalFunds = fundsSnap.data().amount || 0;
           }
         } catch (error) {
           console.error('Error fetching total funds for user:', userDoc.id, error);
@@ -394,16 +392,7 @@ const AdminUserManagement = () => {
                   <td>
                     <div className="adminusers-login-info">
                       <span className="adminusers-last-login">
-                        {user.lastLogin ? 
-                          new Date(user.lastLogin.seconds * 1000).toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })
-                          : 'Never'
-                        }
+                        {user.lastLogin || 'Never'}
                       </span>
                       {user.streak > 0 && (
                         <span className="adminusers-streak" title="Current login streak">

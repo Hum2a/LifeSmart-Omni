@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../firebase/auth';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { db } from '../../../../firebase/initFirebase';
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy, limit } from 'firebase/firestore';
 import { 
   FaArrowLeft,
   FaPlus,
@@ -11,7 +11,8 @@ import {
   FaCheck,
   FaBan,
   FaCopy,
-  FaKey
+  FaKey,
+  FaFire
 } from 'react-icons/fa';
 import '../styles/AdminLoginCodes.css';
 
@@ -38,10 +39,39 @@ const AdminLoginCodes = () => {
       const codesQuery = query(codesRef);
       const codesSnap = await getDocs(codesQuery);
       
-      const codesData = codesSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const codesData = [];
+      
+      for (const codeDoc of codesSnap.docs) {
+        const codeData = codeDoc.data();
+        
+        // Fetch the last login and streak from Login Streak subcollection
+        let lastLogin = null;
+        let streak = 0;
+        
+        if (codeData.lastUsedBy) {
+          try {
+            const loginStreakRef = collection(db, codeData.lastUsedBy, 'Login Streak');
+            const loginQuery = query(loginStreakRef, orderBy('lastLogin', 'desc'), limit(1));
+            const loginSnap = await getDocs(loginQuery);
+            
+            if (!loginSnap.empty) {
+              const loginData = loginSnap.docs[0].data();
+              lastLogin = loginData.lastLogin;
+              streak = loginData.streak || 0;
+            }
+          } catch (error) {
+            console.error('Error fetching login streak for code:', codeDoc.id, error);
+          }
+        }
+        
+        codesData.push({
+          id: codeDoc.id,
+          active: codeData.active,
+          lastLogin,
+          streak,
+          lastUsedBy: codeData.lastUsedBy || null
+        });
+      }
       
       setCodes(codesData);
       setLoading(false);
@@ -159,6 +189,7 @@ const AdminLoginCodes = () => {
               <tr>
                 <th>Code</th>
                 <th>Status</th>
+                <th>Last Used</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -181,6 +212,27 @@ const AdminLoginCodes = () => {
                     <span className={`adminlogincodes-status ${code.active ? 'active' : 'inactive'}`}>
                       {code.active ? 'Active' : 'Inactive'}
                     </span>
+                  </td>
+                  <td>
+                    <div className="adminlogincodes-login-info">
+                      <span className="adminlogincodes-last-login">
+                        {code.lastLogin ? 
+                          new Date(code.lastLogin.seconds * 1000).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                          : 'Never'
+                        }
+                      </span>
+                      {code.streak > 0 && (
+                        <span className="adminlogincodes-streak" title="Current login streak">
+                          <FaFire /> {code.streak} days
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="adminlogincodes-actions">
                     <button
