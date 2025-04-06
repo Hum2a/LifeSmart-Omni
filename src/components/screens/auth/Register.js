@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../firebase/auth';
 import { FaGoogle, FaApple } from 'react-icons/fa';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/initFirebase';
 import Modal from '../../widgets/modals/Modal';
 import '../../styles/HomeScreen.css';
@@ -11,6 +11,7 @@ const Register = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loginCode, setLoginCode] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({
     title: '',
@@ -21,15 +22,44 @@ const Register = ({ onClose }) => {
   const navigate = useNavigate();
   const { register, signInWithGoogle, signInWithApple } = useAuth();
 
+  const validateLoginCode = async (code) => {
+    try {
+      const codeRef = doc(db, 'Login Codes', code);
+      const codeDoc = await getDoc(codeRef);
+      
+      if (!codeDoc.exists()) {
+        throw new Error('Invalid login code');
+      }
+      
+      const codeData = codeDoc.data();
+      if (!codeData.active) {
+        throw new Error('This login code is no longer active');
+      }
+      
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setModalConfig({
+        title: 'Error',
+        message: 'Passwords do not match!',
+        type: 'error'
+      });
+      setModalOpen(true);
       return;
     }
 
     try {
+      // Validate login code first
+      await validateLoginCode(loginCode);
+
+      // If code is valid, proceed with registration
       const user = await register(email, password);
       console.log("Registered user:", user);
       
@@ -44,6 +74,13 @@ const Register = ({ onClose }) => {
         lastLogin: currentDate,
         streak: 1
       });
+
+      // Update the login code with the last used information
+      const codeRef = doc(db, 'Login Codes', loginCode);
+      await setDoc(codeRef, {
+        lastUsedBy: user.uid,
+        active: true
+      }, { merge: true });
 
       setModalConfig({
         title: 'Welcome to LifeSmart!',
@@ -67,6 +104,12 @@ const Register = ({ onClose }) => {
 
   const handleSocialSignIn = async (provider) => {
     try {
+      // Validate login code first
+      if (!loginCode) {
+        throw new Error('Please enter a valid login code');
+      }
+      await validateLoginCode(loginCode);
+
       let user;
       if (provider === 'google') {
         user = await signInWithGoogle();
@@ -80,6 +123,13 @@ const Register = ({ onClose }) => {
         lastLogin: currentDate,
         streak: 1
       });
+
+      // Update the login code with the last used information
+      const codeRef = doc(db, 'Login Codes', loginCode);
+      await setDoc(codeRef, {
+        lastUsedBy: user.uid,
+        active: true
+      }, { merge: true });
       
       console.log(`${provider} signed in user:`, user);
       setModalConfig({
@@ -108,6 +158,19 @@ const Register = ({ onClose }) => {
         <form onSubmit={handleSubmit} className="homescreen-modern-form">
           <h2 className="homescreen-form-title">Join Us</h2>
           
+          <div className="homescreen-input-group">
+            <label htmlFor="loginCode">Login Code</label>
+            <input
+              id="loginCode"
+              type="text"
+              value={loginCode}
+              onChange={(e) => setLoginCode(e.target.value)}
+              placeholder="Enter your login code"
+              required
+              className="homescreen-modern-input"
+            />
+          </div>
+
           <div className="homescreen-social-buttons">
             <button 
               type="button"
