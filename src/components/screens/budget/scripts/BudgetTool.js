@@ -8,7 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
 // Developer Testing Configuration
-const DEV_TESTING_ENABLED = true; // Toggle this to enable/disable developer testing features
+const DEV_TESTING_ENABLED = false; // Toggle this to enable/disable developer testing features
 
 // Random number generation helper functions
 const generateRandomAmount = (min = 100, max = 5000) => {
@@ -591,10 +591,10 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.utilities || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.utilities || Number(formData.utilities || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.utilities', e.target.value)}
-                              placeholder={`£${Number(formData.utilities || 0).toFixed(2)}`}
                               className="budgettool-input"
+                              placeholder={`£${Number(formData.utilities || 0).toFixed(2)}`}
                             />
                           </td>
                         ))}
@@ -605,7 +605,7 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.transportation || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.transportation || Number(formData.transportation || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.transportation', e.target.value)}
                               placeholder={`£${Number(formData.transportation || 0).toFixed(2)}`}
                               className="budgettool-input"
@@ -619,7 +619,7 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.groceries || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.groceries || Number(formData.groceries || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.groceries', e.target.value)}
                               placeholder={`£${Number(formData.groceries || 0).toFixed(2)}`}
                               className="budgettool-input"
@@ -633,7 +633,7 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.healthInsurance || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.healthInsurance || Number(formData.healthInsurance || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.healthInsurance', e.target.value)}
                               placeholder={`£${Number(formData.healthInsurance || 0).toFixed(2)}`}
                               className="budgettool-input"
@@ -647,7 +647,7 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.medicalExpenses || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.medicalExpenses || Number(formData.medicalExpenses || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.medicalExpenses', e.target.value)}
                               placeholder={`£${Number(formData.medicalExpenses || 0).toFixed(2)}`}
                               className="budgettool-input"
@@ -661,7 +661,7 @@ const BudgetTool = () => {
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.loanPayments || formData.otherLoanPayment || ''}
+                              value={formData.monthlyProjections[index]?.needsDetails?.loanPayments || Number(formData.otherLoanPayment || 0)}
                               onChange={(e) => handleAmountChange(index, 'needsDetails.loanPayments', e.target.value)}
                               placeholder={`£${Number(formData.otherLoanPayment || 0).toFixed(2)}`}
                               className="budgettool-input"
@@ -711,10 +711,10 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.entertainment || Number(formData.entertainment)}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.entertainment || formData.entertainment || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.entertainment', e.target.value)}
                                 className="budgettool-input"
-                                placeholder={`£${Number(formData.entertainment).toFixed(2)}`}
+                                placeholder={`£${Number(formData.entertainment || 0).toFixed(2)}`}
                               />
                             </td>
                           ))}
@@ -725,10 +725,10 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.shopping || Number(formData.shopping)}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.shopping || formData.shopping || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.shopping', e.target.value)}
                                 className="budgettool-input"
-                                placeholder={`£${Number(formData.shopping).toFixed(2)}`}
+                                placeholder={`£${Number(formData.shopping || 0).toFixed(2)}`}
                               />
                             </td>
                           ))}
@@ -739,7 +739,7 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.diningOut || ''}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.diningOut || formData.diningOut || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.diningOut', e.target.value)}
                                 placeholder={`£${Number(formData.diningOut || 0).toFixed(2)}`}
                                 className="budgettool-input"
@@ -753,10 +753,10 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.personalCare || Number(formData.personalCare)}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.personalCare || formData.personalCare || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.personalCare', e.target.value)}
                                 className="budgettool-input"
-                                placeholder={`£${Number(formData.personalCare).toFixed(2)}`}
+                                placeholder={`£${Number(formData.personalCare || 0).toFixed(2)}`}
                               />
                             </td>
                           ))}
@@ -767,10 +767,10 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.gymMembership || Number(formData.gymMembership)}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.gymMembership || formData.gymMembership || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.gymMembership', e.target.value)}
                                 className="budgettool-input"
-                                placeholder={`£${Number(formData.gymMembership).toFixed(2)}`}
+                                placeholder={`£${Number(formData.gymMembership || 0).toFixed(2)}`}
                               />
                             </td>
                           ))}
@@ -781,10 +781,10 @@ const BudgetTool = () => {
                             <td key={index}>
                               <input
                                 type="number"
-                                value={formData.monthlyProjections[index]?.wantsDetails?.subscriptions || Number(formData.subscriptions)}
+                                value={formData.monthlyProjections[index]?.wantsDetails?.subscriptions || formData.subscriptions || ''}
                                 onChange={(e) => handleAmountChange(index, 'wantsDetails.subscriptions', e.target.value)}
                                 className="budgettool-input"
-                                placeholder={`£${Number(formData.subscriptions).toFixed(2)}`}
+                                placeholder={`£${Number(formData.subscriptions || 0).toFixed(2)}`}
                               />
                             </td>
                           ))} 
