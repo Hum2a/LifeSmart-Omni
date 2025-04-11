@@ -8,14 +8,14 @@
       "type": "image/x-icon"
     },
     {
-      "src": "favicon.ico",
-      "type": "image/x-icon",
+      "src": "android-chrome-192x192.png",
+      "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "favicon.ico",
-      "type": "image/x-icon",
+      "src": "android-chrome-512x512.png",
+      "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
     }
@@ -53,14 +53,14 @@
       "short_name": "Budget",
       "description": "Create and manage your budget",
       "url": "/budget-tool",
-      "icons": [{ "src": "favicon.ico", "sizes": "192x192" }]
+      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Financial Quiz",
       "short_name": "Quiz",
       "description": "Test your financial knowledge",
       "url": "/quiz",
-      "icons": [{ "src": "favicon.ico", "sizes": "192x192" }]
+      "icons": [{ "src": "android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
   "related_applications": [],
