@@ -1551,4 +1551,490 @@
     align-items: flex-start;
     gap: 0.3em;
   }
+}
+
+[data-theme='light'] .budgettool-container {
+  background: linear-gradient(135deg, #f7fafc 0%, #e3f0ff 100%);
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-content {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #e3e8ee;
+  box-shadow: 0 8px 32px rgba(60, 120, 200, 0.08);
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-header {
+}
+[data-theme='light'] .budgettool-title {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme='light'] .budgettool-subtitle {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-progress-bar {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+[data-theme='light'] .budgettool-progress-text {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-category-title,
+[data-theme='light'] .budgettool-label {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-input,
+[data-theme='light'] .budgettool-select {
+  background: #f4f8fb;
+  border: 1px solid #c9d6e3;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-input:focus,
+[data-theme='light'] .budgettool-select:focus {
+  border-color: #43e97b;
+  box-shadow: 0 0 0 3px rgba(67, 233, 123, 0.18);
+}
+[data-theme='light'] .budgettool-input::placeholder {
+  color: #b0b8c1;
+}
+[data-theme='light'] .budgettool-select option {
+  background: #fff;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-button-primary {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: #fff;
+}
+[data-theme='light'] .budgettool-button-primary:hover:not(:disabled) {
+  box-shadow: 0 5px 15px rgba(67, 233, 123, 0.18);
+}
+[data-theme='light'] .budgettool-button-secondary {
+  background: transparent;
+  border: 1px solid #b0b8c1;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-button-secondary:hover:not(:disabled) {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-savings-info {
+  background: #eafaf1;
+  border: 1.5px solid #43e97b33;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-title {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-text {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-savings-pot {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-savings-pot h4 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-pot p {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-savings-message {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-savings-pots-explanation {
+  background: #eaf6ff;
+  color: #1a1a1a;
+  box-shadow: 0 1px 6px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-savings-pots-explanation span {
+  color: #38b6ff;
+}
+[data-theme='light'] .budgettool-savings-pots-explanation ol {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-pots-explanation strong {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-savings-pots-explanation em {
+  color: #ffd600;
+}
+[data-theme='light'] .budgettool-projections {
+  background: #f4f8fb;
+  border: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-projections-title {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-projections-warning {
+  background: #fff3f3;
+  border: 1px solid #ffbdbd;
+}
+[data-theme='light'] .budgettool-projections-warning p {
+  color: #e53935;
+}
+[data-theme='light'] .budgettool-projections-section {
+  background: #f4f8fb;
+  border: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-projections-question label {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-projections-table h4 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-projections-table table {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-projections-table th {
+  background: #eaf6ff;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-projections-table td {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-projections-table td:first-child {
+  color: #1a1a1a;
+  background: #eaf6ff;
+}
+[data-theme='light'] .budgettool-projections-table input {
+  background: #fff;
+  border: 1px solid #c9d6e3;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-projections-table input:focus {
+  border-color: #43e97b;
+  box-shadow: 0 0 0 2px rgba(67, 233, 123, 0.18);
+}
+[data-theme='light'] .budgettool-projections-table input::placeholder {
+  color: #b0b8c1;
+}
+[data-theme='light'] .budgettool-analysis {
+  background: #eaf6ff;
+  color: #1a1a1a;
+  box-shadow: 0 2px 16px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-analysis-title {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-analysis-chart {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-piechart-percentages {
+  text-shadow: none;
+}
+[data-theme='light'] .budgettool-piechart-percentage-card {
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-piechart-percentage-card.needs {
+  border-color: #43e97b;
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-piechart-percentage-card.wants {
+  border-color: #38b6ff;
+  color: #38b6ff;
+}
+[data-theme='light'] .budgettool-piechart-percentage-card.savings {
+  border-color: #ffd600;
+  color: #ffd600;
+}
+[data-theme='light'] .budgettool-analysis-content {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-analysis-rule {
+  background: #eafaf1;
+  border-left: 4px solid #43e97b;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-analysis-rule strong {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-analysis-rule ul {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-analysis-warning {
+  color: #e53935;
+  background: #fff3f3;
+  border: 1px solid #ffbdbd;
+}
+[data-theme='light'] .budgettool-analysis-savings h4 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-analysis-list {
+  background: #f4f8fb;
+  color: #1a1a1a;
+  border: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-analysis-list li {
+  border-bottom: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-analysis-list li:last-child {
+  border-bottom: none;
+}
+[data-theme='light'] .budgettool-analysis-text {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-monthly-inputs {
+  background: #f4f8fb;
+  border: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-monthly-inputs-title {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-monthly-inputs-text {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-monthly-item {
+  background: #fff;
+}
+[data-theme='light'] .budgettool-monthly-item h4 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-monthly-field label {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-percentage-input span {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-monthly-header h4 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-button-small {
+  background: #eaf6ff;
+  border: 1px solid #b0b8c1;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-button-small:hover {
+  background: #d2eaff;
+}
+[data-theme='light'] .budgettool-monthly-summary {
+  border-top: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-monthly-summary h5 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-monthly-summary-item {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-monthly-summary-item span:first-child {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-monthly-summary-item span:nth-child(2) {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-monthly-summary-item span.positive {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-monthly-summary-item span.negative {
+  color: #e53935;
+}
+[data-theme='light'] .budgettool-monthly-distribution {
+  background: #eaf6ff;
+}
+[data-theme='light'] .budgettool-monthly-distribution-item span:first-child {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-monthly-distribution-item span:not(:first-child) {
+  color: #1a1a1a;
+  background: #fff;
+}
+[data-theme='light'] .budgettool-modal-overlay {
+  background: rgba(60, 120, 200, 0.12);
+}
+[data-theme='light'] .budgettool-modal-content {
+  background: #fff;
+  border: 1px solid #e3e8ee;
+  color: #1a1a1a;
+  box-shadow: 0 8px 32px rgba(60, 120, 200, 0.08);
+}
+[data-theme='light'] .budgettool-modal-header h2 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-close {
+  color: #1a1a1a;
+  background: #eaf6ff;
+}
+[data-theme='light'] .budgettool-modal-close:hover {
+  background: #d2eaff;
+}
+[data-theme='light'] .budgettool-modal-body {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-section h3 {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-item {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-modal-item span:first-child {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-modal-table {
+  background: #f4f8fb;
+}
+[data-theme='light'] .budgettool-modal-table th {
+  background: #eaf6ff;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-table td {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-modal-table tr:last-child td {
+  border-bottom: none;
+}
+[data-theme='light'] .budgettool-multiselect {
+}
+[data-theme='light'] .budgettool-checkbox-label {
+  background: #eaf6ff;
+  border: 1px solid #b0b8c1;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-checkbox-label:hover {
+  background: #d2eaff;
+}
+[data-theme='light'] .budgettool-checkbox {
+  border: 2px solid #b0b8c1;
+  background: #fff;
+}
+[data-theme='light'] .budgettool-checkbox:checked {
+  background: #43e97b;
+  border-color: #43e97b;
+}
+[data-theme='light'] .budgettool-checkbox:checked::after {
+  color: #fff;
+}
+[data-theme='light'] .budgettool-checkbox:focus {
+  box-shadow: 0 0 0 3px rgba(67, 233, 123, 0.18);
+}
+[data-theme='light'] .budgettool-checkbox-label[data-checked="true"] {
+  background: #eafaf1;
+  border-color: #43e97b33;
+}
+[data-theme='light'] .budgettool-dev-button {
+  background: #fffbe6 !important;
+  border: 1px dashed #ffe066 !important;
+  color: #bfa100 !important;
+}
+[data-theme='light'] .budgettool-dev-button:hover {
+  background: #fff9cc !important;
+  border-color: #ffd600 !important;
+}
+[data-theme='light'] .budgettool-button-view-spreadsheet {
+  background: linear-gradient(135deg, #ffe066, #ffd600) !important;
+  color: #1a1a1a !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.13) !important;
+}
+[data-theme='light'] .budgettool-button-view-spreadsheet:hover {
+  background: linear-gradient(135deg, #ffd600, #ffe066) !important;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.18) !important;
+}
+[data-theme='light'] .budgettool-modal-text {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-actions .budgettool-button-primary {
+  background: linear-gradient(135deg, #ff7675, #fdcb6e);
+  color: #fff;
+}
+[data-theme='light'] .budgettool-modal-actions .budgettool-button-primary:hover {
+  background: linear-gradient(135deg, #fdcb6e, #ff7675);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.13);
+}
+[data-theme='light'] .budgettool-modal-actions .budgettool-button-secondary {
+  background: #eaf6ff;
+  border: 1px solid #b0b8c1;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-modal-actions .budgettool-button-secondary:hover {
+  background: #d2eaff;
+}
+[data-theme='light'] .budgettool-spreadsheet-step {
+  background: #f4f8fb;
+  border: 1px solid #e3e8ee;
+}
+[data-theme='light'] .budgettool-spreadsheet-text {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-welcome-content {
+  background: #eaf6ff;
+  color: #1a1a1a;
+  box-shadow: 0 4px 6px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-welcome-title {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-welcome-message {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-info-button {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-info-tooltip {
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-info-popover-label {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-step-description {
+  background: #eaf6ff;
+  border-left: 5px solid #38b6ff;
+  color: #1a1a1a;
+  box-shadow: 0 1px 8px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-step-description strong {
+  color: #38b6ff;
+}
+[data-theme='light'] .budgettool-step-description .budgettool-step-action {
+  color: #ffd600;
+  background: #fffbe6;
+  box-shadow: 0 1px 6px rgba(255,214,0,0.07);
+}
+[data-theme='light'] .budgettool-step-tip {
+  background: #eafaf1;
+  color: #43e97b;
+  border-left: 4px solid #43e97b;
+}
+[data-theme='light'] .budgettool-savings-deepdive {
+  background: #eaf6ff;
+  color: #1a1a1a;
+  box-shadow: 0 2px 16px rgba(56, 249, 215, 0.07);
+}
+[data-theme='light'] .budgettool-savings-deepdive-label {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-savings-deepdive-value {
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-deepdive-edit {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: #fff;
+}
+[data-theme='light'] .budgettool-savings-deepdive-edit:hover {
+  background: linear-gradient(135deg, #38f9d7, #43e97b);
+}
+[data-theme='light'] .budgettool-savings-deepdive-section {
+  background: #f4f8fb;
+  border-left: 5px solid #43e97b;
+}
+[data-theme='light'] .budgettool-savings-deepdive-title {
+  color: #43e97b;
+}
+[data-theme='light'] .budgettool-savings-deepdive-action {
+  color: #ffd600;
+}
+[data-theme='light'] .budgettool-savings-deepdive-input {
+  background: #fff;
+  border: 1px solid #c9d6e3;
+  color: #1a1a1a;
+}
+[data-theme='light'] .budgettool-savings-deepdive-input:focus {
+  border-color: #43e97b;
+  box-shadow: 0 0 0 2px rgba(67, 233, 123, 0.18);
+}
+[data-theme='light'] .budgettool-savings-deepdive-info {
+  color: #3a4a5a;
+}
+[data-theme='light'] .budgettool-savings-deepdive-row .budgettool-info-button {
+  color: #43e97b;
 } 

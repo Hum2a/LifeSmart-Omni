@@ -501,3 +501,106 @@
   padding: 0 1rem;
   font-size: 0.9rem;
 }
+
+[data-theme='light'] .homescreen-modern-auth-screen {
+  color: #181a1b;
+  background-color: #f7f8fa;
+}
+[data-theme='light'] .homescreen-animated-background {
+  /* lighter, pastel gradients for shapes */
+}
+[data-theme='light'] .homescreen-shape1 {
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
+}
+[data-theme='light'] .homescreen-shape2 {
+  background: linear-gradient(135deg, #f9a8d4, #fca5a5);
+}
+[data-theme='light'] .homescreen-shape3 {
+  background: linear-gradient(135deg, #99f6e4, #7dd3fc);
+}
+[data-theme='light'] .homescreen-modern-title {
+  color: #181a1b;
+}
+[data-theme='light'] .homescreen-title-smart {
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe, #f9a8d4);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme='light'] .homescreen-tagline {
+  color: #444;
+  opacity: 0.85;
+}
+[data-theme='light'] .homescreen-modern-button {
+  color: #181a1b;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+[data-theme='light'] .homescreen-sign-in-button {
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
+}
+[data-theme='light'] .homescreen-sign-in-button:hover {
+  background: linear-gradient(135deg, #818cf8, #a5b4fc);
+}
+[data-theme='light'] .homescreen-register-button {
+  background: linear-gradient(135deg, #f9a8d4, #fca5a5);
+}
+[data-theme='light'] .homescreen-register-button:hover {
+  background: linear-gradient(135deg, #f472b6, #f87171);
+}
+[data-theme='light'] .homescreen-modern-form {
+  background: rgba(255,255,255,0.95);
+  color: #181a1b;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+[data-theme='light'] .homescreen-form-title {
+  color: #181a1b;
+}
+[data-theme='light'] .homescreen-modern-input {
+  background: #f3f4f6;
+  color: #181a1b;
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .homescreen-modern-input:focus {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 3px #a5b4fc33;
+}
+[data-theme='light'] .homescreen-modern-input::placeholder {
+  color: #888;
+}
+[data-theme='light'] .homescreen-cancel-button {
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  color: #181a1b;
+}
+[data-theme='light'] .homescreen-cancel-button:hover {
+  background: #f3f4f6;
+}
+[data-theme='light'] .homescreen-modern-footer {
+  color: #888;
+}
+[data-theme='light'] .homescreen-modal-content {
+  background: #fff;
+  color: #181a1b;
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .homescreen-modal-title {
+  color: #181a1b;
+}
+[data-theme='light'] .homescreen-modal-message {
+  color: #444;
+}
+[data-theme='light'] .homescreen-modal-close-button {
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
+  color: #181a1b;
+}
+[data-theme='light'] .homescreen-modal-close-button:hover {
+  background: linear-gradient(135deg, #818cf8, #a5b4fc);
+}
+[data-theme='light'] .homescreen-divider {
+  color: #bbb;
+}
+[data-theme='light'] .homescreen-divider::before,
+[data-theme='light'] .homescreen-divider::after {
+  border-bottom: 1px solid #e0e0e0;
+}

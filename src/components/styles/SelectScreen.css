@@ -353,4 +353,132 @@
 
 .selectscreen-admin-button:hover {
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 193, 7, 0.2));
+}
+
+[data-theme='light'] .selectscreen-select-screen {
+  background: linear-gradient(135deg, #f7f8fa 0%, #e3e8ee 100%);
+  color: #181a1b;
+}
+[data-theme='light'] .selectscreen-animated-background {
+  /* lighter, pastel backgrounds for shapes */
+}
+[data-theme='light'] .selectscreen-shape1 {
+  background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
+}
+[data-theme='light'] .selectscreen-shape2 {
+  background: linear-gradient(135deg, #f9a8d4, #fca5a5);
+}
+[data-theme='light'] .selectscreen-shape3 {
+  background: linear-gradient(135deg, #99f6e4, #7dd3fc);
+}
+[data-theme='light'] .selectscreen-content-container {
+  color: #181a1b;
+}
+[data-theme='light'] .selectscreen-select-title {
+  color: #181a1b;
+}
+[data-theme='light'] .selectscreen-title-life {
+  color: #4CAF50;
+}
+[data-theme='light'] .selectscreen-title-smart {
+  color: #2196F3;
+}
+[data-theme='light'] .selectscreen-tagline {
+  color: #444;
+}
+[data-theme='light'] .selectscreen-tools-grid {
+  background: transparent;
+}
+[data-theme='light'] .selectscreen-tool-button {
+  background: rgba(255,255,255,0.85);
+  color: #181a1b;
+  box-shadow: 0 4px 16px rgba(33,150,243,0.07);
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .selectscreen-tool-button:hover {
+  background: #e3e8ee;
+  box-shadow: 0 8px 24px rgba(33,150,243,0.10);
+}
+[data-theme='light'] .selectscreen-disabled {
+  background: #f3f4f6;
+  color: #bbb;
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .selectscreen-coming-soon {
+  background: #fffbe6;
+  color: #4CAF50;
+  border: 2px solid #4CAF50;
+}
+[data-theme='light'] .selectscreen-in-development {
+  background: #e3f2fd;
+  color: #2196F3;
+  border: 2px solid #2196F3;
+}
+[data-theme='light'] .selectscreen-tool-icon {
+  color: inherit;
+}
+[data-theme='light'] .selectscreen-tool-text {
+  color: inherit;
+}
+[data-theme='light'] .selectscreen-select-footer {
+  color: #888;
+}
+[data-theme='light'] .selectscreen-user-actions {
+  background: #f3f4f6;
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .selectscreen-user-button {
+  color: #181a1b;
+  background: #e3e8ee;
+  border: 1px solid #e0e0e0;
+}
+[data-theme='light'] .selectscreen-user-button:hover {
+  background: #c7d2fe;
+  color: #181a1b;
+}
+[data-theme='light'] .selectscreen-profile-button {
+  background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+  border-color: #a5b4fc;
+}
+[data-theme='light'] .selectscreen-profile-button:hover {
+  background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+}
+[data-theme='light'] .selectscreen-settings-button {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  border-color: #c084fc;
+}
+[data-theme='light'] .selectscreen-settings-button:hover {
+  background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+}
+[data-theme='light'] .selectscreen-logout-button {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: #f87171;
+}
+[data-theme='light'] .selectscreen-logout-button:hover {
+  background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+}
+[data-theme='light'] .selectscreen-admin-button {
+  background: linear-gradient(135deg, #fef9c3 0%, #fde68a 100%);
+  border-color: #facc15;
+}
+[data-theme='light'] .selectscreen-admin-button:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #facc15 100%);
+}
+[data-theme='light'] .selectscreen-streak-display {
+  background: #fffbe6;
+  border: 1px solid #ffe082;
+  color: #ff9800;
+}
+[data-theme='light'] .selectscreen-streak-icon {
+  color: #ff9800;
+}
+[data-theme='light'] .selectscreen-streak-count {
+  color: #ff9800;
+}
+[data-theme='light'] .selectscreen-loading {
+  background: linear-gradient(135deg, #f7f8fa 0%, #e3e8ee 100%);
+}
+[data-theme='light'] .selectscreen-loading-spinner {
+  border: 3px solid #e0e0e0;
+  border-top-color: #4CAF50;
 } 
