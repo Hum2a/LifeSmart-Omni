@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/BudgetTool.css';
 import BudgetSpreadsheet, { downloadSpreadsheet } from './BudgetSpreadsheet';
 import SpreadsheetModal from './SpreadsheetModal';
+import BudgetWelcome from './BudgetWelcome';
 import * as XLSX from 'xlsx';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -42,9 +43,17 @@ const DEV_RANGES = {
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// Add an InfoButton component for tooltips
+const InfoButton = ({ text }) => (
+  <span className="budgettool-info-button" tabIndex="0">
+    ❓
+    <span className="budgettool-info-tooltip">{text}</span>
+  </span>
+);
+
 const BudgetTool = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for welcome page
   const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -116,16 +125,39 @@ const BudgetTool = () => {
   const questions = [
     {
       category: 'Income',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Enter the money you receive each month.</strong>
+          </div>
+          <div className="budgettool-info-popover">
+            <InfoButton text={
+              "Look through your bank statements for all the money coming in as part of your salary or other income"
+            } />
+            <span className="budgettool-info-popover-label">Where do I find this information?</span>
+          </div>
+        </>
+      ),
       questions: [
         {
           id: 'monthlyIncome',
-          label: 'What is your monthly income?',
+          label: (
+            <>
+              Net monthly income (after tax)
+              <InfoButton text={"Use your average take-home pay; if it changes, take a 3-month average."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'additionalIncome',
-          label: 'Do you have any additional income?',
+          label: (
+            <>
+              Other regular income
+              <InfoButton text={"Side hustle, benefits, maintenance, rental income, etc."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         }
@@ -133,10 +165,31 @@ const BudgetTool = () => {
     },
     {
       category: 'Needs',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Add the costs you have to pay each month - housing, food, transport, utilities. Things that are non-negotiables.</strong>
+          </div>
+          <div className="budgettool-info-popover">
+            <InfoButton text={
+              "Look through your bank statements. Many modern banks already categorise spending, but if not, you can use budgeting apps that connect your accounts and categorise the spending, like Snoop and MoneyWise."
+            } />
+            <span className="budgettool-info-popover-label">Where do I find this information?</span>
+          </div>
+          <div className="budgettool-step-tip">
+            Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
+          </div>
+        </>
+      ),
       questions: [
         {
           id: 'housingPayment',
-          label: 'What is your monthly housing payment (Rent or Mortgage)?',
+          label: (
+            <>
+              Housing cost (rent / mortgage)
+              <InfoButton text={"Rent or mortgage payment."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter your monthly housing payment',
           validation: (value) => {
@@ -146,324 +199,455 @@ const BudgetTool = () => {
         },
         {
           id: 'utilities',
-          label: 'How much do you spend on utilities (electricity, water, internet, gas, phone bill, etc.)?',
+          label: (
+            <>
+              Utilities
+              <InfoButton text={"Electricity, gas, water, internet, phone."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'groceries',
-          label: 'How much do you spend on essential groceries per month?',
+          label: (
+            <>
+              Essential groceries
+              <InfoButton text={"Supermarket food and living goods - not luxuries."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'transportation',
-          label: 'What is your monthly transportation cost?',
+          label: (
+            <>
+              Transport
+              <InfoButton text={"Fuel, public transport, insurance, road tax."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount for public transport, fuel, and car insurance/tax combined',
         },
         {
           id: 'healthInsurance',
-          label: 'How much do you spend on health insurance per month?',
+          label: (
+            <>
+              Health costs
+              <InfoButton text={"Insurance premiums, prescriptions, regular treatments."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
-        },
-        {
-          id: 'medicalExpenses',
-          label: 'Do you have any regular medical expenses (prescriptions, treatments, etc.)?',
-          type: 'number',
-          placeholder: 'Enter amount',
-        },
-        {
-          id: 'hasOtherLoans',
-          label: 'Do you have any other loans apart from a mortgage or student loan?',
-          type: 'select',
-          options: [
-            { value: 'yes', label: 'Yes' },
-            { value: 'no', label: 'No' }
-          ],
-        },
-        {
-          id: 'otherLoanAmount',
-          label: 'What is the total amount of your other loans?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.hasOtherLoans === 'yes',
-        },
-        {
-          id: 'otherLoanPayment',
-          label: 'What is your monthly required loan payment?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.hasOtherLoans === 'yes',
         },
       ],
     },
     {
       category: 'Wants',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Record the optional spending every month - dining out, shopping, hobbies, subscriptions.</strong>
+          </div>
+          <div className="budgettool-info-popover">
+            <InfoButton text={
+              "Look through your bank statements. Many modern banks already categorise spending, but if not, you can use budgeting apps that connect your accounts and categorise the spending, like Snoop and MoneyWise."
+            } />
+            <span className="budgettool-info-popover-label">Where do I find this information?</span>
+          </div>
+          <div className="budgettool-step-tip">
+            Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
+          </div>
+        </>
+      ),
       questions: [
         {
           id: 'diningOut',
-          label: 'How much do you spend on dining out and takeout?',
+          label: (
+            <>
+              Dining out & take-aways
+              <InfoButton text={"Restaurants, takeaways, coffee shops."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'gymMembership',
-          label: 'How much do you spend on gym memberships and sports?',
+          label: (
+            <>
+              Gym / sports / hobbies
+              <InfoButton text={"Memberships, match fees, equipment."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'personalCare',
-          label: 'How much do you spend on personal care (haircuts, skincare, etc.)?',
+          label: (
+            <>
+              Personal care
+              <InfoButton text={"Haircuts, skincare, massages."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'entertainment',
-          label: 'How much do you spend on entertainment (going out, hobbies)?',
+          label: (
+            <>
+              Entertainment
+              <InfoButton text={"Cinema, gaming, nights out."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'shopping',
-          label: 'How much do you spend on shopping (clothes, gadgets, etc.)?',
+          label: (
+            <>
+              Shopping
+              <InfoButton text={"Clothes, gadgets, books."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'subscriptions',
-          label: 'How much do you spend on subscription services (Netflix, Spotify, etc.)?',
+          label: (
+            <>
+              Subscriptions
+              <InfoButton text={"Netflix, Spotify, Disney, etc."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'travel',
-          label: 'How much do you spend on trips or holidays?',
+          label: (
+            <>
+              Travel & holidays
+              <InfoButton text={"Enter your yearly total ÷ 12."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
         {
           id: 'charity',
-          label: 'How much do you spend on charity, gifts, etc.?',
+          label: (
+            <>
+              Charity & gifts
+              <InfoButton text={"Donations, presents."} />
+            </>
+          ),
           type: 'number',
           placeholder: 'Enter amount',
         },
       ],
     },
     {
-      category: 'Savings & Investments',
+      category: 'Savings, Safety Nets & Snapshot',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Record how many savings you have, how you organise them, and see your spending snapshot.</strong>
+          </div>
+        </>
+      ),
       questions: [
+        // Savings questions
+        {
+          id: 'totalSavings',
+          label: (
+            <>
+              Total savings balance
+              <InfoButton text={"Cash + easy-access accounts."} />
+            </>
+          ),
+          type: 'number',
+          placeholder: 'Enter your total savings',
+        },
         {
           id: 'hasSavingsPot',
-          label: 'Do you currently have any savings?',
+          label: (
+            <>
+              Do you already split your savings into pots?
+            </>
+          ),
           type: 'select',
           options: [
             { value: 'yes', label: 'Yes' },
             { value: 'no', label: 'No' },
           ],
         },
-        {
-          id: 'savingsPotType',
-          label: 'Do you have your savings in one pot or multiple pots?',
-          type: 'select',
-          options: [
-            { value: 'one', label: 'One pot or more pots' },
-            { value: 'multiple', label: 'Multiple pots' },
-          ],
-          showIf: (data) => data.hasSavingsPot === 'yes',
-          renderAfter: (formData) => {
-            if (formData.savingsPotType === 'multiple') {
-              return (
-                <div className="budgettool-success-message">
-                  <p>Yeah, you're on the right track! Having multiple savings pots helps you organize and track your savings goals better.</p>
-                </div>
-              );
-            }
-            return null;
-          }
-        },
-        {
-          id: 'totalSavings',
-          label: 'How much money do you have in total in all of your savings pots?',
-          type: 'number',
-          placeholder: 'Enter amount',
-          showIf: (data) => data.hasSavingsPot === 'yes',
-        }
+        // (Add more savings questions here if needed)
       ],
       renderCustomContent: (formData) => {
-        if (formData.hasSavingsPot === 'no') {
-          return (
+        // Savings pots guidance
+        const hasPots = formData.hasSavingsPot === 'yes';
+        return (
+          <>
             <div className="budgettool-savings-info">
-              <h3 className="budgettool-savings-title">Understanding Savings</h3>
-              <p className="budgettool-savings-text">
-                Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month.
-                This will help you build an emergency fund, save for future purchases, and work towards your long-term financial goals.
-              </p>
-              <div className="budgettool-savings-pots">
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🛡️</div>
-                  <h4>Emergency Fund</h4>
-                  <p>3-6 months of essential expenses for unexpected situations</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">🎯</div>
-                  <h4>Sinking Fund</h4>
-                  <p>For planned future expenses like holidays or home repairs</p>
-                </div>
-                <div className="budgettool-savings-pot">
-                  <div className="budgettool-savings-pot-icon">💎</div>
-                  <h4>Goal/Investment Fund</h4>
-                  <p>For long-term goals and wealth building</p>
-                </div>
+              <div className="budgettool-savings-message">
+                {formData.hasSavingsPot === 'yes' && (
+                  <span><strong>Great, this is how we recommend you organise your savings funds:</strong></span>
+                )}
+                {formData.hasSavingsPot === 'no' && (
+                  <span><strong>No problem, we can help you build out your savings funds:</strong></span>
+                )}
+              </div>
+              <div className="budgettool-savings-pots-explanation">
+                <span style={{ fontStyle: 'italic', fontWeight: 500 }}>
+                  We recommend splitting your savings into 3 funds and filling up each one in turn.
+                </span>
+                <ol style={{ marginTop: '1em', marginBottom: 0 }}>
+                  <li><strong>Emergency Fund</strong>: 3-6 months of your <em>needs</em></li>
+                  <li><strong>Sinking Fund</strong>: For any planned large future expenses like holidays, home repairs</li>
+                  <li><strong>Goal / Investment Fund</strong>: For long term goals and building wealth</li>
+                </ol>
               </div>
             </div>
-          );
-        }
-        return null;
+            {/* Budget Analysis/Snapshot */}
+            <div style={{ marginTop: '2.5rem' }}>
+              {(() => {
+                const summary = calculateBudgetSummary();
+                const totalIncome = summary.totalIncome;
+                const needs = summary.needs;
+                const wants = summary.wants;
+                const needsPercentage = summary.needsPercentage;
+                const wantsPercentage = summary.wantsPercentage;
+                const remainingPercentage = summary.remainingPercentage;
+                const recommendedSavings = (totalIncome - needs) * 0.33;
+                const recommendedWants = (totalIncome - needs) * 0.67;
+                const currentWants = wants;
+                const wantsReduction = Math.max(0, currentWants - recommendedWants);
+                const recommendedMinimumSavings = needs * 3;
+                const recommendedIdealSavings = needs * 6;
+                const currentSavings = Number(formData.totalSavings) || 0;
+                const savingsGap = Math.max(0, recommendedMinimumSavings - currentSavings);
+                return (
+                  <div className="budgettool-analysis">
+                    <h3 className="budgettool-analysis-title">Your Spending Snapshot</h3>
+                    <div className="budgettool-analysis-chart">
+                      <Pie
+                        data={{
+                          labels: ['Needs', 'Wants', 'Savings'],
+                          datasets: [
+                            {
+                              data: [
+                                Math.max(0, summary.needs || 0),
+                                Math.max(0, summary.wants || 0),
+                                Math.max(0, (summary.totalIncome || 0) - (summary.needs || 0) - (summary.wants || 0))
+                              ],
+                              backgroundColor: [
+                                'rgba(76, 175, 80, 0.85)',
+                                'rgba(33, 150, 243, 0.85)',
+                                'rgba(255, 193, 7, 0.85)'
+                              ],
+                              borderColor: [
+                                'rgba(76, 175, 80, 1)',
+                                'rgba(33, 150, 243, 1)',
+                                'rgba(255, 193, 7, 1)'
+                              ],
+                              borderWidth: 2,
+                              hoverOffset: 15,
+                              hoverBorderWidth: 3
+                            },
+                          ],
+                        }}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          animation: {
+                            duration: 2000,
+                            easing: 'easeInOutQuart'
+                          },
+                          plugins: {
+                            legend: {
+                              position: 'bottom',
+                              labels: {
+                                color: '#ffffff',
+                                font: {
+                                  size: 14,
+                                  family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                                },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                              }
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              titleColor: '#ffffff',
+                              bodyColor: '#ffffff',
+                              padding: 12,
+                              cornerRadius: 8,
+                              displayColors: false,
+                              callbacks: {
+                                label: function(context) {
+                                  const value = context.raw || 0;
+                                  const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                                  const percentage = ((value / total) * 100).toFixed(1);
+                                  return `${context.label}: £${value.toFixed(2)} (${percentage}%)`;
+                                }
+                              }
+                            }
+                          },
+                          cutout: '60%',
+                          radius: '80%'
+                        }}
+                      />
+                      {/* Show percentages next to the pie chart */}
+                      <div className="budgettool-piechart-percentages">
+                        <div className="budgettool-piechart-percentage-card needs">Needs: {needsPercentage.toFixed(1)}%</div>
+                        <div className="budgettool-piechart-percentage-card wants">Wants: {wantsPercentage.toFixed(1)}%</div>
+                        <div className="budgettool-piechart-percentage-card savings">Savings: {remainingPercentage.toFixed(1)}%</div>
+                      </div>
+                    </div>
+                    <div className="budgettool-analysis-content">
+                      <div className="budgettool-analysis-rule">
+                        <strong>Smart Spending Rule:</strong>
+                        <ul>
+                          <li>Pay your needs</li>
+                          <li>Pay yourself (save 1/3rd)</li>
+                          <li>Spend and enjoy what's left</li>
+                        </ul>
+                        <div style={{ marginTop: '0.5em', color: '#cccccc' }}>
+                          Our guideline is that, while your necessities are fixed in the short term, from the remaining, you should save <strong>1/3<sup>rd</sup></strong> and spend <strong>2/3<sup>rd</sup></strong> on your wants.
+                        </div>
+                      </div>
+                      {wantsReduction > 0 && (
+                        <div className="budgettool-analysis-warning">
+                          Action: You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
+                        </div>
+                      )}
+                      <div className="budgettool-analysis-savings">
+                        <h4>Savings Recommendations</h4>
+                        <p>Total Savings Target:</p>
+                        <ul className="budgettool-analysis-list">
+                          <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
+                          <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
+                          <li>Current savings: £{currentSavings.toFixed(2)}</li>
+                          {savingsGap > 0 && (
+                            <li className="budgettool-analysis-warning">
+                              You need £{savingsGap.toFixed(2)} more to reach the minimum target
+                            </li>
+                          )}
+                        </ul>
+                        <p className="budgettool-analysis-text">
+                          Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month to build up your savings and work towards your financial goals.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </>
+        );
       }
     },
     {
-      category: 'Budget Analysis',
+      category: 'Savings Deep Dive',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Savings are the foundation you need to deal with issues, start investing and reach financial freedom.</strong>
+          </div>
+        </>
+      ),
       questions: [],
-      renderCustomContent: (formData) => {
-        const summary = calculateBudgetSummary();
-        const totalIncome = summary.totalIncome;
-        const needs = summary.needs;
-        const wants = summary.wants;
-        const needsPercentage = summary.needsPercentage;
-        const wantsPercentage = summary.wantsPercentage;
-        const remainingPercentage = summary.remainingPercentage;
-        
-        const recommendedSavings = (totalIncome - needs) * 0.33; // 1/3 of remaining after needs
-        const recommendedWants = (totalIncome - needs) * 0.67; // 2/3 of remaining after needs
-        const currentWants = wants;
-        const wantsReduction = Math.max(0, currentWants - recommendedWants);
-        
-        const recommendedMinimumSavings = needs * 3; // 3 months of needs
-        const recommendedIdealSavings = needs * 6; // 6 months of needs
-        const currentSavings = Number(formData.totalSavings) || 0;
-        const savingsGap = Math.max(0, recommendedMinimumSavings - currentSavings);
-
+      renderCustomContent: (formData, setFormData) => {
+        // Helper for currency
+        const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        // Emergency Fund
+        const essentials = Number(formData.needs) || 0;
+        const emergencyMin = essentials * 3;
+        const totalSavings = Number(formData.totalSavings) || 0;
+        const currentEmergency = Math.min(totalSavings, emergencyMin);
+        const emergencyShortfall = Math.max(0, emergencyMin - totalSavings);
+        const recommendedMonthlySaving = Math.round((formData.monthlyIncome - essentials) * 0.33) || 0;
+        const monthsToTarget = recommendedMonthlySaving > 0 ? Math.ceil(emergencyShortfall / recommendedMonthlySaving) : null;
+        // Sinking Fund
+        const plannedExpenses = Number(formData.sinkingPlannedExpenses) || 0;
+        const sinkingFund = Math.max(0, totalSavings - emergencyMin);
+        // Goal/Investment Fund
+        const goalFund = Math.max(0, totalSavings - emergencyMin - plannedExpenses);
+        // Handlers
+        const handleEditTotalSavings = () => {
+          const val = prompt('Enter your total savings:', formData.totalSavings || '');
+          if (val !== null && !isNaN(val)) setFormData({ ...formData, totalSavings: val });
+        };
+        const handleEditGoalFund = () => {
+          const val = prompt('Enter your current goal/investment fund:', formData.goalFund || goalFund || '');
+          if (val !== null && !isNaN(val)) setFormData({ ...formData, goalFund: val });
+        };
         return (
-          <div className="budgettool-analysis">
-            <h3 className="budgettool-analysis-title">Your Budget Breakdown</h3>
-            
-            <div className="budgettool-analysis-chart">
-              <Pie
-                data={{
-                  labels: ['Needs', 'Wants', 'Savings'],
-                  datasets: [
-                    {
-                      data: [
-                        Math.max(0, summary.needs || 0),
-                        Math.max(0, summary.wants || 0),
-                        Math.max(0, (summary.totalIncome || 0) - (summary.needs || 0) - (summary.wants || 0))
-                      ],
-                      backgroundColor: [
-                        'rgba(76, 175, 80, 0.85)',  // Green for needs
-                        'rgba(33, 150, 243, 0.85)', // Blue for wants
-                        'rgba(255, 193, 7, 0.85)'   // Yellow for savings
-                      ],
-                      borderColor: [
-                        'rgba(76, 175, 80, 1)',
-                        'rgba(33, 150, 243, 1)',
-                        'rgba(255, 193, 7, 1)'
-                      ],
-                      borderWidth: 2,
-                      hoverOffset: 15,
-                      hoverBorderWidth: 3
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  animation: {
-                    duration: 2000,
-                    easing: 'easeInOutQuart'
-                  },
-                  plugins: {
-                    legend: {
-                      position: 'bottom',
-                      labels: {
-                        color: '#ffffff',
-                        font: {
-                          size: 14,
-                          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
-                        },
-                        padding: 20,
-                        usePointStyle: true,
-                        pointStyle: 'circle'
-                      }
-                    },
-                    tooltip: {
-                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      titleColor: '#ffffff',
-                      bodyColor: '#ffffff',
-                      padding: 12,
-                      cornerRadius: 8,
-                      displayColors: false,
-                      callbacks: {
-                        label: function(context) {
-                          const value = context.raw || 0;
-                          const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
-                          const percentage = ((value / total) * 100).toFixed(1);
-                          return `${context.label}: £${value.toFixed(2)} (${percentage}%)`;
-                        }
-                      }
-                    }
-                  },
-                  cutout: '60%',
-                  radius: '80%'
-                }}
-              />
+          <div className="budgettool-savings-deepdive">
+            {/* Total Savings */}
+            <div className="budgettool-savings-deepdive-row">
+              <span className="budgettool-savings-deepdive-label">Total Savings:</span>
+              <span className="budgettool-savings-deepdive-value">{formatCurrency(totalSavings)}</span>
+              <button className="budgettool-savings-deepdive-edit" onClick={handleEditTotalSavings}>Edit</button>
             </div>
-            
-            <div className="budgettool-analysis-content">
-              <p className="budgettool-analysis-text">
-                Based on your spending, you're currently using:
-              </p>
-              <ul className="budgettool-analysis-list">
-                <li>{needsPercentage.toFixed(1)}% on necessities</li>
-                <li>{wantsPercentage.toFixed(1)}% on wants</li>
-                <li>{remainingPercentage.toFixed(1)}% remaining</li>
-              </ul>
-              
-              <p className="budgettool-analysis-text">
-                With your necessities fixed at £{needs.toFixed(2)} ({needsPercentage.toFixed(1)}%), 
-                from the remaining £{(totalIncome - needs).toFixed(2)}, we recommend:
-              </p>
-              <ul className="budgettool-analysis-list">
-                <li>Putting £{recommendedSavings.toFixed(2)} (33%) into savings</li>
-                <li>Using £{recommendedWants.toFixed(2)} (67%) for wants</li>
-              </ul>
-              
-              {wantsReduction > 0 && (
-                <p className="budgettool-analysis-warning">
-                  To achieve this balance, you'll need to reduce your wants spending by £{wantsReduction.toFixed(2)} per month.
-                </p>
-              )}
-              
-              <div className="budgettool-analysis-savings">
-                <h4>Savings Recommendations</h4>
-                <p>Total Savings Target:</p>
-                <ul className="budgettool-analysis-list">
-                  <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
-                  <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
-                  <li>Current savings: £{currentSavings.toFixed(2)}</li>
-                  {savingsGap > 0 && (
-                    <li className="budgettool-analysis-warning">
-                      You need £{savingsGap.toFixed(2)} more to reach the minimum target
-                    </li>
-                  )}
-                </ul>
-                
-                <p className="budgettool-analysis-text">
-                  Having savings is crucial for financial stability. We recommend saving at least 20% of your income 
-                  each month to build up your savings and work towards your financial goals.
-                </p>
+            {/* Emergency Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Emergency Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Minimum Amount (3 months of Essentials):</span>
+                <span>{formatCurrency(emergencyMin)}</span>
+              </div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current Savings:</span>
+                <span>{formatCurrency(currentEmergency)}</span>
+              </div>
+              <div className="budgettool-savings-deepdive-row budgettool-savings-deepdive-action">
+                {emergencyShortfall > 0 ? (
+                  <>
+                    <span>Action:</span>
+                    <span>You need another {formatCurrency(emergencyShortfall)} to reach the minimum amount. {monthsToTarget !== null && `Based on your ideal savings target above this will take ${monthsToTarget} month${monthsToTarget > 1 ? 's' : ''} to build up.`}</span>
+                  </>
+                ) : (
+                  <span>Fantastic, you have enough in your savings to cover this. Make sure you keep it aside from your other savings funds.</span>
+                )}
+              </div>
+            </div>
+            {/* Sinking Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Sinking Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Total planned expenses:</span>
+                <input
+                  type="number"
+                  className="budgettool-savings-deepdive-input"
+                  value={formData.sinkingPlannedExpenses || ''}
+                  onChange={e => setFormData({ ...formData, sinkingPlannedExpenses: e.target.value })}
+                  placeholder="Enter amount"
+                />
+                <span className="budgettool-info-button" tabIndex="0">❓<span className="budgettool-info-tooltip">Estimate any large expenses you have coming up in the next couple of years that aren't part of your usual spending such as home repair, wedding, large holiday etc. If you do not have any, then you can leave this blank.</span></span>
+              </div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current Fund Balance:</span>
+                <span>{formatCurrency(sinkingFund)}</span>
+              </div>
+            </div>
+            {/* Goal / Investment Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Goal / Investment Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current goal/Investment fund:</span>
+                <span>{formatCurrency(formData.goalFund || goalFund)}</span>
+                <button className="budgettool-savings-deepdive-edit" onClick={handleEditGoalFund}>Edit</button>
+              </div>
+              <div className="budgettool-savings-deepdive-info">
+                Any remaining savings can be used towards the longer term goals you may have or invested to grow your wealth. If you currently have any investments that you haven't considered part of your savings, or aren't mentioned previously, update the number now.
               </div>
             </div>
           </div>
@@ -471,8 +655,22 @@ const BudgetTool = () => {
       }
     },
     {
-      category: '6-Month Projection',
-      questions: [],  // We'll handle the questions in the custom content
+      category: '6-Month Outline',
+      description: (formData) => {
+        // Calculate total projected savings increase
+        const totalIncrease = (formData.monthlyProjections || []).reduce((sum, m) => sum + (Number(m.savings) || 0), 0);
+        const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        return (
+          <div className="budgettool-step-description">
+            <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
+            Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
+            <span style={{ color: '#ffd600', fontWeight: 600 }}>
+              Action: During the first week of June (second month displayed on table), you need to come and enter the actual spend figures to see if you are on track.
+            </span>
+          </div>
+        );
+      },
+      questions: [],
       renderCustomContent: (formData) => {
         const getNextMonths = () => {
           const months = [];
@@ -953,7 +1151,11 @@ const BudgetTool = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < questions.length - 1) {
+    if (currentStep === -1) {
+      // Move from welcome page to first step
+      setCurrentStep(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentStep < questions.length - 1) {
       setCurrentStep(prev => prev + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentStep === questions.length - 1) {
@@ -964,7 +1166,11 @@ const BudgetTool = () => {
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
+    if (currentStep === 0) {
+      // Move from first step back to welcome page
+      setCurrentStep(-1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (currentStep === questions.length) { // If on step 7
@@ -1366,6 +1572,8 @@ const BudgetTool = () => {
   };
 
   if (showSpreadsheet) {
+    const totalIncrease = (formData.monthlyProjections || []).reduce((sum, m) => sum + (Number(m.savings) || 0), 0);
+    const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
     return (
       <div className="budgettool-container">
         <div className="budgettool-content">
@@ -1383,6 +1591,16 @@ const BudgetTool = () => {
               Step {currentStep + 1} of {questions.length + 1}
             </p>
           </div>
+
+          {currentStep === questions.length ? (
+            <div className="budgettool-step-description">
+              <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
+              Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
+              <span className="budgettool-step-action">
+                Action: During the first week of June (second month displayed on table), you need to come and enter the actual spend figures to see if you are on track.
+              </span>
+            </div>
+          ) : null}
 
           <div className="budgettool-spreadsheet-step">
             <BudgetSpreadsheet formData={formData} />
@@ -1425,199 +1643,211 @@ const BudgetTool = () => {
   return (
     <div className="budgettool-container">
       <div className="budgettool-content">
-        <header className="budgettool-header">
-          <h1 className="budgettool-title">Budget Planning Tool</h1>
-          <p className="budgettool-subtitle">Let's get started with your financial information</p>
-        </header>
+        {currentStep === -1 ? (
+          <BudgetWelcome onNext={handleNext} />
+        ) : (
+          <>
+            <header className="budgettool-header">
+              <h1 className="budgettool-title">Budget Planning Tool</h1>
+              <p className="budgettool-subtitle">Let's get started with your financial information</p>
+            </header>
 
-        <div className="budgettool-progress">
-          <div 
-            className="budgettool-progress-bar"
-            style={{ width: `${((currentStep + 1) / (questions.length + 1)) * 100}%` }}
-          ></div>
-          <p className="budgettool-progress-text">
-            Step {currentStep + 1} of {questions.length + 1}
-          </p>
-        </div>
+            <div className="budgettool-progress">
+              <div 
+                className="budgettool-progress-bar"
+                style={{ width: `${((currentStep + 1) / (questions.length + 1)) * 100}%` }}
+              ></div>
+              <p className="budgettool-progress-text">
+                Step {currentStep + 1} of {questions.length + 1}
+              </p>
+            </div>
 
-        <div className="budgettool-form">
-          {currentStep < questions.length ? (
-            <>
-              {DEV_TESTING_ENABLED && (
-                <div className="budgettool-dev-controls" style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                  <div style={{ marginBottom: '0.5rem', color: '#ffc107', fontFamily: 'monospace' }}>
-                    🛠️ Developer Testing Mode: ON
-                  </div>
-                  <button
-                    onClick={() => {
-                      const newFormData = { ...formData };
-                      
-                      // Handle standard questions if they exist
-                      if (questions[currentStep].questions.length > 0) {
-                        questions[currentStep].questions.forEach(question => {
-                          if (!question.showIf || question.showIf(formData)) {
-                            if (question.type === 'number') {
-                              const range = Object.entries(DEV_RANGES).find(([key]) => 
-                                question.id.toLowerCase().includes(key)
-                              );
-                              const { min, max } = range ? range[1] : { min: 100, max: 5000 };
-                              newFormData[question.id] = generateRandomAmount(min, max).toString();
-                            } else if (question.type === 'select') {
-                              newFormData[question.id] = generateRandomSelection(question.options);
-                            } else if (question.type === 'multiselect' && question.options) {
-                              const numSelections = Math.floor(Math.random() * 3) + 1;
-                              const shuffled = [...question.options].sort(() => 0.5 - Math.random());
-                              newFormData[question.id] = shuffled.slice(0, numSelections).map(opt => opt.value);
-                            }
+            <div className="budgettool-form">
+              {currentStep < questions.length ? (
+                <>
+                  {DEV_TESTING_ENABLED && (
+                    <div className="budgettool-dev-controls" style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                      <div style={{ marginBottom: '0.5rem', color: '#ffc107', fontFamily: 'monospace' }}>
+                        🛠️ Developer Testing Mode: ON
+                      </div>
+                      <button
+                        onClick={() => {
+                          const newFormData = { ...formData };
+                          
+                          // Handle standard questions if they exist
+                          if (questions[currentStep].questions.length > 0) {
+                            questions[currentStep].questions.forEach(question => {
+                              if (!question.showIf || question.showIf(formData)) {
+                                if (question.type === 'number') {
+                                  const range = Object.entries(DEV_RANGES).find(([key]) => 
+                                    question.id.toLowerCase().includes(key)
+                                  );
+                                  const { min, max } = range ? range[1] : { min: 100, max: 5000 };
+                                  newFormData[question.id] = generateRandomAmount(min, max).toString();
+                                } else if (question.type === 'select') {
+                                  newFormData[question.id] = generateRandomSelection(question.options);
+                                } else if (question.type === 'multiselect' && question.options) {
+                                  const numSelections = Math.floor(Math.random() * 3) + 1;
+                                  const shuffled = [...question.options].sort(() => 0.5 - Math.random());
+                                  newFormData[question.id] = shuffled.slice(0, numSelections).map(opt => opt.value);
+                                }
+                              }
+                            });
                           }
-                        });
-                      }
-                      
-                      // Special handling for 6-Month Projection step
-                      if (currentStep === 5) { // 6-Month Projection step
-                        // Always set all changes to yes
-                        newFormData.incomeChange = 'yes';
-                        newFormData.needsChange = 'yes';
-                        newFormData.wantsChange = 'yes';
-                        
-                        // Get current summary for base values
-                        const summary = calculateBudgetSummary();
-                        
-                        // Generate monthly projections with realistic variations
-                        const monthlyProjections = Array(6).fill().map((_, index) => {
-                          const variationRange = 0.15; // 15% variation range
-                          const getRandomVariation = () => 1 + (Math.random() * variationRange * 2 - variationRange);
                           
-                          // Generate variations for income
-                          const income = Math.round(summary.totalIncome * getRandomVariation());
-                          
-                          // Get the correct housing payment based on type
-                          const baseHousingPayment = formData.housingType === 'mortgage' 
-                            ? Number(formData.mortgage || 0) 
-                            : Number(formData.rent || 0);
+                          // Special handling for 6-Month Projection step
+                          if (currentStep === 5) { // 6-Month Projection step
+                            // Always set all changes to yes
+                            newFormData.incomeChange = 'yes';
+                            newFormData.needsChange = 'yes';
+                            newFormData.wantsChange = 'yes';
                             
-                          // Generate variations for needs categories
-                          const needsDetails = {
-                            housing: Math.round(baseHousingPayment * getRandomVariation()),
-                            transportation: Math.round((Number(formData.transportation) || generateRandomAmount(DEV_RANGES.transportation.min, DEV_RANGES.transportation.max)) * getRandomVariation()),
-                            groceries: Math.round(Number(formData.groceries) * getRandomVariation()),
-                            healthInsurance: Math.round((Number(formData.healthInsurance) || generateRandomAmount(DEV_RANGES.healthInsurance.min, DEV_RANGES.healthInsurance.max)) * getRandomVariation()),
-                            medicalExpenses: Math.round((Number(formData.medicalExpenses) || generateRandomAmount(DEV_RANGES.medicalExpenses.min, DEV_RANGES.medicalExpenses.max)) * getRandomVariation()),
-                            utilities: Math.round(Number(formData.utilities) * getRandomVariation()),
-                            propertyTax: formData.housingType === 'mortgage' ? Math.round(Number(formData.propertyTax) * getRandomVariation()) : 0,
-                            homeInsurance: formData.housingType === 'mortgage' ? Math.round(Number(formData.homeInsurance) * getRandomVariation()) : 0
-                          };
-                          
-                          // Generate variations for wants categories
-                          const wantsDetails = {
-                            entertainment: Math.round(Number(formData.entertainment || 0) * getRandomVariation()),
-                            shopping: Math.round(Number(formData.shopping || 0) * getRandomVariation()),
-                            diningOut: Math.round(Number(formData.diningOut || 0) * getRandomVariation()),
-                            personalCare: Math.round(Number(formData.personalCare || 0) * getRandomVariation()),
-                            gymMembership: Math.round(Number(formData.gymMembership || 0) * getRandomVariation()),
-                            subscriptions: Math.round(Number(formData.subscriptions || 0) * getRandomVariation()),
-                            travel: Math.round(Number(formData.travel || 0) * getRandomVariation()),
-                            charity: Math.round(Number(formData.charity || 0) * getRandomVariation())
-                          };
+                            // Get current summary for base values
+                            const summary = calculateBudgetSummary();
+                            
+                            // Generate monthly projections with realistic variations
+                            const monthlyProjections = Array(6).fill().map((_, index) => {
+                              const variationRange = 0.15; // 15% variation range
+                              const getRandomVariation = () => 1 + (Math.random() * variationRange * 2 - variationRange);
+                              
+                              // Generate variations for income
+                              const income = Math.round(summary.totalIncome * getRandomVariation());
+                              
+                              // Get the correct housing payment based on type
+                              const baseHousingPayment = formData.housingType === 'mortgage' 
+                                ? Number(formData.mortgage || 0) 
+                                : Number(formData.rent || 0);
+                                
+                              // Generate variations for needs categories
+                              const needsDetails = {
+                                housing: Math.round(baseHousingPayment * getRandomVariation()),
+                                transportation: Math.round((Number(formData.transportation) || generateRandomAmount(DEV_RANGES.transportation.min, DEV_RANGES.transportation.max)) * getRandomVariation()),
+                                groceries: Math.round(Number(formData.groceries) * getRandomVariation()),
+                                healthInsurance: Math.round((Number(formData.healthInsurance) || generateRandomAmount(DEV_RANGES.healthInsurance.min, DEV_RANGES.healthInsurance.max)) * getRandomVariation()),
+                                medicalExpenses: Math.round((Number(formData.medicalExpenses) || generateRandomAmount(DEV_RANGES.medicalExpenses.min, DEV_RANGES.medicalExpenses.max)) * getRandomVariation()),
+                                utilities: Math.round(Number(formData.utilities) * getRandomVariation()),
+                                propertyTax: formData.housingType === 'mortgage' ? Math.round(Number(formData.propertyTax) * getRandomVariation()) : 0,
+                                homeInsurance: formData.housingType === 'mortgage' ? Math.round(Number(formData.homeInsurance) * getRandomVariation()) : 0
+                              };
+                              
+                              // Generate variations for wants categories
+                              const wantsDetails = {
+                                entertainment: Math.round(Number(formData.entertainment || 0) * getRandomVariation()),
+                                shopping: Math.round(Number(formData.shopping || 0) * getRandomVariation()),
+                                diningOut: Math.round(Number(formData.diningOut || 0) * getRandomVariation()),
+                                personalCare: Math.round(Number(formData.personalCare || 0) * getRandomVariation()),
+                                gymMembership: Math.round(Number(formData.gymMembership || 0) * getRandomVariation()),
+                                subscriptions: Math.round(Number(formData.subscriptions || 0) * getRandomVariation()),
+                                travel: Math.round(Number(formData.travel || 0) * getRandomVariation()),
+                                charity: Math.round(Number(formData.charity || 0) * getRandomVariation())
+                              };
 
-                          // Generate variations for savings categories
-                          const savingsDetails = {
-                            emergencyFund: Math.round(Number(formData.emergencyFund) * getRandomVariation()),
-                            sinkingFund: Math.round(Number(formData.sinkingFund) * getRandomVariation()),
-                            goalFund: Math.round(Number(formData.goalFund) * getRandomVariation())
-                          };
+                              // Generate variations for savings categories
+                              const savingsDetails = {
+                                emergencyFund: Math.round(Number(formData.emergencyFund) * getRandomVariation()),
+                                sinkingFund: Math.round(Number(formData.sinkingFund) * getRandomVariation()),
+                                goalFund: Math.round(Number(formData.goalFund) * getRandomVariation())
+                              };
+                              
+                              // Calculate totals
+                              const totalNeeds = Object.values(needsDetails).reduce((sum, val) => sum + val, 0);
+                              const totalWants = Object.values(wantsDetails).reduce((sum, val) => sum + val, 0);
+                              const totalSavings = Object.values(savingsDetails).reduce((sum, val) => sum + val, 0);
+                              
+                              return {
+                                income,
+                                needs: totalNeeds,
+                                wants: totalWants,
+                                savings: income - totalNeeds - totalWants,
+                                needsDetails,
+                                wantsDetails,
+                                savingsDetails
+                              };
+                            });
+                            
+                            newFormData.monthlyProjections = monthlyProjections;
+                            
+                            // Random selection for wants reduction question
+                            newFormData.canReduceWants = Math.random() > 0.5 ? 'yes' : 'no';
+                            
+                            console.log('[Dev] Generated random projections:', monthlyProjections);
+                          }
                           
-                          // Calculate totals
-                          const totalNeeds = Object.values(needsDetails).reduce((sum, val) => sum + val, 0);
-                          const totalWants = Object.values(wantsDetails).reduce((sum, val) => sum + val, 0);
-                          const totalSavings = Object.values(savingsDetails).reduce((sum, val) => sum + val, 0);
-                          
-                          return {
-                            income,
-                            needs: totalNeeds,
-                            wants: totalWants,
-                            savings: income - totalNeeds - totalWants,
-                            needsDetails,
-                            wantsDetails,
-                            savingsDetails
-                          };
-                        });
-                        
-                        newFormData.monthlyProjections = monthlyProjections;
-                        
-                        // Random selection for wants reduction question
-                        newFormData.canReduceWants = Math.random() > 0.5 ? 'yes' : 'no';
-                        
-                        console.log('[Dev] Generated random projections:', monthlyProjections);
-                      }
-                      
-                      setFormData(newFormData);
-                      console.log(`[Dev] Generated random data for ${questions[currentStep].category}:`, newFormData);
-                    }}
-                    className="budgettool-dev-button"
-                  >
-                    🎲 Generate Random Data for {questions[currentStep].category}
-                    <br />
-                    <small style={{ opacity: 0.7 }}>Using realistic ranges for each field type</small>
-                  </button>
+                          setFormData(newFormData);
+                          console.log(`[Dev] Generated random data for ${questions[currentStep].category}:`, newFormData);
+                        }}
+                        className="budgettool-dev-button"
+                      >
+                        🎲 Generate Random Data for {questions[currentStep].category}
+                        <br />
+                        <small style={{ opacity: 0.7 }}>Using realistic ranges for each field type</small>
+                      </button>
+                    </div>
+                  )}
+                  
+                  <h2 className="budgettool-category-title">
+                    {questions[currentStep].category}
+                  </h2>
+                  
+                  {questions[currentStep].description && (
+                    typeof questions[currentStep].description === 'function'
+                      ? questions[currentStep].description(formData)
+                      : <div>{questions[currentStep].description}</div>
+                  )}
+                  
+                  {questions[currentStep].questions.map((question, index) => {
+                    if (question.showIf && !question.showIf(formData)) {
+                      return null;
+                    }
+
+                    return (
+                      <div key={index} className="budgettool-question">
+                        {renderQuestion(question)}
+                      </div>
+                    );
+                  })}
+
+                  {questions[currentStep].renderCustomContent && 
+                    questions[currentStep].renderCustomContent(formData, setFormData)
+                  }
+                </>
+              ) : (
+                <div className="budgettool-spreadsheet-step">
+                  <h2 className="budgettool-category-title">Your Budget Spreadsheet</h2>
+                  <p className="budgettool-spreadsheet-text">
+                    Review your complete budget information in the spreadsheet below.
+                    You can download it at any time using the button below.
+                  </p>
+                  <BudgetSpreadsheet formData={formData} />
                 </div>
               )}
-              
-              <h2 className="budgettool-category-title">
-                {questions[currentStep].category}
-              </h2>
-              
-              {questions[currentStep].questions.map((question, index) => {
-                if (question.showIf && !question.showIf(formData)) {
-                  return null;
-                }
-
-                return (
-                  <div key={index} className="budgettool-question">
-                    {renderQuestion(question)}
-                  </div>
-                );
-              })}
-
-              {questions[currentStep].renderCustomContent && 
-                questions[currentStep].renderCustomContent(formData)
-              }
-            </>
-          ) : (
-            <div className="budgettool-spreadsheet-step">
-              <h2 className="budgettool-category-title">Your Budget Spreadsheet</h2>
-              <p className="budgettool-spreadsheet-text">
-                Review your complete budget information in the spreadsheet below.
-                You can download it at any time using the button below.
-              </p>
-              <BudgetSpreadsheet formData={formData} />
             </div>
-          )}
-        </div>
 
-        <div className="budgettool-navigation">
-          <button
-            onClick={handlePrevious}
-            className="budgettool-button budgettool-button-secondary"
-            disabled={currentStep === 0}
-          >
-            Previous
-          </button>
-          <div className="budgettool-navigation-right">
-            <button
-              onClick={() => setIsConfirmModalOpen(true)}
-              className="budgettool-button budgettool-button-secondary"
-            >
-              Return to Select
-            </button>
-            <button
-              onClick={currentStep === questions.length ? handleDownloadSpreadsheet : handleNext}
-              className="budgettool-button budgettool-button-primary"
-            >
-              {currentStep === questions.length ? 'Download Spreadsheet' : 'Next'}
-            </button>
-          </div>
-        </div>
+            <div className="budgettool-navigation">
+              <button
+                onClick={handlePrevious}
+                className="budgettool-button budgettool-button-secondary"
+                disabled={currentStep === -1}
+              >
+                Previous
+              </button>
+              <div className="budgettool-navigation-right">
+                <button
+                  onClick={() => setIsConfirmModalOpen(true)}
+                  className="budgettool-button budgettool-button-secondary"
+                >
+                  Return to Select
+                </button>
+                <button
+                  onClick={currentStep === questions.length ? handleDownloadSpreadsheet : handleNext}
+                  className="budgettool-button budgettool-button-primary"
+                >
+                  {currentStep === questions.length ? 'Download Spreadsheet' : 'Next'}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <SpreadsheetModal

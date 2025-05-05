@@ -153,10 +153,12 @@
 
 .budgettool-savings-info {
   margin-top: 2rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 1.5rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  border: 1.5px solid rgba(76,175,80,0.18);
+  box-shadow: 0 2px 12px rgba(76,175,80,0.07);
+  text-align: center;
 }
 
 .budgettool-savings-title {
@@ -208,6 +210,53 @@
   font-size: 0.9rem;
   color: #cccccc;
   line-height: 1.4;
+}
+
+.budgettool-savings-message {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #4CAF50;
+  margin-bottom: 1.2rem;
+}
+
+.budgettool-savings-pots-explanation {
+  font-size: 1.08rem;
+  color: #e0e0e0;
+  margin: 0 auto;
+  max-width: 600px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  box-shadow: 0 1px 6px rgba(33,150,243,0.06);
+}
+
+.budgettool-savings-pots-explanation span {
+  display: block;
+  margin-bottom: 1.1em;
+  color: #90caf9;
+  font-size: 1.08em;
+}
+
+.budgettool-savings-pots-explanation ol {
+  text-align: left;
+  margin: 0 auto;
+  padding-left: 1.2em;
+  color: #fff;
+  font-size: 1.08em;
+}
+
+.budgettool-savings-pots-explanation li {
+  margin-bottom: 0.7em;
+  line-height: 1.5;
+}
+
+.budgettool-savings-pots-explanation strong {
+  color: #4CAF50;
+}
+
+.budgettool-savings-pots-explanation em {
+  color: #ffd600;
+  font-style: normal;
 }
 
 .budgettool-projections {
@@ -340,83 +389,208 @@
 }
 
 .budgettool-analysis {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-top: 1rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 16px rgba(33,150,243,0.07);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .budgettool-analysis-title {
-  font-size: 1.8rem;
-  color: #ffffff;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 2.2rem;
   text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .budgettool-analysis-chart {
   width: 100%;
-  max-width: 400px;
-  height: 400px;
-  margin: 0 auto 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1rem;
+  max-width: 350px;
+  height: 350px;
+  margin: 0 auto 1.5rem auto;
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  padding: 1.2rem 0.5rem 0.5rem 0.5rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.budgettool-piechart-percentages {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  right: -170px;
+  top: 2.2rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  gap: 0.7em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  z-index: 2;
+}
+
+.budgettool-piechart-percentage-card {
+  display: flex;
+  align-items: center;
+  min-width: 120px;
+  padding: 0.7em 1.2em;
+  background: rgba(30,30,30,0.97);
+  border-radius: 10px 22px 10px 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  font-size: 1.08em;
+  font-weight: 700;
+  border-left: 6px solid;
+  margin-right: 0.5em;
+  letter-spacing: 0.01em;
+}
+
+.budgettool-piechart-percentage-card.needs {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+.budgettool-piechart-percentage-card.wants {
+  border-color: #2196F3;
+  color: #2196F3;
+}
+.budgettool-piechart-percentage-card.savings {
+  border-color: #FFC107;
+  color: #FFC107;
+}
+
+@media (max-width: 900px) {
+  .budgettool-piechart-percentages {
+    position: static;
+    flex-direction: row;
+    gap: 0.5em;
+    margin: 1.2em 0 0 0;
+    justify-content: center;
+  }
 }
 
 .budgettool-analysis-content {
-  color: #ffffff;
+  margin-top: 2.5rem;
+  color: #fff;
 }
 
-.budgettool-analysis-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+.budgettool-analysis-rule {
+  background: rgba(76,175,80,0.07);
+  border-left: 4px solid #4CAF50;
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 1.08rem;
+  text-align: left;
+}
+
+.budgettool-analysis-rule strong {
+  color: #4CAF50;
+  font-size: 1.13em;
+}
+
+.budgettool-analysis-rule ul {
+  margin: 0.7em 0 0.7em 1.2em;
+  padding: 0;
+  color: #fff;
+  font-size: 1.05em;
+}
+
+.budgettool-analysis-rule li {
+  margin-bottom: 0.3em;
+}
+
+.budgettool-analysis-warning {
+  color: #ff5757;
+  background: rgba(255, 87, 87, 0.13);
+  border: 1px solid rgba(255, 87, 87, 0.18);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0 2rem 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.budgettool-analysis-savings {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1.5px solid rgba(255,255,255,0.13);
+}
+
+.budgettool-analysis-savings h4 {
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
 }
 
 .budgettool-analysis-list {
   list-style: none;
-  padding: 0.5rem 1rem;
-  margin: 1rem 0;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 1.08rem;
+  color: #fff;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid rgba(255,255,255,0.09);
 }
 
 .budgettool-analysis-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.9em 1.2em;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
 }
 
 .budgettool-analysis-list li:last-child {
   border-bottom: none;
 }
 
-.budgettool-analysis-warning {
-  color: #ff5757;
-  background: rgba(255, 87, 87, 0.1);
-  border: 1px solid rgba(255, 87, 87, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-
-.budgettool-analysis-savings {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.budgettool-analysis-savings h4 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.budgettool-analysis-savings p {
-  margin: 1rem 0;
+.budgettool-analysis-text {
+  font-size: 1.08rem;
   color: #cccccc;
+  margin: 1.2rem 0 0.5rem 0;
+  text-align: center;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .budgettool-analysis {
+    padding: 1rem 0.5rem;
+  }
+  .budgettool-analysis-title {
+    font-size: 1.3rem;
+  }
+  .budgettool-analysis-chart {
+    max-width: 220px;
+    height: 220px;
+    padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+  }
+  .budgettool-piechart-percentages {
+    right: 0.2rem;
+    top: 1.2rem;
+    font-size: 0.95rem;
+  }
+  .budgettool-analysis-content {
+    margin-top: 1.2rem;
+  }
+  .budgettool-analysis-savings {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+  }
+  .budgettool-analysis-list {
+    font-size: 0.98rem;
+  }
 }
 
 .budgettool-monthly-inputs {
@@ -1128,4 +1302,253 @@
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+.budgettool-welcome {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.budgettool-welcome-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.budgettool-welcome-title {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.budgettool-welcome-message {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.budgettool-info-button {
+  display: inline-block;
+  position: relative;
+  margin-left: 0.5em;
+  color: #4CAF50;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  vertical-align: middle;
+  outline: none;
+}
+
+.budgettool-info-button:focus .budgettool-info-tooltip,
+.budgettool-info-button:hover .budgettool-info-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-8px) scale(1);
+}
+
+.budgettool-info-tooltip {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 120%;
+  transform: translateX(-50%) translateY(0) scale(0.95);
+  background: #222;
+  color: #fff;
+  padding: 0.7em 1em;
+  border-radius: 8px;
+  font-size: 0.95em;
+  white-space: pre-line;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  z-index: 10;
+  min-width: 220px;
+  max-width: 320px;
+  transition: all 0.18s cubic-bezier(.4,2,.6,1);
+}
+
+.budgettool-info-popover {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 1em 0 1.5em 0;
+}
+
+.budgettool-info-popover-label {
+  color: #cccccc;
+  font-size: 1em;
+  margin-left: 0.2em;
+}
+
+.budgettool-step-description {
+  background: rgba(33,150,243,0.07);
+  border-radius: 12px;
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  margin-bottom: 2.2rem;
+  box-shadow: 0 1px 8px rgba(33,150,243,0.06);
+  border-left: 5px solid #2196F3;
+  text-align: center;
+  font-size: 1.13rem;
+}
+.budgettool-step-description strong {
+  color: #2196F3;
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.budgettool-step-description .budgettool-step-action {
+  display: block;
+  margin-top: 1.2em;
+  color: #ffd600;
+  font-weight: 700;
+  font-size: 1.08em;
+  background: rgba(255,214,0,0.08);
+  border-radius: 8px;
+  padding: 0.7em 1em;
+  box-shadow: 0 1px 6px rgba(255,214,0,0.07);
+}
+
+@media (max-width: 900px) {
+  .budgettool-step-description {
+    padding: 1rem 0.5rem 0.7rem 0.5rem;
+    font-size: 1em;
+  }
+}
+
+.budgettool-step-tip {
+  background: rgba(76, 175, 80, 0.08);
+  color: #b2ffb2;
+  border-left: 4px solid #4CAF50;
+  padding: 1em 1.2em;
+  margin: 1em 0 2em 0;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+.budgettool-savings-deepdive {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 16px rgba(33,150,243,0.07);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #fff;
+  font-size: 1.08rem;
+}
+
+.budgettool-savings-deepdive-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 0.7em;
+  flex-wrap: wrap;
+}
+
+.budgettool-savings-deepdive-label {
+  font-weight: 600;
+  color: #4CAF50;
+  margin-right: 0.5em;
+}
+
+.budgettool-savings-deepdive-value {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.13em;
+}
+
+.budgettool-savings-deepdive-edit {
+  background: linear-gradient(135deg, #4CAF50, #2196F3);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4em 1.1em;
+  font-size: 1em;
+  font-weight: 500;
+  margin-left: 0.5em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+}
+.budgettool-savings-deepdive-edit:hover {
+  background: linear-gradient(135deg, #2196F3, #4CAF50);
+}
+
+.budgettool-savings-deepdive-section {
+  margin-top: 2.2rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(76,175,80,0.06);
+  border-left: 5px solid #4CAF50;
+}
+
+.budgettool-savings-deepdive-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4CAF50;
+  margin-bottom: 1.1rem;
+}
+
+.budgettool-savings-deepdive-action {
+  color: #ffd600;
+  font-weight: 600;
+  margin-top: 0.7em;
+}
+
+.budgettool-savings-deepdive-input {
+  flex: 1 1 200px;
+  padding: 0.7em 1em;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1em;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.budgettool-savings-deepdive-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76,175,80,0.18);
+}
+
+.budgettool-savings-deepdive-info {
+  margin-top: 1.2em;
+  color: #cccccc;
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.budgettool-savings-deepdive-row .budgettool-info-button {
+  margin-left: 0.5em;
+  font-size: 1.1em;
+}
+
+@media (max-width: 900px) {
+  .budgettool-savings-deepdive {
+    padding: 1.2rem 0.5rem;
+  }
+  .budgettool-savings-deepdive-section {
+    padding: 1rem 0.5rem 0.8rem 0.5rem;
+  }
+  .budgettool-savings-deepdive-title {
+    font-size: 1.1rem;
+  }
+  .budgettool-savings-deepdive-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3em;
+  }
 } 
