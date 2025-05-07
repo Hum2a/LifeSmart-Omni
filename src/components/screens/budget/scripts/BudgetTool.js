@@ -9,7 +9,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
 // Developer Testing Configuration
-const DEV_TESTING_ENABLED = false; // Toggle this to enable/disable developer testing features
+const DEV_TESTING_ENABLED = true; // Toggle this to enable/disable developer testing features
 
 // Random number generation helper functions
 const generateRandomAmount = (min = 100, max = 5000) => {
@@ -46,10 +46,17 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 // Add an InfoButton component for tooltips
 const InfoButton = ({ text }) => (
   <span className="budgettool-info-button" tabIndex="0">
-    ❓
+    <span className="budgettool-info-icon">💡</span>
     <span className="budgettool-info-tooltip">{text}</span>
   </span>
 );
+
+// Add this utility function at the top-level scope of BudgetTool
+function getSecondMonthName() {
+  const today = new Date();
+  const secondMonth = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+  return secondMonth.toLocaleString('default', { month: 'long' });
+}
 
 const BudgetTool = () => {
   const navigate = useNavigate();
@@ -172,13 +179,13 @@ const BudgetTool = () => {
           </div>
           <div className="budgettool-info-popover">
             <InfoButton text={
-              "Look through your bank statements. Many modern banks already categorise spending, but if not, you can use budgeting apps that connect your accounts and categorise the spending, like Snoop and MoneyWise."
+              "Look through your bank statements. Many modern banks already categorise spending, but if not, you can use budgeting apps that connect your accounts and categorise the spending, like Snoop and MoneyWise (free version is sufficient)."
             } />
             <span className="budgettool-info-popover-label">Where do I find this information?</span>
           </div>
-          <div className="budgettool-step-tip">
+          {/* <div className="budgettool-step-tip">
             Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
-          </div>
+          </div> */}
         </>
       ),
       questions: [
@@ -353,11 +360,11 @@ const BudgetTool = () => {
       ],
     },
     {
-      category: 'Savings, Safety Nets & Snapshot',
+      category: 'Savings & Safety Nets',
       description: (
         <>
           <div className="budgettool-step-description">
-            <strong>Record how many savings you have, how you organise them, and see your spending snapshot.</strong>
+            <strong>Record how many savings you have and how you organise them.</strong>
           </div>
         </>
       ),
@@ -389,9 +396,8 @@ const BudgetTool = () => {
         },
         // (Add more savings questions here if needed)
       ],
-      renderCustomContent: (formData) => {
-        // Savings pots guidance
-        const hasPots = formData.hasSavingsPot === 'yes';
+      renderCustomContent: (formData, setFormData) => {
+        // Only show savings pots guidance and visual demo, no input fields
         return (
           <>
             <div className="budgettool-savings-info">
@@ -407,150 +413,171 @@ const BudgetTool = () => {
                 <span style={{ fontStyle: 'italic', fontWeight: 500 }}>
                   We recommend splitting your savings into 3 funds and filling up each one in turn.
                 </span>
-                <ol style={{ marginTop: '1em', marginBottom: 0 }}>
-                  <li><strong>Emergency Fund</strong>: 3-6 months of your <em>needs</em></li>
-                  <li><strong>Sinking Fund</strong>: For any planned large future expenses like holidays, home repairs</li>
-                  <li><strong>Goal / Investment Fund</strong>: For long term goals and building wealth</li>
-                </ol>
+                <div className="budgettool-savings-pots-demo">
+                  <div className="budgettool-savings-pot-demo emergency">
+                    <div className="budgettool-savings-pot-icon">🛡️</div>
+                    <div className="budgettool-savings-pot-title">Emergency Fund</div>
+                    <div className="budgettool-savings-pot-desc">3-6 months of your <em>needs</em> for unexpected situations</div>
+                  </div>
+                  <div className="budgettool-savings-pot-demo sinking">
+                    <div className="budgettool-savings-pot-icon">🎯</div>
+                    <div className="budgettool-savings-pot-title">Sinking Fund</div>
+                    <div className="budgettool-savings-pot-desc">For planned large expenses (holidays, home repairs, etc.)</div>
+                  </div>
+                  <div className="budgettool-savings-pot-demo goal">
+                    <div className="budgettool-savings-pot-icon">💎</div>
+                    <div className="budgettool-savings-pot-title">Goal / Investment Fund</div>
+                    <div className="budgettool-savings-pot-desc">For long-term goals and building wealth</div>
+                  </div>
+                </div>
               </div>
             </div>
-            {/* Budget Analysis/Snapshot */}
-            <div style={{ marginTop: '2.5rem' }}>
-              {(() => {
-                const summary = calculateBudgetSummary();
-                const totalIncome = summary.totalIncome;
-                const needs = summary.needs;
-                const wants = summary.wants;
-                const needsPercentage = summary.needsPercentage;
-                const wantsPercentage = summary.wantsPercentage;
-                const remainingPercentage = summary.remainingPercentage;
-                const recommendedSavings = (totalIncome - needs) * 0.33;
-                const recommendedWants = (totalIncome - needs) * 0.67;
-                const currentWants = wants;
-                const wantsReduction = Math.max(0, currentWants - recommendedWants);
-                const recommendedMinimumSavings = needs * 3;
-                const recommendedIdealSavings = needs * 6;
-                const currentSavings = Number(formData.totalSavings) || 0;
-                const savingsGap = Math.max(0, recommendedMinimumSavings - currentSavings);
-                return (
-                  <div className="budgettool-analysis">
-                    <h3 className="budgettool-analysis-title">Your Spending Snapshot</h3>
-                    <div className="budgettool-analysis-chart">
-                      <Pie
-                        data={{
-                          labels: ['Needs', 'Wants', 'Savings'],
-                          datasets: [
-                            {
-                              data: [
-                                Math.max(0, summary.needs || 0),
-                                Math.max(0, summary.wants || 0),
-                                Math.max(0, (summary.totalIncome || 0) - (summary.needs || 0) - (summary.wants || 0))
-                              ],
-                              backgroundColor: [
-                                'rgba(76, 175, 80, 0.85)',
-                                'rgba(33, 150, 243, 0.85)',
-                                'rgba(255, 193, 7, 0.85)'
-                              ],
-                              borderColor: [
-                                'rgba(76, 175, 80, 1)',
-                                'rgba(33, 150, 243, 1)',
-                                'rgba(255, 193, 7, 1)'
-                              ],
-                              borderWidth: 2,
-                              hoverOffset: 15,
-                              hoverBorderWidth: 3
-                            },
-                          ],
-                        }}
-                        options={{
-                          responsive: true,
-                          maintainAspectRatio: false,
-                          animation: {
-                            duration: 2000,
-                            easing: 'easeInOutQuart'
-                          },
-                          plugins: {
-                            legend: {
-                              position: 'bottom',
-                              labels: {
-                                color: '#ffffff',
-                                font: {
-                                  size: 14,
-                                  family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
-                                },
-                                padding: 20,
-                                usePointStyle: true,
-                                pointStyle: 'circle'
-                              }
-                            },
-                            tooltip: {
-                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                              titleColor: '#ffffff',
-                              bodyColor: '#ffffff',
-                              padding: 12,
-                              cornerRadius: 8,
-                              displayColors: false,
-                              callbacks: {
-                                label: function(context) {
-                                  const value = context.raw || 0;
-                                  const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
-                                  const percentage = ((value / total) * 100).toFixed(1);
-                                  return `${context.label}: £${value.toFixed(2)} (${percentage}%)`;
-                                }
-                              }
-                            }
-                          },
-                          cutout: '60%',
-                          radius: '80%'
-                        }}
-                      />
-                      {/* Show percentages next to the pie chart */}
-                      <div className="budgettool-piechart-percentages">
-                        <div className="budgettool-piechart-percentage-card needs">Needs: {needsPercentage.toFixed(1)}%</div>
-                        <div className="budgettool-piechart-percentage-card wants">Wants: {wantsPercentage.toFixed(1)}%</div>
-                        <div className="budgettool-piechart-percentage-card savings">Savings: {remainingPercentage.toFixed(1)}%</div>
-                      </div>
-                    </div>
-                    <div className="budgettool-analysis-content">
-                      <div className="budgettool-analysis-rule">
-                        <strong>Smart Spending Rule:</strong>
-                        <ul>
-                          <li>Pay your needs</li>
-                          <li>Pay yourself (save 1/3rd)</li>
-                          <li>Spend and enjoy what's left</li>
-                        </ul>
-                        <div style={{ marginTop: '0.5em', color: '#cccccc' }}>
-                          Our guideline is that, while your necessities are fixed in the short term, from the remaining, you should save <strong>1/3<sup>rd</sup></strong> and spend <strong>2/3<sup>rd</sup></strong> on your wants.
-                        </div>
-                      </div>
-                      {wantsReduction > 0 && (
-                        <div className="budgettool-analysis-warning">
-                          Action: You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
-                        </div>
-                      )}
-                      <div className="budgettool-analysis-savings">
-                        <h4>Savings Recommendations</h4>
-                        <p>Total Savings Target:</p>
-                        <ul className="budgettool-analysis-list">
-                          <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
-                          <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
-                          <li>Current savings: £{currentSavings.toFixed(2)}</li>
-                          {savingsGap > 0 && (
-                            <li className="budgettool-analysis-warning">
-                              You need £{savingsGap.toFixed(2)} more to reach the minimum target
-                            </li>
-                          )}
-                        </ul>
-                        <p className="budgettool-analysis-text">
-                          Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month to build up your savings and work towards your financial goals.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
           </>
+        );
+      }
+    },
+    {
+      category: 'Spending Snapshot',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>See your spending snapshot and recommendations based on your inputs so far.</strong>
+          </div>
+        </>
+      ),
+      questions: [],
+      renderCustomContent: (formData) => {
+        // Pie chart and analysis previously in the old renderCustomContent
+        const summary = calculateBudgetSummary();
+        const totalIncome = summary.totalIncome;
+        const needs = summary.needs;
+        const wants = summary.wants;
+        const needsPercentage = summary.needsPercentage;
+        const wantsPercentage = summary.wantsPercentage;
+        const remainingPercentage = summary.remainingPercentage;
+        const recommendedSavings = (totalIncome - needs) * 0.33;
+        const recommendedWants = (totalIncome - needs) * 0.67;
+        const currentWants = wants;
+        const wantsReduction = Math.max(0, currentWants - recommendedWants);
+        const recommendedMinimumSavings = needs * 3;
+        const recommendedIdealSavings = needs * 6;
+        const currentSavings = Number(formData.totalSavings) || 0;
+        const savingsGap = Math.max(0, recommendedMinimumSavings - currentSavings);
+        return (
+          <div className="budgettool-analysis">
+            <h3 className="budgettool-analysis-title">Your Spending Snapshot</h3>
+            <div className="budgettool-analysis-chart">
+              <Pie
+                data={{
+                  labels: ['Needs', 'Wants', 'Savings'],
+                  datasets: [
+                    {
+                      data: [
+                        Math.max(0, summary.needs || 0),
+                        Math.max(0, summary.wants || 0),
+                        Math.max(0, (summary.totalIncome || 0) - (summary.needs || 0) - (summary.wants || 0))
+                      ],
+                      backgroundColor: [
+                        'rgba(76, 175, 80, 0.85)',
+                        'rgba(33, 150, 243, 0.85)',
+                        'rgba(255, 193, 7, 0.85)'
+                      ],
+                      borderColor: [
+                        'rgba(76, 175, 80, 1)',
+                        'rgba(33, 150, 243, 1)',
+                        'rgba(255, 193, 7, 1)'
+                      ],
+                      borderWidth: 2,
+                      hoverOffset: 15,
+                      hoverBorderWidth: 3
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                  },
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        color: '#ffffff',
+                        font: {
+                          size: 14,
+                          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                        },
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                      }
+                    },
+                    tooltip: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      titleColor: '#ffffff',
+                      bodyColor: '#ffffff',
+                      padding: 12,
+                      cornerRadius: 8,
+                      displayColors: false,
+                      callbacks: {
+                        label: function(context) {
+                          const value = context.raw || 0;
+                          const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                          const percentage = ((value / total) * 100).toFixed(1);
+                          return `${context.label}: £${value.toFixed(2)} (${percentage}%)`;
+                        }
+                      }
+                    }
+                  },
+                  cutout: '60%',
+                  radius: '80%'
+                }}
+              />
+              {/* Show percentages next to the pie chart */}
+              <div className="budgettool-piechart-percentages">
+                <div className="budgettool-piechart-percentage-card needs">Needs: {needsPercentage.toFixed(1)}%</div>
+                <div className="budgettool-piechart-percentage-card wants">Wants: {wantsPercentage.toFixed(1)}%</div>
+                <div className="budgettool-piechart-percentage-card savings">Savings: {remainingPercentage.toFixed(1)}%</div>
+              </div>
+            </div>
+            <div className="budgettool-analysis-content">
+              <div className="budgettool-analysis-rule">
+                <strong>Smart Spending Rule:</strong>
+                <ul>
+                  <li>Pay your needs</li>
+                  <li>Pay yourself (save 1/3rd)</li>
+                  <li>Spend and enjoy what's left</li>
+                </ul>
+                <div style={{ marginTop: '0.5em', color: '#cccccc' }}>
+                  Our guideline is that, while your necessities are fixed in the short term, from the remaining, you should save <strong>1/3<sup>rd</sup></strong> and spend <strong>2/3<sup>rd</sup></strong> on your wants.
+                </div>
+              </div>
+              {wantsReduction > 0 && (
+                <div className="budgettool-analysis-warning">
+                  Action: You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
+                </div>
+              )}
+              {/* <div className="budgettool-analysis-savings">
+                <h4>Savings Recommendations</h4>
+                <p>Total Savings Target:</p>
+                <ul className="budgettool-analysis-list">
+                  <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
+                  <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
+                  <li>Current savings: £{currentSavings.toFixed(2)}</li>
+                  {savingsGap > 0 && (
+                    <li className="budgettool-analysis-warning">
+                      You need £{savingsGap.toFixed(2)} more to reach the minimum target
+                    </li>
+                  )}
+                </ul>
+                <p className="budgettool-analysis-text">
+                  Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month to build up your savings and work towards your financial goals.
+                </p>
+              </div> */}
+            </div>
+          </div>
         );
       }
     },
@@ -567,8 +594,15 @@ const BudgetTool = () => {
       renderCustomContent: (formData, setFormData) => {
         // Helper for currency
         const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
-        // Emergency Fund
-        const essentials = Number(formData.needs) || 0;
+        // Calculate essentials (needs) for emergency fund using the same logic as calculateBudgetSummary
+        const essentials =
+          Number(formData.housingPayment || 0) +
+          Number(formData.utilities || 0) +
+          Number(formData.transportation || 0) +
+          Number(formData.groceries || 0) +
+          Number(formData.healthInsurance || 0) +
+          Number(formData.medicalExpenses || 0) +
+          Number(formData.otherLoanPayment || 0);
         const emergencyMin = essentials * 3;
         const totalSavings = Number(formData.totalSavings) || 0;
         const currentEmergency = Math.min(totalSavings, emergencyMin);
@@ -631,7 +665,7 @@ const BudgetTool = () => {
                   onChange={e => setFormData({ ...formData, sinkingPlannedExpenses: e.target.value })}
                   placeholder="Enter amount"
                 />
-                <span className="budgettool-info-button" tabIndex="0">❓<span className="budgettool-info-tooltip">Estimate any large expenses you have coming up in the next couple of years that aren't part of your usual spending such as home repair, wedding, large holiday etc. If you do not have any, then you can leave this blank.</span></span>
+                <span className="budgettool-info-button" tabIndex="0">💡<span className="budgettool-info-tooltip">Estimate any large expenses you have coming up in the next couple of years that aren't part of your usual spending such as home repair, wedding, large holiday etc. If you do not have any, then you can leave this blank.</span></span>
               </div>
               <div className="budgettool-savings-deepdive-row">
                 <span>Current Fund Balance:</span>
@@ -660,12 +694,17 @@ const BudgetTool = () => {
         // Calculate total projected savings increase
         const totalIncrease = (formData.monthlyProjections || []).reduce((sum, m) => sum + (Number(m.savings) || 0), 0);
         const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        function getSecondMonthName() {
+          const today = new Date();
+          const secondMonth = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+          return secondMonth.toLocaleString('default', { month: 'long' });
+        }
         return (
           <div className="budgettool-step-description">
             <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
             Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
-            <span style={{ color: '#ffd600', fontWeight: 600 }}>
-              Action: During the first week of June (second month displayed on table), you need to come and enter the actual spend figures to see if you are on track.
+            <span className="budgettool-step-action">
+              Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
             </span>
           </div>
         );
@@ -1205,7 +1244,7 @@ const BudgetTool = () => {
             <div className="budgettool-savings-pot">
               <div className="budgettool-savings-pot-icon">💎</div>
               <h4>Goal/Investment Fund</h4>
-              <p>For long-term goals and wealth building</p>
+              <p>For long-term goals and building wealth</p>
             </div>
           </div>
         </div>
@@ -1578,8 +1617,7 @@ const BudgetTool = () => {
       <div className="budgettool-container">
         <div className="budgettool-content">
           <header className="budgettool-header">
-            <h1 className="budgettool-title">Budget Planning Tool</h1>
-            <p className="budgettool-subtitle">Review your complete budget information</p>
+            <h1 className="budgettool-title">Wealth Map</h1>
           </header>
 
           <div className="budgettool-progress">
@@ -1597,7 +1635,7 @@ const BudgetTool = () => {
               <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
               Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
               <span className="budgettool-step-action">
-                Action: During the first week of June (second month displayed on table), you need to come and enter the actual spend figures to see if you are on track.
+                Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
               </span>
             </div>
           ) : null}

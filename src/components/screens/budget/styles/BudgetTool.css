@@ -2037,4 +2037,86 @@
 }
 [data-theme='light'] .budgettool-savings-deepdive-row .budgettool-info-button {
   color: #43e97b;
+}
+
+.budgettool-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35em;
+  color: #FFD600; /* Bright yellow for light bulb */
+  background: rgba(255, 214, 0, 0.13);
+  border-radius: 50%;
+  width: 1.7em;
+  height: 1.7em;
+  margin-right: 0.2em;
+  box-shadow: 0 1px 4px rgba(255, 214, 0, 0.13);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.budgettool-info-button:hover .budgettool-info-icon,
+.budgettool-info-button:focus .budgettool-info-icon {
+  background: #FFD600;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(255, 214, 0, 0.25);
+  transform: scale(1.08);
+}
+
+.budgettool-savings-pots-demo {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5em;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.budgettool-savings-pot-demo {
+  background: rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 1.2rem 1.1rem;
+  min-width: 180px;
+  max-width: 220px;
+  text-align: center;
+  box-shadow: 0 1px 6px rgba(76,175,80,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.budgettool-savings-pot-demo .budgettool-savings-pot-icon {
+  font-size: 2.1rem;
+  margin-bottom: 8px;
+}
+
+.budgettool-savings-pot-demo .budgettool-savings-pot-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.budgettool-savings-pot-demo.emergency .budgettool-savings-pot-title {
+  color: #4CAF50;
+}
+.budgettool-savings-pot-demo.sinking .budgettool-savings-pot-title {
+  color: #2196F3;
+}
+.budgettool-savings-pot-demo.goal .budgettool-savings-pot-title {
+  color: #FFD600;
+}
+
+.budgettool-savings-pot-demo .budgettool-savings-pot-desc {
+  color: #fff;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 700px) {
+  .budgettool-savings-pots-demo {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .budgettool-savings-pot-demo {
+    min-width: 90vw;
+    max-width: 98vw;
+  }
 } 
