@@ -809,13 +809,13 @@ const BudgetTool = () => {
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Housing Payment</td>
+                        <td>Housing cost (rent / mortgage)</td>
                         {nextMonths.map((_, index) => (
                           <td key={index}>
                             <input
                               type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.housing || Number(formData.housingPayment || 0)}
-                              onChange={(e) => handleAmountChange(index, 'needsDetails.housing', e.target.value)}
+                              value={formData.monthlyProjections[index]?.needsDetails?.housingPayment || Number(formData.housingPayment || 0)}
+                              onChange={(e) => handleAmountChange(index, 'needsDetails.housingPayment', e.target.value)}
                               className="budgettool-input"
                               placeholder={`£${Number(formData.housingPayment || 0).toFixed(2)}`}
                             />
@@ -837,7 +837,21 @@ const BudgetTool = () => {
                         ))}
                       </tr>
                       <tr>
-                        <td>Transportation</td>
+                        <td>Essential groceries</td>
+                        {nextMonths.map((_, index) => (
+                          <td key={index}>
+                            <input
+                              type="number"
+                              value={formData.monthlyProjections[index]?.needsDetails?.groceries || Number(formData.groceries || 0)}
+                              onChange={(e) => handleAmountChange(index, 'needsDetails.groceries', e.target.value)}
+                              className="budgettool-input"
+                              placeholder={`£${Number(formData.groceries || 0).toFixed(2)}`}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Transport</td>
                         {nextMonths.map((_, index) => (
                           <td key={index}>
                             <input
@@ -851,21 +865,7 @@ const BudgetTool = () => {
                         ))}
                       </tr>
                       <tr>
-                        <td>Groceries</td>
-                        {nextMonths.map((_, index) => (
-                          <td key={index}>
-                            <input
-                              type="number"
-                              value={formData.monthlyProjections[index]?.needsDetails?.groceries || Number(formData.groceries || 0)}
-                              onChange={(e) => handleAmountChange(index, 'needsDetails.groceries', e.target.value)}
-                              placeholder={`£${Number(formData.groceries || 0).toFixed(2)}`}
-                              className="budgettool-input"
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Health Insurance</td>
+                        <td>Health costs</td>
                         {nextMonths.map((_, index) => (
                           <td key={index}>
                             <input

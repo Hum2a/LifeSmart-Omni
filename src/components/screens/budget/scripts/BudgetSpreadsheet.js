@@ -4,13 +4,11 @@ import ExcelJS from 'exceljs';
 
 // Define categories at component level
 const needsCategories = [
-  { label: "Housing Payment", key: "housingPayment" },
+  { label: "Housing cost (rent / mortgage)", key: "housingPayment" },
   { label: "Utilities", key: "utilities" },
-  { label: "Transportation", key: "transportation" },
-  { label: "Groceries", key: "groceries" },
-  { label: "Health Insurance", key: "healthInsurance" },
-  { label: "Medical Expenses", key: "medicalExpenses" },
-  { label: "Loan Payments", key: "otherLoanPayment" }
+  { label: "Essential groceries", key: "groceries" },
+  { label: "Transport", key: "transportation" },
+  { label: "Health costs", key: "healthInsurance" }
 ];
 
 const wantsCategories = [
@@ -391,7 +389,7 @@ const BudgetSpreadsheet = ({ formData }) => {
                 </td>
               </tr>
               <tr>
-                <td className="fixed-column">Housing Payment</td>
+                <td className="fixed-column">Housing cost (rent / mortgage)</td>
                 {months.map((_, index) => (
                   <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'housingPayment'))}</td>
                 ))}
@@ -415,15 +413,9 @@ const BudgetSpreadsheet = ({ formData }) => {
                 ))}
               </tr>
               <tr>
-                <td className="fixed-column">Health (contact lenses)</td>
+                <td className="fixed-column">Health costs</td>
                 {months.map((_, index) => (
-                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'medicalExpenses'))}</td>
-                ))}
-              </tr>
-              <tr>
-                <td className="fixed-column">Loan Payments</td>
-                {months.map((_, index) => (
-                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'otherLoanPayment'))}</td>
+                  <td key={index}>{formatCurrency(getPredictedValue(index, 'needs', 'healthInsurance'))}</td>
                 ))}
               </tr>
 

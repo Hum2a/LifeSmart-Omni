@@ -15,18 +15,13 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
     needs: (
       // Housing
       housingPayment + 
-      Number(formData.propertyTax || 0) + 
-      Number(formData.homeInsurance || 0) + 
       Number(formData.utilities || 0) +
-      // Transportation
-      Number(formData.transportation || 0) +
-      // Food
+      // Essential groceries
       Number(formData.groceries || 0) +
-      // Healthcare
-      Number(formData.healthInsurance || 0) + 
-      Number(formData.medicalExpenses || 0) +
-      // Loan Payments
-      Number(formData.loanPayments || 0)
+      // Transport
+      Number(formData.transportation || 0) +
+      // Health costs
+      Number(formData.healthInsurance || 0)
     ),
     
     // Wants calculations
@@ -144,20 +139,8 @@ const SpreadsheetModal = ({ isOpen, onClose, formData }) => {
             <h3>Personal Care</h3>
             <div className="budgettool-modal-grid">
               <div className="budgettool-modal-item">
-                <span>Health Insurance:</span>
+                <span>Health costs:</span>
                 <span>{formatCurrency(formData.healthInsurance)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Medical Expenses:</span>
-                <span>{formatCurrency(formData.medicalExpenses)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Gym Membership:</span>
-                <span>{formatCurrency(formData.gymMembership)}</span>
-              </div>
-              <div className="budgettool-modal-item">
-                <span>Personal Care:</span>
-                <span>{formatCurrency(formData.personalCare)}</span>
               </div>
             </div>
           </div>
