@@ -1290,7 +1290,7 @@
   }
 }
 
-/* Remove number input spinners */
+/* Disable mouse wheel scrolling on number inputs */
 .budgettool-input[type="number"]::-webkit-inner-spin-button,
 .budgettool-input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -2053,7 +2053,7 @@
   box-shadow: 0 1px 4px rgba(255, 214, 0, 0.13);
   transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
 }
-.budgettool-info-button:hover .budgettool-info-icon,
+.budgettool-info-button:hover .budgettool-info-icon,  
 .budgettool-info-button:focus .budgettool-info-icon {
   background: #FFD600;
   color: #222;

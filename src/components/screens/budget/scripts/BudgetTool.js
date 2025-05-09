@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/BudgetTool.css';
 import BudgetSpreadsheet, { downloadSpreadsheet } from './BudgetSpreadsheet';
@@ -64,6 +64,19 @@ const BudgetTool = () => {
   const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  // Add event handler for number inputs
+  useEffect(() => {
+    const preventWheel = (e) => {
+      if (e.target.type === 'number') {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('wheel', preventWheel, { passive: false });
+    return () => document.removeEventListener('wheel', preventWheel);
+  }, []);
+
   const [formData, setFormData] = useState({
     // Income Information
     monthlyIncome: '',
@@ -263,9 +276,9 @@ const BudgetTool = () => {
             } />
             <span className="budgettool-info-popover-label">Where do I find this information?</span>
           </div>
-          <div className="budgettool-step-tip">
+          {/* <div className="budgettool-step-tip">
             Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
-          </div>
+          </div> */}
         </>
       ),
       questions: [
@@ -699,15 +712,15 @@ const BudgetTool = () => {
           const secondMonth = new Date(today.getFullYear(), today.getMonth() + 2, 1);
           return secondMonth.toLocaleString('default', { month: 'long' });
         }
-        return (
-          <div className="budgettool-step-description">
-            <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
-            Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
-            <span className="budgettool-step-action">
-              Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
-            </span>
-          </div>
-        );
+        // return (
+        //   <div className="budgettool-step-description">
+        //     <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
+        //     Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
+        //     <span className="budgettool-step-action">
+        //       Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
+        //     </span>
+        //   </div>
+        // );
       },
       questions: [],
       renderCustomContent: (formData) => {
@@ -1033,12 +1046,12 @@ const BudgetTool = () => {
               )}
             </div>
 
-            <div className="budgettool-projections-footer">
+            {/* <div className="budgettool-projections-footer">
               <p>
                 Please come back after one month and enter the actual figures to compare with these projections.
                 This will help you track your progress and make necessary adjustments to your budget.
               </p>
-            </div>
+            </div> */}
           </div>
         );
       }
@@ -1633,7 +1646,6 @@ const BudgetTool = () => {
           {currentStep === questions.length ? (
             <div className="budgettool-step-description">
               <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
-              Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
               <span className="budgettool-step-action">
                 Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
               </span>
