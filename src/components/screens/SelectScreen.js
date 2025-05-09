@@ -29,14 +29,14 @@ const TOOL_CONFIG = {
     text: 'Budget Tool'
   },
   financialQuiz: {
-    enabled: true,
+    enabled: false,
     in_development: false,
     path: '/quiz',
     icon: <FaClipboardList size={40} color="#2196F3" />,
     text: 'Financial Quiz'
   },
   assetMarketSimulation: {
-    enabled: true,
+    enabled: false,
     in_development: false,
     path: '/simulation',
     icon: <FaChartLine size={40} color="#FF9800" />,
@@ -57,7 +57,7 @@ const TOOL_CONFIG = {
     text: 'Learning Resources'
   },
   investmentCalculator: {
-    enabled: true,
+    enabled: false,
     in_development: false,
     path: '/investment-calculator',
     icon: <FaCalculator size={40} color="#9C27B0" />,
