@@ -45,7 +45,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Add an InfoButton component for tooltips
 const InfoButton = ({ text }) => (
-  <span className="budgettool-info-button" tabIndex="0">
+  <span className="budgettool-info-button" tabIndex="-1">
     <span className="budgettool-info-icon">💡</span>
     <span className="budgettool-info-tooltip">{text}</span>
   </span>
