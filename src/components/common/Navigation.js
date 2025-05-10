@@ -21,6 +21,9 @@ import FinancialQuiz from '../screens/quiz/FinancialQuiz';
 import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import SimSetup from '../screens/quiz/sim/SimSetup';
 
+// Adult Quiz related screens
+import AdultQuiz from '../screens/adult/scripts/AdultQuiz';
+
 // Simulation related screens
 import GroupCreation from '../screens/simulation/scripts/GroupCreation';
 import SimulationPage from '../screens/simulation/scripts/Simulation';
@@ -67,6 +70,9 @@ const Navigation = () => {
           <Route path="/quiz" element={<FinancialQuiz />} />
           <Route path="/quiz-simulation" element={<QuizSimulation />} />
           <Route path="/sim-setup" element={<SimSetup />} />
+
+          {/* Adult Quiz System */}
+          <Route path="/adult-quiz" element={<AdultQuiz />} />
 
           {/* Simulation System */}
           <Route path="/simulation" element={<GroupCreation />} />

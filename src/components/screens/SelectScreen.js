@@ -12,7 +12,8 @@ import {
   FaStackExchange,
   FaBook,
   FaSignOutAlt,
-  FaFire
+  FaFire,
+  FaGraduationCap
 } from 'react-icons/fa';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/initFirebase';
@@ -28,12 +29,19 @@ const TOOL_CONFIG = {
     icon: <FaWallet size={40} color="#4CAF50" />,
     text: 'Budget Tool'
   },
+  adultQuiz: {
+    enabled: true,
+    in_development: true,
+    path: '/adult-quiz',
+    icon: <FaGraduationCap size={40} color="#673AB7" />,
+    text: 'Adult Quiz'
+  },
   financialQuiz: {
     enabled: false,
     in_development: false,
     path: '/quiz',
     icon: <FaClipboardList size={40} color="#2196F3" />,
-    text: 'Financial Quiz'
+    text: 'School Simulation'
   },
   assetMarketSimulation: {
     enabled: false,
