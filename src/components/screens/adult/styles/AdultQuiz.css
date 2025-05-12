@@ -439,4 +439,24 @@ body {
 }
 .quiz-submit-btn {
   margin-top: 2.5rem;
+}
+
+.quiz-level {
+  font-weight: 700;
+  font-size: 1.3em;
+  padding: 0.2em 0.7em;
+  border-radius: 18px;
+  margin-left: 0.5em;
+}
+.quiz-level-expert {
+  background: #38e07d;
+  color: #fff;
+}
+.quiz-level-intermediate {
+  background: #ffb347;
+  color: #222;
+}
+.quiz-level-beginner {
+  background: #e74c3c;
+  color: #fff;
 } 

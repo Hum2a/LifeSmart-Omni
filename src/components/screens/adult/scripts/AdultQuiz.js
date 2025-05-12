@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight, FaBookOpen, FaLightbulb, FaRegClock } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaBookOpen, FaLightbulb } from 'react-icons/fa';
 import '../styles/AdultQuiz.css';
 import Startquiz from '../scripts/Startquiz';
-
-const QUIZ_TIME = 180; // 3 minutes in seconds
 
 const AdultQuiz = () => {
   const navigate = useNavigate();
@@ -14,27 +12,10 @@ const AdultQuiz = () => {
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME);
   const [answered, setAnswered] = useState(false);
   const [wasCorrect, setWasCorrect] = useState(false);
   const [points, setPoints] = useState(0);
-
-  useEffect(() => {
-    if (!quizStarted || showResults) return;
-    if (timeLeft <= 0) {
-      setShowResults(true);
-      calculateScore();
-      return;
-    }
-    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [quizStarted, showResults, timeLeft]);
-
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+  const [selected, setSelected] = useState(null);
 
   const questions = [
     {
@@ -118,15 +99,15 @@ const AdultQuiz = () => {
     {
       id: 7,
       category: "Savings and budgeting",
-      question: "From your slary of £3,000, 50% is spent on your Needs, 40% on your wants and you save 10% each month. Whats the minimm you should have in an emergency fund? ",
+      question: "From your salary of £3,000, 50% is spent on your Needs, 40% on your wants and you save 10% each month. Whats the minimm you should have in an emergency fund? ",
       options: [
         "£3000",
         "£4500",
         "£9000",
         "£18000"
       ],
-      correctAnswer: "£9000",
-      explanation: "Having an emergency fund of £9,000 will give you a buffer to cover unexpected expenses, such as a car repair or medical emergency. This amount is typically recommended to provide a three to six months' worth of living expenses."
+      correctAnswer: "£4500",
+      explanation: "Having an emergency fund of £4,500 will give you a buffer to cover unexpected expenses, such as a car repair or medical emergency. This amount is typically recommended to provide a three to six months' worth of living expenses."
     },
     {
       id: 8,
@@ -286,11 +267,16 @@ const AdultQuiz = () => {
     }
   ];
 
-  const handleAnswer = (answer) => {
-    const isCorrect = answer === questions[currentQuestion].correctAnswer;
+  const handleSelect = (option) => {
+    if (!answered) setSelected(option);
+  };
+
+  const handleSubmitAnswer = () => {
+    if (selected == null) return;
+    const isCorrect = selected === questions[currentQuestion].correctAnswer;
     setAnswers({
       ...answers,
-      [currentQuestion]: answer
+      [currentQuestion]: selected
     });
     setShowExplanation(true);
     setAnswered(true);
@@ -306,6 +292,7 @@ const AdultQuiz = () => {
       setShowExplanation(false);
       setAnswered(false);
       setWasCorrect(false);
+      setSelected(null);
     } else {
       setShowResults(true);
       calculateScore();
@@ -338,6 +325,18 @@ const AdultQuiz = () => {
   }
 
   if (showResults) {
+    let level = '';
+    let levelDesc = '';
+    if (score >= 16) {
+      level = 'Expert';
+      levelDesc = 'You have excellent financial knowledge!';
+    } else if (score >= 11) {
+      level = 'Intermediate';
+      levelDesc = 'You have a good grasp of financial concepts, but there is room to grow.';
+    } else {
+      level = 'Beginner';
+      levelDesc = 'Keep learning and practicing to improve your financial skills!';
+    }
     return (
       <div className="adult-quiz-outer">
         <div className="aq-green-light" />
@@ -347,25 +346,13 @@ const AdultQuiz = () => {
             <div className="quiz-progress-bar-bg">
               <div className="quiz-progress-bar-fill" style={{ width: '100%' }}></div>
             </div>
-            <div className="quiz-timer">
-              <FaRegClock />
-            </div>
           </div>
           <div className="quiz-results-summary">
             <h2 className="quiz-results-title">Quiz Results</h2>
             <div className="quiz-score">
-              <h3>Your Score: {score} / {questions.length}</h3>
-              <p>Percentage: {Math.round((score / questions.length) * 100)}%</p>
-            </div>
-            <div className="quiz-results-list">
-              {questions.map((q, index) => (
-                <div key={q.id} className={`result-item ${answers[index] === q.correctAnswer ? 'correct' : 'incorrect'}`}>
-                  <p><strong>Q{index + 1}:</strong> {q.question}</p>
-                  <p><strong>Your Answer:</strong> {answers[index]}</p>
-                  <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
-                  <p className="explanation"><strong>Explanation:</strong> {q.explanation}</p>
-                </div>
-              ))}
+              <h3>Your Level: <span className={`quiz-level quiz-level-${level.toLowerCase()}`}>{level}</span></h3>
+              <p>{levelDesc}</p>
+              <p>You scored {score} out of {questions.length}.</p>
             </div>
             <button className="quiz-submit-btn" onClick={handleSubmit}>
               Return to Home
@@ -388,7 +375,6 @@ const AdultQuiz = () => {
           <div className="points-gauge-bar-fill" style={{ height: `${percent * 100}%` }}></div>
         </div>
         <div className="points-gauge-points">{points}</div>
-        <div className="points-gauge-you">You</div>
       </div>
     );
   };
@@ -401,9 +387,6 @@ const AdultQuiz = () => {
           <img src={process.env.PUBLIC_URL + '/logo/LifeSmartSessionsWhite.png'} alt="LifeSmart Logo" style={{ width: 300, height: 100 }} />
           <div className="quiz-progress-bar-bg">
             <div className="quiz-progress-bar-fill" style={{ width: `${progress}%` }}></div>
-          </div>
-          <div className="quiz-timer">
-            <FaRegClock /> {formatTime(timeLeft)}
           </div>
         </div>
         <div className="quiz-category-pill">{questions[currentQuestion].category}</div>
@@ -420,17 +403,17 @@ const AdultQuiz = () => {
             if (answered) {
               if (option === questions[currentQuestion].correctAnswer) {
                 optionClass += ' correct';
-              } else if (option === answers[currentQuestion]) {
+              } else if (option === selected) {
                 optionClass += ' incorrect';
               }
-            } else if (answers[currentQuestion] === option) {
+            } else if (selected === option) {
               optionClass += ' selected';
             }
             return (
               <button
                 key={idx}
                 className={optionClass}
-                onClick={() => !answered && handleAnswer(option)}
+                onClick={() => handleSelect(option)}
                 disabled={answered}
               >
                 {String.fromCharCode(97 + idx)}) {option}
@@ -448,13 +431,22 @@ const AdultQuiz = () => {
             </div>
           </div>
         )}
-        <button
-          className="quiz-submit-btn"
-          onClick={handleNext}
-          disabled={!answered}
-        >
-          {currentQuestion === questions.length - 1 ? 'Finish' : 'Next Question'}
-        </button>
+        {!answered ? (
+          <button
+            className="quiz-submit-btn"
+            onClick={handleSubmitAnswer}
+            disabled={selected == null}
+          >
+            Submit Answer
+          </button>
+        ) : (
+          <button
+            className="quiz-submit-btn"
+            onClick={handleNext}
+          >
+            {currentQuestion === questions.length - 1 ? 'Finish' : 'Next Question'}
+          </button>
+        )}
       </div>
       <PointsGauge points={points} maxPoints={questions.length * 100} />
     </div>
