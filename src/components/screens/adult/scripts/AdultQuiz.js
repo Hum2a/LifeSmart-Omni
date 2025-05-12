@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaBookOpen, FaLightbulb, FaRegClock } from 'react-icons/fa';
 import '../styles/AdultQuiz.css';
+import Startquiz from '../scripts/Startquiz';
+
+const QUIZ_TIME = 180; // 3 minutes in seconds
 
 const AdultQuiz = () => {
   const navigate = useNavigate();
@@ -10,10 +13,33 @@ const AdultQuiz = () => {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME);
+  const [answered, setAnswered] = useState(false);
+  const [wasCorrect, setWasCorrect] = useState(false);
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    if (!quizStarted || showResults) return;
+    if (timeLeft <= 0) {
+      setShowResults(true);
+      calculateScore();
+      return;
+    }
+    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [quizStarted, showResults, timeLeft]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const questions = [
     {
       id: 1,
+      category: "High Interest Debt",
       question: "You owe £4000 on a 19% card and £1200 on a 5% loan. You can pay an extra £150/mo. Which is the best action?",
       options: [
         "Pay the loan first, it has the smallest balance",
@@ -26,6 +52,7 @@ const AdultQuiz = () => {
     },
     {
       id: 2,
+      category: "High Interest Debt",
       question: "You normally put about £1,000 on your credit card each month and pay it off in full, avoiding any interest. This month you buy a laptop for £3,500 but can't clear that extra amount from your salary. What's the smartest move?",
       options: [
         "Pay your usual £1,000 plus a little extra each month until the balance is gone.",
@@ -38,6 +65,7 @@ const AdultQuiz = () => {
     },
     {
       id: 3,
+      category: "High Interest Debt",
       question: "Which action is most likely to improve your credit score?",
       options: [
         "Closing your oldest credit card to reduce the number of open accounts",
@@ -50,6 +78,7 @@ const AdultQuiz = () => {
     },
     {
       id: 4,
+      category: "High Interest Debt",
       question: "You have £30k saved. Option 1: buy a £250k home with a 10% deposit and a 25 year mortgage at 5% fixed for 2years, then variable. Option 2: keep renting for £1,100/month. What's the smartest financial consideration?",
       options: [
         "Renting is always cheaper unless you have a 20% deposit and don't face repairs or housing price drops.",
@@ -62,6 +91,7 @@ const AdultQuiz = () => {
     },
     {
       id: 5,
+      category: "Savings and budgeting",
       question: "You earn £3,100 net. Needs are £1,900. What's the best way to use the £1,200 left? ",
       options: [
         "Spend it all on wants and save leftovers",
@@ -74,6 +104,7 @@ const AdultQuiz = () => {
     },
     {
       id: 6,
+      category: "Savings and budgeting",
       question: "Whats the best way to organise savings",
       options: [
         "One big fund",
@@ -86,6 +117,7 @@ const AdultQuiz = () => {
     },
     {
       id: 7,
+      category: "Savings and budgeting",
       question: "From your slary of £3,000, 50% is spent on your Needs, 40% on your wants and you save 10% each month. Whats the minimm you should have in an emergency fund? ",
       options: [
         "£3000",
@@ -98,6 +130,7 @@ const AdultQuiz = () => {
     },
     {
       id: 8,
+      category: "Savings and budgeting",
       question: "Which action most boosts saving success? ",
       options: [
         "Transferring leftovers at month end",
@@ -110,6 +143,7 @@ const AdultQuiz = () => {
     },
     {
       id: 9,
+      category: "Investing & Growth",
       question: "You have £10,000 you don't need that you put into a savings account generating 3%. After 3 years you decide to spend it. If the inflation rate has been 5%, which of the following is not correct:",
       options: [
         "You now have approximately £11,000 in the account",
@@ -122,6 +156,7 @@ const AdultQuiz = () => {
     },
     {
       id: 10,
+      category: "Investing & Growth",
       question: "What is the best long term fund type for a newbie?",
       options: [
         "Low cost index fund",
@@ -134,6 +169,7 @@ const AdultQuiz = () => {
     },
     {
       id: 11,
+      category: "Investing & Growth",
       question: "Adam is 30 and can leave £10,000 untouched for at least ten years. Which mix suits his growth at medium risk strategy best?",
       options: [
         "50% equity fund • 20% Real Estate •10% Gold • 10% cash equivalent • 10% alternatives (crypto)",
@@ -146,6 +182,7 @@ const AdultQuiz = () => {
     },
     {
       id: 12,
+      category: "Investing & Growth",
       question: "Maria has a has diversified portfolio for many years. As she nears retirement, which asset class should she increase in her allocation to?",
       options: [
         "Developed market equities",
@@ -158,6 +195,7 @@ const AdultQuiz = () => {
     },
     {
       id: 13,
+      category: "Investing & Growth",
       question: "Why should you put an index fund investment into a Stocks & Shares ISA before a normal account?",
       options: [
         "Higher interest",
@@ -170,6 +208,7 @@ const AdultQuiz = () => {
     },
     {
       id: 14,
+      category: "Investing & Growth",
       question: "Which feature in an online investment advert is NOT a red flag?",
       options: [
         "Guaranteed 10% monthly return",
@@ -182,6 +221,7 @@ const AdultQuiz = () => {
     },
     {
       id: 15,
+      category: "Retirement & Tax Efficiency",
       question: "You earn £30,000 salary at a company offering a standard auto-enrolment workplace pension scheme.  What's the total minimum contribution and what does it cost you?",
       options: [
         "£900 from your salary (3%) + £900 extra from your employer for a total £1,800",
@@ -194,6 +234,7 @@ const AdultQuiz = () => {
     },
     {
       id: 16,
+      category: "Retirement & Tax Efficiency",
       question: "You earn £60,000 and put £4,000 of take home pay into a Self Invested Personal Pension (SIPP). After tax relief, what lands in your pension, and what does it really cost you?",
       options: [
         "£5,000 in the pot after the 20% basic-rate tax relief; costs you £4,000",
@@ -206,6 +247,7 @@ const AdultQuiz = () => {
     },
     {
       id: 17,
+      category: "Retirement & Tax Efficiency",
       question: "You earn £49,000, just below the 40% band that starts at £50,270. Your employer gives you a £3,000 raise (new salary £52,000). How much extra tax will you pay on that £3,000?",
       options: [
         "About £950 – the first £1,270 of the raise is taxed at 20% and the remainder at 40%",
@@ -218,6 +260,7 @@ const AdultQuiz = () => {
     },
     {
       id: 18,
+      category: "Estate Planning",
       question: "Ben is 32, married, two young kids, house £250k (with mortgage), £20k savings. Should he set up both a will and a financial Lasting Power of Attorney (LPA)?",
       options: [
         "Everything already passes to his spouse tax free so only a LPA is needed.",
@@ -230,6 +273,7 @@ const AdultQuiz = () => {
     },
     {
       id: 19,
+      category: "Estate Planning",
       question: "Sam—married, two children, total estate £800k (family home + other assets). Sam's will leaves everything directly to the kids. What inheritance tax (IHT) bill will the family face, and what is one way to reduce it?",
       options: [
         "First £500k is tax free (£325k nil rate + £175k residence band). The remaining £300k is taxed at 40% → £120k IHT. Sam could reduce this by gifting during life or leaving 10% to charity.",
@@ -243,17 +287,25 @@ const AdultQuiz = () => {
   ];
 
   const handleAnswer = (answer) => {
+    const isCorrect = answer === questions[currentQuestion].correctAnswer;
     setAnswers({
       ...answers,
       [currentQuestion]: answer
     });
     setShowExplanation(true);
+    setAnswered(true);
+    setWasCorrect(isCorrect);
+    if (isCorrect && !answers[currentQuestion]) {
+      setPoints(points + 100);
+    }
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowExplanation(false);
+      setAnswered(false);
+      setWasCorrect(false);
     } else {
       setShowResults(true);
       calculateScore();
@@ -281,75 +333,130 @@ const AdultQuiz = () => {
     navigate('/select');
   };
 
+  if (!quizStarted) {
+    return <Startquiz onStartQuiz={() => setQuizStarted(true)} />;
+  }
+
   if (showResults) {
     return (
-      <div className="adult-quiz-container">
-        <h2>Quiz Results</h2>
-        <div className="quiz-score">
-          <h3>Your Score: {score} out of {questions.length}</h3>
-          <p>Percentage: {Math.round((score / questions.length) * 100)}%</p>
-        </div>
-        <div className="quiz-results">
-          {questions.map((q, index) => (
-            <div key={q.id} className={`result-item ${answers[index] === q.correctAnswer ? 'correct' : 'incorrect'}`}>
-              <p><strong>Question {index + 1}:</strong> {q.question}</p>
-              <p><strong>Your Answer:</strong> {answers[index]}</p>
-              <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
-              <p className="explanation"><strong>Explanation:</strong> {q.explanation}</p>
+      <div className="adult-quiz-outer">
+        <div className="aq-green-light" />
+        <div className="adult-quiz-container">
+          <div className="quiz-header-bar">
+            <img src={process.env.PUBLIC_URL + '/logo/LifeSmartSessionsWhite.png'} alt="LifeSmart Logo" style={{ width: 300, height: 100 }} />
+            <div className="quiz-progress-bar-bg">
+              <div className="quiz-progress-bar-fill" style={{ width: '100%' }}></div>
             </div>
-          ))}
+            <div className="quiz-timer">
+              <FaRegClock />
+            </div>
+          </div>
+          <div className="quiz-results-summary">
+            <h2 className="quiz-results-title">Quiz Results</h2>
+            <div className="quiz-score">
+              <h3>Your Score: {score} / {questions.length}</h3>
+              <p>Percentage: {Math.round((score / questions.length) * 100)}%</p>
+            </div>
+            <div className="quiz-results-list">
+              {questions.map((q, index) => (
+                <div key={q.id} className={`result-item ${answers[index] === q.correctAnswer ? 'correct' : 'incorrect'}`}>
+                  <p><strong>Q{index + 1}:</strong> {q.question}</p>
+                  <p><strong>Your Answer:</strong> {answers[index]}</p>
+                  <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+                  <p className="explanation"><strong>Explanation:</strong> {q.explanation}</p>
+                </div>
+              ))}
+            </div>
+            <button className="quiz-submit-btn" onClick={handleSubmit}>
+              Return to Home
+            </button>
+          </div>
         </div>
-        <button className="quiz-submit-button" onClick={handleSubmit}>
-          Return to Home
-        </button>
       </div>
     );
   }
 
-  return (
-    <div className="adult-quiz-container">
-      <div className="quiz-progress">
-        Question {currentQuestion + 1} of {questions.length}
-      </div>
-      
-      <div className="quiz-question">
-        <h2>{questions[currentQuestion].question}</h2>
-        <div className="quiz-options">
-          {questions[currentQuestion].options.map((option, index) => (
-            <button
-              key={index}
-              className={`quiz-option ${answers[currentQuestion] === option ? 'selected' : ''}`}
-              onClick={() => handleAnswer(option)}
-            >
-              {option}
-            </button>
-          ))}
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  // PointsGauge component
+  const PointsGauge = ({ points, maxPoints }) => {
+    const percent = Math.min(points / maxPoints, 1);
+    return (
+      <div className="points-gauge-outer">
+        <div className="points-gauge-label">Points</div>
+        <div className="points-gauge-bar-bg">
+          <div className="points-gauge-bar-fill" style={{ height: `${percent * 100}%` }}></div>
         </div>
-        
-        {showExplanation && (
-          <div className="explanation-box">
-            <p><strong>Explanation:</strong> {questions[currentQuestion].explanation}</p>
+        <div className="points-gauge-points">{points}</div>
+        <div className="points-gauge-you">You</div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="adult-quiz-outer">
+      <div className="aq-green-light" />
+      <div className="adult-quiz-container">
+        <div className="quiz-header-bar">
+          <img src={process.env.PUBLIC_URL + '/logo/LifeSmartSessionsWhite.png'} alt="LifeSmart Logo" style={{ width: 300, height: 100 }} />
+          <div className="quiz-progress-bar-bg">
+            <div className="quiz-progress-bar-fill" style={{ width: `${progress}%` }}></div>
+          </div>
+          <div className="quiz-timer">
+            <FaRegClock /> {formatTime(timeLeft)}
+          </div>
+        </div>
+        <div className="quiz-category-pill">{questions[currentQuestion].category}</div>
+        <div className="quiz-actions">
+          <button className="quiz-action-btn"><FaBookOpen /> Glossary</button>
+          <button className="quiz-action-btn"><FaLightbulb /> Hint</button>
+        </div>
+        <div className="quiz-question-text">
+          {questions[currentQuestion].question}
+        </div>
+        <div className="quiz-options">
+          {questions[currentQuestion].options.map((option, idx) => {
+            let optionClass = 'quiz-option';
+            if (answered) {
+              if (option === questions[currentQuestion].correctAnswer) {
+                optionClass += ' correct';
+              } else if (option === answers[currentQuestion]) {
+                optionClass += ' incorrect';
+              }
+            } else if (answers[currentQuestion] === option) {
+              optionClass += ' selected';
+            }
+            return (
+              <button
+                key={idx}
+                className={optionClass}
+                onClick={() => !answered && handleAnswer(option)}
+                disabled={answered}
+              >
+                {String.fromCharCode(97 + idx)}) {option}
+              </button>
+            );
+          })}
+        </div>
+        {answered && (
+          <div className={`quiz-explanation-box ${wasCorrect ? 'correct' : 'incorrect'}`}>
+            <div className="quiz-explanation-title">
+              {wasCorrect ? 'Correct!' : 'Incorrect.'} <span style={{fontWeight: 500, fontStyle: 'italic'}}>Answer Explanation:</span>
+            </div>
+            <div className="quiz-explanation-text">
+              {questions[currentQuestion].explanation}
+            </div>
           </div>
         )}
-      </div>
-
-      <div className="quiz-navigation">
-        <button 
-          className="quiz-nav-button"
-          onClick={handlePrevious}
-          disabled={currentQuestion === 0}
-        >
-          <FaArrowLeft /> Previous
-        </button>
-        
-        <button 
-          className="quiz-nav-button"
+        <button
+          className="quiz-submit-btn"
           onClick={handleNext}
-          disabled={!answers[currentQuestion]}
+          disabled={!answered}
         >
-          {currentQuestion === questions.length - 1 ? 'Finish' : 'Next'} <FaArrowRight />
+          {currentQuestion === questions.length - 1 ? 'Finish' : 'Next Question'}
         </button>
       </div>
+      <PointsGauge points={points} maxPoints={questions.length * 100} />
     </div>
   );
 };

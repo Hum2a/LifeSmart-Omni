@@ -8,7 +8,7 @@ function AppContent() {
   const { theme } = useTheme();
   return (
     <div data-theme={theme}>
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
       <Navigation />
     </div>
   );
