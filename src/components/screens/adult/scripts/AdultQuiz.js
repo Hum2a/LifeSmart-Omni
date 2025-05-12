@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaArrowRight, FaBookOpen, FaLightbulb } from 'react-icons/fa';
 import '../styles/AdultQuiz.css';
 import Startquiz from '../scripts/Startquiz';
+import GlossaryModal from './GlossaryModal';
 
 const AdultQuiz = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const AdultQuiz = () => {
   const [wasCorrect, setWasCorrect] = useState(false);
   const [points, setPoints] = useState(0);
   const [selected, setSelected] = useState(null);
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
 
   const questions = [
     {
@@ -391,7 +393,7 @@ const AdultQuiz = () => {
         </div>
         <div className="quiz-category-pill">{questions[currentQuestion].category}</div>
         <div className="quiz-actions">
-          <button className="quiz-action-btn"><FaBookOpen /> Glossary</button>
+          <button className="quiz-action-btn" onClick={() => setGlossaryOpen(true)}><FaBookOpen /> Glossary</button>
           <button className="quiz-action-btn"><FaLightbulb /> Hint</button>
         </div>
         <div className="quiz-question-text">
@@ -449,6 +451,9 @@ const AdultQuiz = () => {
         )}
       </div>
       <PointsGauge points={points} maxPoints={questions.length * 100} />
+      <GlossaryModal open={glossaryOpen} onClose={() => setGlossaryOpen(false)} title="Glossary">
+        <strong>{questions[currentQuestion].category}</strong> — This is a sample glossary entry for the current category. You can replace this with real glossary content.
+      </GlossaryModal>
     </div>
   );
 };
