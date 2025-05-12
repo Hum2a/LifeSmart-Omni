@@ -117,11 +117,11 @@ const AdultQuiz = () => {
       question: "Which action most boosts saving success? ",
       options: [
         "Transferring leftovers at month end",
-        "pay yourself first, standing order after payday",
+        "Pay yourself first, standing order after payday",
         "Manual transfer whenever you have extra money",
         "Put extra into the savings and dip back in when needed to encourage higher savings"
       ],
-      correctAnswer: "pay yourself first, standing order after payday",
+      correctAnswer: "Pay yourself first, standing order after payday",
       explanation: "Paying yourself first, standing order after payday, ensures that you save a portion of your income before you spend it. This approach helps you build a consistent savings habit and ensures that you save a portion of your income each month."
     },
     {
@@ -134,8 +134,8 @@ const AdultQuiz = () => {
         "Your money has had a real inflation adjusted return of -2%",
         "Over a short time period like 3 years, the purchasing power will not be affected"
       ],
-      correctAnswer: "Over a short time period like 3 years, the purchasing power will not be affected",
-      explanation: "Over a short time period like 3 years, the purchasing power will not be affected because the inflation rate is lower than the savings rate."
+      correctAnswer:"Over a short time period like 3 years, the purchasing power will not be affected",
+      explanation: "Statement d is wrong: with inflation at 5% and savings at 3%, purchasing power does fall—even over just three years. The real return is roughly -2% a year."
     },
     {
       id: 10,
@@ -148,7 +148,7 @@ const AdultQuiz = () => {
         "Hedge fund"
       ],
       correctAnswer: "Low cost index fund",
-      explanation: "Low cost index funds are a good option for beginners because they are simple to understand and have a low cost structure."
+      explanation: "A low-cost index fund gives instant diversification, tracks the market without expensive manager fees, and has outperformed most active funds after costs—ideal for a new long-term investor"
     },
     {
       id: 11,
@@ -161,7 +161,7 @@ const AdultQuiz = () => {
         "50% gold • 50% cash"
       ],
       correctAnswer: "50% equity fund • 20% Real Estate •10% Gold • 10% cash equivalent • 10% alternatives (crypto)",
-      explanation: "A medium risk strategy involves investing in a mix of assets that balance growth potential with risk tolerance. This mix includes equity funds for growth, real estate for stability, gold for diversification, cash equivalents for liquidity, and alternatives like crypto for potential returns."
+      explanation: "The 60% global equity + 20% gold + 10% cash + 10% crypto mix is the best option here as it balances growth (equities) with hedges (gold, cash) and a small speculative slice (crypto)— delivering medium risk suitable for a 5-plus-year horizon."
     },
     {
       id: 12,
@@ -174,7 +174,7 @@ const AdultQuiz = () => {
         "Investment grade bonds and cash like instruments"
       ],
       correctAnswer: "Investment grade bonds and cash like instruments",
-      explanation: "As Maria nears retirement, she should increase her allocation to investment grade bonds and cash like instruments to provide a stable income stream and reduce risk."
+      explanation: "As retirement nears, its recommended to shift into lower risk and more liquid investments as her investment time horizon shrinks; she is closer to her withdrawals and needs to focus more on capital protection."
     },
     {
       id: 13,
@@ -187,7 +187,7 @@ const AdultQuiz = () => {
         "You can withdraw tax free before 55"
       ],
       correctAnswer: "Gains & dividends are tax free",
-      explanation: "Stocks & Shares ISAs offer tax-free growth and dividends, which can help you build wealth faster."
+      explanation: "Inside a Stocks&Shares ISA, capital gains and dividends are tax-free, so any income and capital gains is yours to keep without any tax due."
     },
     {
       id: 14,
@@ -200,7 +200,7 @@ const AdultQuiz = () => {
         "Management and transaction fees"
       ],
       correctAnswer: "Management and transaction fees",
-      explanation: "Management and transaction fees are a necessary cost of investing, and should be disclosed in an investment advert."
+      explanation: "It is perfectly normal for investment managers to charge management and/or transaction fees. The other items (guaranteed returns, no risk language, past returns being used to guarantee future performance) are not allowed and are likely to be unregulated or an outright scam."
     },
     {
       id: 15,
@@ -213,7 +213,7 @@ const AdultQuiz = () => {
         "£1,500 (5%) + £900 (3%) employer contribution, but both come out of your salary"
       ],
       correctAnswer: "£1,500 from your salary (5%) + £900 extra from your employer (3%) for a total of £2,400",
-      explanation: "The total minimum contribution is £1,500 from your salary (5%) + £900 extra from your employer (3%) for a total of £2,400."
+      explanation: "UK auto-enrolment rules set minimum contributions at 8% of earnings: 5% from the employee (including basic-rate tax relief) and 3% from the employer. When you put in 5% (£1,500), your company must add 3% (£900). With tax relief, every £1 of take-home you give up becomes £1.60 in your pension—a 60% boost of “free money” plus tax perks, all while meeting the legal minimum. You can still keep adding more than 5% of your salary and get the 20% tax relief, but the employer doesn't have to contribute past their 3%."
     },
     {
       id: 16,
@@ -226,20 +226,20 @@ const AdultQuiz = () => {
         "£5,600 in the pot after 40% relief added directly to the SIPP; cost still £4,000"
       ],
       correctAnswer: "£5,000 in the pot (20% uplift) and you reclaim another £1,000 via your tax return, so it costs you £3,000",
-      explanation: "After tax relief, £5,000 lands in your pension, and you reclaim another £1,000 via your tax return, so it costs you £3,000."
+      explanation: "How pension tax relief works: 1. You add £4,000 into SIPP. 2. Your account provider claims 20% basic-rate relief from HMRC, so £4,000 ÷ 0.8 = £5,000 lands in the SIPP (an extra £1,000 is added automatically). 3.Because you're a higher-rate (40%) taxpayer, you can reclaim a further 20% of the gross amount via your tax return- another £1,000 back to you as a rebate or reduced tax bill. Net cost = £4,000 - £1,000=£3,000 for £5,000 invested—a 67% uplift. (Within the £60k annual allowance, no extra tax applies.)"
     },
     {
       id: 17,
       category: "Retirement & Tax Efficiency",
       question: "You earn £49,000, just below the 40% band that starts at £50,270. Your employer gives you a £3,000 raise (new salary £52,000). How much extra tax will you pay on that £3,000?",
       options: [
-        "About £950 – the first £1,270 of the raise is taxed at 20% and the remainder at 40%",
-        "£1,200 – the whole £3,000 is now in the higher rate band, so it's all taxed at 40%",
-        "£600 – the whole raise is still taxed at 20% because you haven't hit £55k yet",
-        "Nothing extra – only bonuses trigger more tax, not basic salary increases"
+        "About £950 - the first £1,270 of the raise is taxed at 20% and the remainder at 40%",
+        "£1,200 - the whole £3,000 is now in the higher rate band, so it's all taxed at 40%",
+        "£600 - the whole raise is still taxed at 20% because you haven't hit £55k yet",
+        "Nothing extra - only bonuses trigger more tax, not basic salary increases"
       ],
-      correctAnswer: "About £950 – the first £1,270 of the raise is taxed at 20% and the remainder at 40%",
-      explanation: "The first £1,270 of the raise is taxed at 20% and the remainder at 40%, resulting in an extra tax of about £950."
+      correctAnswer: "About £950 - the first £1,270 of the raise is taxed at 20% and the remainder at 40%",
+      explanation: "Only the slice of income above each threshold moves to the higher rate. On a £3,000 raise: £1,270 taxed at 20% (£254) + £1,730 at 40% (£692) ≈ £946 extra. That's the marginal system, not a flat 40% on everything."
     },
     {
       id: 18,
@@ -252,7 +252,7 @@ const AdultQuiz = () => {
         "Setting up a will should ensure his kids pay no inheritance tax, LPA not needed as his spouse can automatically act for him if he loses mental capacity"
       ],
       correctAnswer: "A will lets you name guardians and choose who gets what; an LPA lets a trusted person pay the mortgage, bills and access savings if you lose mental capacity",
-      explanation: "A will lets you name guardians and choose who gets what, while an LPA lets a trusted person pay the mortgage, bills and access savings if you lose mental capacity."
+      explanation: "Will: names guardians for children and directs who inherits—without it, intestacy rules apply and courts decide guardianship. Financial LPA: lets a chosen person keep bills, mortgage and accounts running if you lose capacity; spouses cannot automatically act. Having both gives legal control and prevents costly delays"
     },
     {
       id: 19,
@@ -265,7 +265,7 @@ const AdultQuiz = () => {
         "Parents can pass up to £1m tax free if it only includes a primary/ family home, so no tax at all"
       ],
       correctAnswer: "First £500k is tax free (£325k nil rate + £175k residence band). The remaining £300k is taxed at 40% → £120k IHT. Sam could reduce this by gifting during life or leaving 10% to charity.",
-      explanation: "The first £500k is tax free (£325k nil rate + £175k residence band). The remaining £300k is taxed at 40% → £120k IHT. Sam could reduce this by gifting during life or leaving 10% to charity."
+      explanation: "Key rules: 1. Each person gets a £325k nil-rate band. 2. Passing a main home to direct descendants adds £175 k residence band. 3. Anything above those bands is taxed at 40%. Sam's £800k  - £500k bands = £300k taxable → £120k IHT. Charity gifts ≥ 10% of the estate or 7-year lifetime gifts can cut this bill.",
     }
   ];
 

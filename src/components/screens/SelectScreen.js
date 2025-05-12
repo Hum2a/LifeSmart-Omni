@@ -31,7 +31,7 @@ const TOOL_CONFIG = {
   },
   adultQuiz: {
     enabled: true,
-    in_development: true,
+    in_development: false,
     path: '/adult-quiz',
     icon: <FaGraduationCap size={40} color="#673AB7" />,
     text: 'Adult Quiz'
