@@ -13,7 +13,8 @@ import {
   FaBook,
   FaSignOutAlt,
   FaFire,
-  FaGraduationCap
+  FaGraduationCap,
+  FaBalanceScale
 } from 'react-icons/fa';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/initFirebase';
@@ -35,6 +36,13 @@ const TOOL_CONFIG = {
     path: '/adult-quiz',
     icon: <FaGraduationCap size={40} color="#673AB7" />,
     text: 'Adult Quiz'
+  },
+  lifeBalance: {
+    enabled: true,
+    in_development: true,
+    path: '/life-balance',
+    icon: <FaBalanceScale size={40} color="#FF5722" />,
+    text: 'Life Balance'
   },
   financialQuiz: {
     enabled: false,

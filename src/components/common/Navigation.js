@@ -15,6 +15,9 @@ import AdminSystemSettings from '../screens/admin/scripts/AdminSystemSettings';
 import AdminDatabaseManagement from '../screens/admin/scripts/AdminDatabaseManagement';
 import AdminLoginCodes from '../screens/admin/scripts/AdminLoginCodes'; 
 
+// Life Balance related screens
+import LifeBalance from '../screens/lifebalance/LifeBalance';
+
 // Quiz related screens
 import QuizLandingPage from '../screens/quiz/QuizLandingPage';
 import FinancialQuiz from '../screens/quiz/FinancialQuiz';
@@ -73,6 +76,9 @@ const Navigation = () => {
 
           {/* Adult Quiz System */}
           <Route path="/adult-quiz" element={<AdultQuiz />} />
+
+          {/* Life Balance System */}
+          <Route path="/life-balance" element={<LifeBalance />} />
 
           {/* Simulation System */}
           <Route path="/simulation" element={<GroupCreation />} />
