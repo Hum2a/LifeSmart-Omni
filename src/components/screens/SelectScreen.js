@@ -14,7 +14,8 @@ import {
   FaSignOutAlt,
   FaFire,
   FaGraduationCap,
-  FaBalanceScale
+  FaBalanceScale,
+  FaAndroid
 } from 'react-icons/fa';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/initFirebase';
@@ -43,6 +44,13 @@ const TOOL_CONFIG = {
     path: '/life-balance',
     icon: <FaBalanceScale size={40} color="#FF5722" />,
     text: 'Life Balance'
+  },
+  adultSimulation: {
+    enabled: false,
+    in_development: true,
+    path: '/adult-simulation',
+    icon: <FaAndroid size={40} color="#000000" />,
+    text: 'Adult Simulation'
   },
   financialQuiz: {
     enabled: false,
