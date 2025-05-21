@@ -48,7 +48,7 @@ const LandingPage = () => {
     if (teams.every(name => name.trim())) {
       // Match Vue.js navigation style using object-based navigation
       navigate({
-        pathname: '/adult-simulation',
+        pathname: '/adult-simulation-quiz',
         search: `?teams=${teams.join(',')}`
       });
     }
