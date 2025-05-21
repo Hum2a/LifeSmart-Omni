@@ -18,11 +18,16 @@ import AdminLoginCodes from '../screens/admin/scripts/AdminLoginCodes';
 // Life Balance related screens
 import LifeBalance from '../screens/lifebalance/LifeBalance';
 
-// Quiz related screens
-import QuizLandingPage from '../screens/quiz/QuizLandingPage';
-import FinancialQuiz from '../screens/quiz/FinancialQuiz';
-import QuizSimulation from '../screens/simulation/scripts/QuizSimulation';
-import SimSetup from '../screens/quiz/sim/SimSetup';
+// School Simulation related screens
+import SchoolQuizLandingPage from '../screens/quiz/QuizLandingPage';
+import SchoolFinancialQuiz from '../screens/quiz/FinancialQuiz';
+import SchoolQuizSimulation from '../screens/simulation/scripts/QuizSimulation';
+import SchoolSimSetup from '../screens/quiz/sim/SimSetup';
+
+// Adult Simulation related screens
+import AdultFinancialQuiz from '../screens/adultsimulation/FinancialQuiz';
+import AdultLandingPage from '../screens/adultsimulation/LandingPage';
+import AdultResultsScreen from '../screens/adultsimulation/ResultsScreen';
 
 // Adult Quiz related screens
 import AdultQuiz from '../screens/adult/scripts/AdultQuiz';
@@ -68,11 +73,16 @@ const Navigation = () => {
           <Route path="/admin/login-codes" element={<AdminLoginCodes />} />
           
 
-          {/* Quiz System */}
-          <Route path="/quiz-landing" element={<QuizLandingPage />} />
-          <Route path="/quiz" element={<FinancialQuiz />} />
-          <Route path="/quiz-simulation" element={<QuizSimulation />} />
-          <Route path="/sim-setup" element={<SimSetup />} />
+          {/* School Simulation System */}
+          <Route path="/quiz-landing" element={<SchoolQuizLandingPage />} />
+          <Route path="/quiz" element={<SchoolFinancialQuiz />} />
+          <Route path="/quiz-simulation" element={<SchoolQuizSimulation />} />
+          <Route path="/sim-setup" element={<SchoolSimSetup />} />
+
+          {/* Adult Simulation System */}
+          <Route path="/adult-simulation" element={<AdultLandingPage />} />
+          <Route path="/adult-simulation-quiz" element={<AdultFinancialQuiz />} />
+          <Route path="/adult-simulation-results" element={<AdultResultsScreen />} />
 
           {/* Adult Quiz System */}
           <Route path="/adult-quiz" element={<AdultQuiz />} />

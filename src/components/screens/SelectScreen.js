@@ -46,7 +46,7 @@ const TOOL_CONFIG = {
     text: 'Life Balance'
   },
   adultSimulation: {
-    enabled: false,
+    enabled: true,
     in_development: true,
     path: '/adult-simulation',
     icon: <FaAndroid size={40} color="#000000" />,
