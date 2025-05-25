@@ -8,7 +8,7 @@ import Question3 from './questions/Question3';
 import Question4 from './questions/Question4';
 import Question5 from './questions/Question5';
 import Question6 from './questions/Question6';
-import ResultsScreen from './ResultsScreen';
+import Leaderboard from './Leaderboard';
 import '../../styles/FinancialQuiz.css';
 
 const FinancialQuiz = () => {
@@ -149,7 +149,7 @@ const FinancialQuiz = () => {
     <div className="financial-quiz">
       <main className="main-content">
         {showResults ? (
-          <ResultsScreen
+          <Leaderboard
             teams={sortedTeams}
             quizComplete={quizComplete}
             onNextQuestion={nextQuestion}

@@ -20,17 +20,14 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   });
   const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill([]));
 
-  const correctAnswer = ['A', 'B', 'D', 'E', 'G'];
+  const correctAnswer = 'E';
 
   const answerOptions = [
-    'A: Paying bills and payments on time',
-    'B: Registering on the electoral roll',
-    'C: Frequently applying for new credit',
-    'D: Paying off or maintaining low levels of debt',
-    'E: Keeping a bank account open for many years',
-    'F: Maxing out your credit cards regularly',
-    'G: Avoiding frequent credit applications',
-    'H: Moving house regularly'
+    'A. Martian Treat-Yo-Self: Add the full 1 000 MC to Exploration & Fun (holo-games, rover trips).',
+    'B. 50 / 30 / 20-plus: Split the money in the 50/30/20 method so add 500MC to needs, 300 MC to needs and 200MC to savings.',
+    'C. Pay-Yourself-First Boost: Send the entire 1 000 MC to her Safety-Fund/rover savings pot. Fun budget stays unchanged.',
+    'D. Upgrade her living space: Move into a bigger pod which would increase her rent by 1000, but she would have much more space.',
+    'E. Split & Invest: Use some of the money to increase her fun and improve her lifestyle but add at least 50% (500 MC) of it to extra savings.'
   ];
 
   useEffect(() => {
@@ -123,33 +120,43 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <div className="question5-points-section">
             <h3>Challenge 5</h3>
             <img src={lightningBolt} alt="Lightning Bolt" className="question5-lightning-bolt" />
-            <p className="question5-points">5 points</p>
+            <p className="question5-points">3 points</p>
           </div>
           <div className="question5-button-container">
             <button className="question5-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
         <div className="question5-task-header-question">
-          <p>Ben decides he wants to get another loan in the future, so he would like to improve his 
-            <span 
-              className="question5-clickable-term"
-              onMouseEnter={(e) => showHoverModal('Credit Rating', 'A score that shows how reliable you are at repaying money. A higher score means banks are more likely to lend to you.', e)}
-              onMouseLeave={hideHoverModal}
-            > credit rating</span>.
-          </p>
-          <img src={moneyBars} alt="Task 5 Image" className="question5-task-image" />
+          <p>A month later, Zara's stellar performance at the rover-tech lab earns her a 1 000 MC pay rise after tax.<br />
+          Her existing budget has been working well, and her costs remain the same.</p>
         </div>
       </div>
 
-      {/* Question Section */}
-      <div className="question5-question-section">
-        <p className="question5-question-text">Which of the following things improve your 
-          <span 
-            className="question5-clickable-term"
-            onMouseEnter={(e) => showHoverModal('Credit Rating', 'A score that shows how reliable you are at repaying money. A higher score means banks are more likely to lend to you.', e)}
-            onMouseLeave={hideHoverModal}
-          > credit rating</span>?
-        </p>
+      {/* Cost Table and Question Section Side by Side */}
+      <div className="question5-main-flex">
+        <div className="question5-cost-table-wrapper">
+          <table className="question5-cost-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Cost (MC)</th>
+                <th>Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Habitat pod rent</td><td>Includes air-recycling fee</td><td>1 150</td><td>Needs</td></tr>
+              <tr><td>Life-Support</td><td>Food, water, basic utilities</td><td>900</td><td>Need</td></tr>
+              <tr><td>Transport</td><td>Mag-tram pass to the rover bay</td><td>240</td><td>Need</td></tr>
+              <tr><td>Colony Data plan</td><td>Communicator & holo-net</td><td>210</td><td>Want</td></tr>
+              <tr><td>Exploration & Fun</td><td>Holo-games subscription, eating out with friends</td><td>580</td><td>Want</td></tr>
+              <tr><td>Safety Fund auto-transfer</td><td>Emergency savings (20 % of income target)</td><td>800</td><td>Savings</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="question5-question-section">
+          <p className="question5-question-text">Goal – decide the smartest way to use the extra 1 000 MC she will get every month, while guarding against lifestyle inflation.</p>
+        </div>
       </div>
 
       {!showResults ? (
@@ -171,7 +178,7 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                 <div key={team.name} className="question5-team-answer-box">
                   <p>{team.name}</p>
                   <div className="question5-answer-bubbles">
-                    {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((letter) => (
+                    {['A', 'B', 'C', 'D', 'E'].map((letter) => (
                       <button
                         key={letter}
                         className={`question5-answer-bubble ${teamAnswers[index].includes(letter) ? 'selected' : ''}`}
@@ -190,15 +197,15 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
       ) : (
         <div className="question5-result-section">
-          <h4>Answers:</h4>
-          {answerOptions.map((option, index) => {
-            const letter = String.fromCharCode(65 + index);
-            return (
-              <p key={index} className={correctAnswer.includes(letter) ? 'question5-correct-answer' : 'question5-incorrect-answer'}>
-                {option}
-              </p>
-            );
-          })}
+          <h4>Correct Answer:</h4>
+          <div className="question5-correct-answer">Option E: Split & Invest</div>
+          <div className="question5-correct-answer-description">
+            <strong>Explanation:</strong>
+            <ul>
+              <li>Option E is smartest because it lets Zara enjoy her raise and grow her wealth: she automatically diverts at least 50% (500 MC) to her Safety/Invest Fund, then uses the remainder to boost her lifestyle.</li>
+              <li>This "pay-yourself-first + invest" approach protects her from lifestyle-inflation, builds long-term security faster than Option B, is more sustainable than saving the whole 1,000 MC like Option C, and avoids the permanent cost hike of upgrading her pod (Option D) or spending everything on fun (Option A). In short, it balances reward now with freedom later.</li>
+            </ul>
+          </div>
 
           {/* Display each team's answer with comparison */}
           <div className="question5-team-answer-comparison">
@@ -209,7 +216,7 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                   {teamAnswers[index].map((answer, answerIndex) => (
                     <div
                       key={answerIndex}
-                      className={correctAnswer.includes(answer) ? 'question5-correct' : 'question5-incorrect'}
+                      className={correctAnswer === answer ? 'question5-correct' : 'question5-incorrect'}
                     >
                       {answer}
                     </div>
@@ -217,7 +224,7 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                   {teamAnswers[index].length === 0 && <div className="question5-no-answer">-</div>}
                 </div>
                 <p className="question5-team-score">
-                  Score: {teamAnswers[index].filter(answer => correctAnswer.includes(answer)).length}
+                  Score: {teamAnswers[index].filter(answer => correctAnswer === answer).length}
                 </p>
               </div>
             ))}

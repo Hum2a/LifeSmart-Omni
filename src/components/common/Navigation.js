@@ -27,7 +27,12 @@ import SchoolSimSetup from '../screens/quiz/sim/SimSetup';
 // Adult Simulation related screens
 import AdultFinancialQuiz from '../screens/adultsimulation/FinancialQuiz';
 import AdultLandingPage from '../screens/adultsimulation/LandingPage';
-import AdultResultsScreen from '../screens/adultsimulation/ResultsScreen';
+import AdultLeaderboard from '../screens/adultsimulation/Leaderboard';
+import AdultSimSetup from '../screens/adultsimulation/sim/SimSetup';
+import AdultPastSimulations from '../screens/adultsimulation/sim/PastSimulations';
+import AdultSimulation from '../screens/adultsimulation/sim/Simulation';
+import AdultSimulationControls from '../screens/adultsimulation/sim/SimulationControls';
+import AdultResultsScreen from '../screens/adultsimulation/sim/ResultsScreen';
 
 // Adult Quiz related screens
 import AdultQuiz from '../screens/adult/scripts/AdultQuiz';
@@ -82,7 +87,12 @@ const Navigation = () => {
           {/* Adult Simulation System */}
           <Route path="/adult-simulation" element={<AdultLandingPage />} />
           <Route path="/adult-simulation-quiz" element={<AdultFinancialQuiz />} />
+          <Route path="/adult-simulation-leaderboard" element={<AdultLeaderboard />} />
           <Route path="/adult-simulation-results" element={<AdultResultsScreen />} />
+          <Route path="/adult-simulation-setup" element={<AdultSimSetup />} />
+          <Route path="/adult-simulation-past-simulations" element={<AdultPastSimulations />} />
+          <Route path="/adult-simulation-controls" element={<AdultSimulationControls />} />
+          <Route path="/adult-simulation" element={<AdultSimulation />} />
 
           {/* Adult Quiz System */}
           <Route path="/adult-quiz" element={<AdultQuiz />} />

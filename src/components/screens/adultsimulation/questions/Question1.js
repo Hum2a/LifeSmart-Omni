@@ -21,7 +21,7 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
 
-  const correctAnswer = 'C';
+  const correctAnswer = 'A';
 
   useEffect(() => {
     let intervalId;
@@ -84,7 +84,12 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
   const submitAnswers = () => {
     setShowResults(true);
-    const pointsArray = teamAnswers.map(answer => (answer === correctAnswer ? 3 : 0));
+    const pointsArray = teamAnswers.map(answer => {
+      if (answer === 'A') return 3;
+      if (answer === 'B' || answer === 'C') return 2;
+      if (answer === 'D' || answer === 'E') return 1;
+      return 0;
+    });
     onAwardPoints(pointsArray);
   };
 
@@ -133,80 +138,29 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
         <img src={q1Image} alt="Task 1 Image" className="question1-task-image" />
         <p>
-          Ben is a 30 year old engineer. He has the following
-          <span
-            className="question1-clickable-term question1-assets-class"
-            onMouseOver={(e) => showModal('assets', e)}
-            onMouseLeave={hideModal}
-          >
-            <strong>assets</strong>
-          </span>
-          and
-          <span
-            className="question1-clickable-term question1-liabilities-class"
-            onMouseOver={(e) => showModal('liabilities', e)}
-            onMouseLeave={hideModal}
-          >
-            <strong>liabilities</strong>
-          </span>.
+          The year is 2150. Zara, an 18-year-old, has just arrived at the New Horizon Colony on Mars. 
+          She's given 10,000 Mars Credits (MC) to start her new life. Her task is to allocate these funds 
+          across four categories:
         </p>
-
-        {/* Hover Modal */}
-        {showHoverModal && (
-          <div
-            className="question1-hover-modal"
-            style={{ top: modalPosition.top + 'px', left: modalPosition.left + 'px' }}
-          >
-            <h4>{modalTitle}</h4>
-            <p>{modalContent}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Assets and Liabilities Section */}
-      <div className="question1-assets-liabilities-wrapper">
-        <div className="question1-assets-liabilities">
-          <div className="question1-card">
-            <h4>Assets</h4>
-            <ul>
-              <li>
-                <span className="question1-asset-icon">🏠 House</span>
-                <span className="question1-asset-value">£200,000</span>
-              </li>
-              <li>
-                <span className="question1-asset-icon">🚗 Car</span>
-                <span className="question1-asset-value">£50,000</span>
-              </li>
-              <li>
-                <span className="question1-asset-icon">💵 Cash</span>
-                <span className="question1-asset-value">£20,000</span>
-              </li>
-            </ul>
-          </div>
-          <div className="question1-card">
-            <h4>Liabilities</h4>
-            <ul>
-              <li>
-                <span className="question1-asset-icon">🏠 Mortgage (6%)</span>
-                <span className="question1-asset-value">£150,000</span>
-              </li>
-              <li>
-                <span className="question1-asset-icon">🚗 Car Loan (10%)</span>
-                <span className="question1-asset-value">£20,000</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <ul>
+          <li>Habitat (life pod, air recycling)</li>
+          <li>Life-Support (food, water, utilities)</li>
+          <li>Safety Fund (unexpected repairs)</li>
+          <li>Exploration & Fun (holo-games, rover trips)</li>
+        </ul>
       </div>
 
       {/* Results Section */}
       {showResults ? (
         <div className="question1-result-section">
           <h4>Correct Answer:</h4>
-          <p className="question1-correct-answer">£100,000</p>
-          <p className="question1-correct-answer-description">Net Worth is</p>
-          <p className="question1-correct-answer-description"><strong>Total Assets – Total Liabilities</strong></p>
-          <p className="question1-correct-answer-description">£270,000 - £170,000</p>
+          <p className="question1-correct-answer">Option A: Habitat – 30%, Life-Support – 20%, Safety Fund – 20%, Exploration and Fun – 30%</p>
+          <p className="question1-correct-answer-description">This follows the 50/30/20 rule:</p>
+          <ul className="question1-correct-answer-description">
+            <li>Needs (Habitat + Life-Support): ≈50% – keeps Zara safe and healthy</li>
+            <li>Savings (Safety Fund): ≈20% – builds an emergency cushion for Mars mishaps</li>
+            <li>Wants (Exploration & Fun): ≈30% – leaves room for enjoyment without derailing her budget</li>
+          </ul>
           <h4 className="question1-your-answers">Your answers</h4>
 
           <div className="question1-team-answer-comparison">
@@ -226,16 +180,16 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div>
           {/* Question Section */}
           <div className="question1-question-section">
-            <p className="question1-question">What is his net worth?</p>
+            <p className="question1-question">Decide the best allocation for how she should spend her money:</p>
           </div>
 
           {/* Multiple Choice Options */}
           <div className="question1-choices-container">
-            <button className="question1-choice-button">A. £20,000</button>
-            <button className="question1-choice-button">B. £50,000</button>
-            <button className="question1-choice-button">C. £100,000</button>
-            <button className="question1-choice-button">D. £270,000</button>
-            <button className="question1-choice-button">E. £440,000</button>
+            <button className="question1-choice-button">A. Habitat – 30%, Life-Support – 20%, Safety Fund – 20%, Exploration and Fun – 30%</button>
+            <button className="question1-choice-button">B. Habitat – 15%, Life-Support – 30%, Safety Fund – 30%, Exploration and Fun – 25%</button>
+            <button className="question1-choice-button">C. Habitat – 25%, Life-Support – 30%, Safety Fund – 30%, Exploration and Fun – 15%</button>
+            <button className="question1-choice-button">D. Habitat – 30%, Life-Support – 30%, Safety Fund – 35%, Exploration and Fun – 5%</button>
+            <button className="question1-choice-button">E. Habitat – 25%, Life-Support – 20%, Safety Fund – 5%, Exploration and Fun – 50%</button>
           </div>
 
           {/* Team Answer Section */}

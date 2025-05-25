@@ -46,6 +46,34 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     },
   ];
 
+  const pots = [
+    {
+      name: "Training & Self-Development Pot",
+      letter: "A",
+      description: "Money for learning new skills, courses, and personal growth.",
+    },
+    {
+      name: "Life-Experiences & Fun Pot",
+      letter: "B",
+      description: "Money for travel, hobbies, and enjoying life.",
+    },
+    {
+      name: "Investment Pot",
+      letter: "C",
+      description: "Money to invest for long-term growth.",
+    },
+    {
+      name: "Health & Well-being Pot",
+      letter: "D",
+      description: "Money for health, fitness, and well-being.",
+    },
+    {
+      name: "Emergency Pot",
+      letter: "E",
+      description: "Money set aside for unexpected events.",
+    },
+  ];
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (timer > 0) {
@@ -120,42 +148,39 @@ const Question6 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
       {/* Task Description */}
       <div className="question6-task-header">
-        <h3>Challenge 6</h3>
+        <h3>Grand Finale</h3>
         <div className="question6-button-container">
           <button className="question6-glossary-button" onClick={() => setShowGlossary(true)}>
             📖 Glossary
           </button>
         </div>
         <p>
-          So now for the final round and the investment challenge to decide the ultimate winner. Ben has £100,000 in savings and wants to build a diversified portfolio of different asset classes.
+          Zara has just been told her family on earth are sending her some extra money. She wants to use the money to increase her net worth over the next 7 years.<br />
+          <strong>The team with the highest net-worth wins!</strong>
         </p>
-        <p>Each team will get a bonus £200 for each point they scored in the previous rounds.</p>
+        <p>
+          Each team's points from the first five challenges become its starting net-worth score.<br />
+          <strong>Your job is to decide how to allocate that extra money between five 'pots'. Write one percentage next to each pot (they must add up to 100%):</strong>
+        </p>
       </div>
 
-      {/* Asset Allocation Section */}
+      {/* Pots Section */}
       <div className="question6-allocation-header">
-        <p>Decide how to allocate the money between these 5 asset classes.</p>
+        <p>Be aware, there will be some interesting events taking place over the next 7 years so make sure you are prepared for everything.</p>
       </div>
-
-      {/* Asset Classes */}
       <div className="question6-asset-classes-container">
-        {assets.map((asset, index) => (
-          <div key={asset.name} className="question6-asset-class">
-            <button className="question6-asset-button" onClick={() => toggleAsset(index)}>
-              <img src={asset.image} alt={asset.name} className="question6-asset-icon" />
-              <span>{asset.name}</span>
-            </button>
-            {expandedAssets[index] && (
-              <div className="question6-asset-definition">
-                <p>{asset.definition}</p>
-              </div>
-            )}
+        {pots.map((pot, index) => (
+          <div key={pot.letter} className="question6-asset-class">
+            <div className="question6-asset-button" style={{ cursor: 'default' }}>
+              <span style={{ fontWeight: 'bold', fontSize: '1.3rem', marginRight: 10 }}>{pot.letter}</span>
+              <span>{pot.name}</span>
+            </div>
+            <div className="question6-asset-definition">
+              <p>{pot.description}</p>
+            </div>
           </div>
         ))}
       </div>
-
-      {/* Asset Classes Breakdown Graph */}
-      <img src={graphImage} alt="Asset Allocation Graph" className="question6-allocation-graph" />
 
       {/* Next Button */}
       <button className="question6-submit-button" onClick={nextQuestion}>Next</button>

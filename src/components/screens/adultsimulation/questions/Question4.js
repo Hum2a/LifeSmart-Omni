@@ -22,7 +22,7 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
   const [detailedAnswerShown, setDetailedAnswerShown] = useState(false);
 
-  const correctAnswer = 'D';
+  const correctAnswer = 'B';
 
   useEffect(() => {
     let intervalId;
@@ -120,16 +120,52 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <div className="question4-points-section">
             <h3>Challenge 4</h3>
             <img src={lightningBolt} alt="Lightning Bolt" className="question4-lightning-bolt" />
-            <p className="question4-points">5 points</p>
+            <p className="question4-points">3 points</p>
           </div>
           <div className="question4-button-container">
             <button className="question4-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
           </div>
         </div>
         <div className="question4-task-header-question">
-          <p>Ben wants to save money for his future. He has £1,000 to invest.</p>
-          <img src={moneyBars} alt="Task 4 Image" className="question4-task-image" />
+          <p>Zara hears on the colony news that a powerful meteor shower is forecast for next week.<br />
+          The governor urges every resident to build a personal "Shield-Fund" - cash kept aside for emergencies.</p>
         </div>
+      </div>
+
+      {/* Cost Table */}
+      <div className="question4-cost-table-wrapper">
+        <table className="question4-cost-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Cost (MC)</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Habitat pod rent</td><td>Includes air-recycling fee</td><td>1 150</td><td>Needs</td></tr>
+            <tr><td>Life-Support</td><td>Food, water, basic utilities</td><td>900</td><td>Need</td></tr>
+            <tr><td>Transport</td><td>Mag-tram pass to the rover bay</td><td>240</td><td>Need</td></tr>
+            <tr><td>Colony Data plan</td><td>Communicator & holo-net</td><td>210</td><td>Want</td></tr>
+            <tr><td>Exploration & Fun</td><td>Holo-games subscription, eating out with friends</td><td>580</td><td>Want</td></tr>
+            <tr><td>Safety Fund auto-transfer</td><td>Emergency savings (20 % of income target)</td><td>800</td><td>Savings</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      {/* Question Section */}
+      <div className="question4-question-section">
+        <p className="question4-question-text">Given Zara's expenses, what is the minimum amount she should set aside in her Emergency Fund?</p>
+      </div>
+
+      {/* Multiple Choice Options */}
+      <div className="question4-choices-container">
+        <button className="question4-choice-button">A. 3,500 MC</button>
+        <button className="question4-choice-button">B. 7,470 MC</button>
+        <button className="question4-choice-button">C. 10,500 MC</button>
+        <button className="question4-choice-button">D. 14,940 MC</button>
+        <button className="question4-choice-button">E. 21,000 MC</button>
       </div>
 
       {/* Glossary Sidebar */}
@@ -159,20 +195,6 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Conditionally display answer options or result section */}
       {!showResults ? (
         <div>
-          {/* Question and Points Section */}
-          <div className="question4-question-section">
-            <p className="question4-question-text">What should he invest in?</p>
-          </div>
-
-          {/* Multiple Choice Options */}
-          <div className="question4-choices-container">
-            <button className="question4-choice-button">A. High-risk stocks</button>
-            <button className="question4-choice-button">B. Government bonds</button>
-            <button className="question4-choice-button">C. Savings account</button>
-            <button className="question4-choice-button">D. Cryptocurrency</button>
-            <button className="question4-choice-button">E. Real estate</button>
-          </div>
-
           {/* Team Answer Section */}
           <div className="question4-team-answer-section">
             <h4>Your answers</h4>
@@ -203,30 +225,20 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       ) : (
         <div className="question4-result-section">
           <h4>Correct Answer:</h4>
-          <p className="question4-correct-answer">B. Government bonds</p>
-          <p onClick={toggleDetailedAnswer} className="question4-toggle-detailed-answer">
-            Click to {detailedAnswerShown ? 'hide detailed answer ⬆️' : 'see detailed answer ⬇️'}
-          </p>
-
-          {/* Expanded Answer with Investment Calculator */}
-          {detailedAnswerShown && (
-            <div className="question4-expanded-answer">
-              <p>Government bonds are a good choice for Ben because:</p>
-              <ul>
-                <li>They are low-risk investments</li>
-                <li>They provide steady returns</li>
-                <li>They are backed by the government</li>
-                <li>They are suitable for long-term savings</li>
-              </ul>
-              
-              {/* Investment Calculator Widget */}
-              <div className="question4-calculator-widget">
-                <h3>Try our Investment Calculator</h3>
-                <p>See how different investment strategies could grow your money over time:</p>
-                <InvestmentCalculator />
-              </div>
-            </div>
-          )}
+          <div className="question4-correct-answer">Option B: 7,470 MC</div>
+          <div className="question4-correct-answer-description">
+            <strong>Explanation:</strong>
+            <ul>
+              <li>A solid emergency fund should cover at least three months of Zara's essential (needs) costs.</li>
+              <li><strong>Essential category</strong> Monthly cost (MC):<br />
+                Habitat pod rent: 1,350<br />
+                Life-Support: 900<br />
+                Transport: 240<br />
+                <strong>Total monthly needs:</strong> 2,490<br />
+                <strong>Three months' cover:</strong> 2,490 MC × 3 = 7,470 MC → Option B.
+              </li>
+            </ul>
+          </div>
 
           {/* Display each team's answer with comparison */}
           <div className="question4-team-answer-comparison">

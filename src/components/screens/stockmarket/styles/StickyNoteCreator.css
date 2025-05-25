@@ -50,10 +50,7 @@
 
 .main-content {
   width: 100%;
-  max-width: 1200px;
-  margin: 2em auto;
   text-align: center;
-  padding: 1em;
   background-color: #ecf0f1;
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);

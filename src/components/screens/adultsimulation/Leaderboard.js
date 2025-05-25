@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ResultsScreen.css';
+import './Leaderboard.css';
 import crownIcon from '../../../assets/icons/crown.png';
 
-const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
+const Leaderboard = ({ teams, quizComplete, onNextQuestion }) => {
   const [barWidths, setBarWidths] = useState({});
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [rankedTeams, setRankedTeams] = useState([]);
@@ -14,17 +14,21 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
   useEffect(() => {
     if (!teams || teams.length === 0) return;
 
-    // First sort the teams
+    // First sort the teams by points in descending order
     const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
     
-    // Then calculate ranks
+    let currentRank = 1;
+    let prevPoints = null;
+    
+    // Then calculate ranks, handling ties correctly
     const ranked = sortedTeams.map((team, index) => {
-      // If it's the first team or has different points than the previous team
-      if (index === 0 || team.points !== sortedTeams[index - 1].points) {
-        return { ...team, rank: index + 1 };
+      // If this is the first team or has different points than previous team
+      if (index === 0 || team.points !== prevPoints) {
+        currentRank = index + 1;
       }
-      // If it has the same points as the previous team, use the same rank
-      return { ...team, rank: sortedTeams[index - 1].rank };
+      
+      prevPoints = team.points;
+      return { ...team, rank: currentRank };
     });
 
     setRankedTeams(ranked);
@@ -44,7 +48,7 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
 
   const nextOrNavigateToSimulation = () => {
     if (quizComplete) {
-      navigate('/quiz-simulation');
+      navigate('/sim-setup');
     } else {
       onNextQuestion();
     }
@@ -74,51 +78,52 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
   }, [rankedTeams]);
 
   return (
-    <div className="results-container">
-      <button onClick={goHome} className="home-button">Go to Home</button>
-      <button onClick={() => navigate('/quiz-simulation')} className="simulation-button">
-        Go to Simulation
-      </button>
-      
-      <h2 className="title">Scoreboard</h2>
+    <div className="quiz-results-container">
+      <div className="quiz-results-header-container">
+        <button onClick={goHome} className="quiz-results-home-button">Go to Home</button>
+        <h2 className="quiz-results-title">Scoreboard</h2>
+        {/* <button onClick={() => navigate('/sim-setup')} className="quiz-results-simulation-button">
+          Go to Simulation
+        </button> */}
+      </div>
 
-      <div className="content-wrapper">
-        <div className="team-results">
+      <div className="quiz-results-content-wrapper">
+        <div className="quiz-results-team-results">
           {rankedTeams.map((team, index) => (
             <div
               key={team.name}
-              className={`team-bar-container ${expandedTeam === team.name ? 'expanded' : ''} ${team.rank === 1 ? 'winning-team' : ''}`}
+              className={`quiz-results-team-bar-container ${expandedTeam === team.name ? 'expanded' : ''} ${team.rank === 1 ? 'quiz-results-winning-team' : ''}`}
               style={{
                 backgroundColor: team.rank === 1 ? '#C5FF9A' : '',
                 color: team.rank === 1 ? 'black' : ''
               }}
               onClick={() => toggleTeamExpansion(team.name)}
             >
-              <div className="team-bar">
-                <p className="team-name">
+              <div className="quiz-results-team-bar">
+                <p className="quiz-results-team-name">
                   {team.rank}. {team.name}
                   {team.rank === 1 && (
-                    <img src={crownIcon} alt="Crown" className="crown-icon" />
+                    <img src={crownIcon} alt="Crown" className="quiz-results-crown-icon" />
                   )}
                 </p>
-                <div className="bar-wrapper">
+                <div className="quiz-results-bar-wrapper">
                   <div
-                    className="bar"
+                    className="quiz-results-bar"
                     style={{
                       width: `${barWidths[team.name]}%`,
                       transitionDelay: `${index * 0.2}s`
                     }}
                   />
                 </div>
-                <div className="points-info">
-                  <p className="points" style={{ color: team.rank === 1 ? 'black' : 'white' }}>
+                <div className="quiz-results-points-info">
+                  <p className="quiz-results-points" style={{ color: team.rank === 1 ? 'black' : 'white' }}>
                     ⚡ {team.points}
                   </p>
                 </div>
               </div>
 
               {expandedTeam === team.name && (
-                <div className="team-points-breakdown">
+                <div className="quiz-results-team-points-breakdown">
                   <table>
                     <thead>
                       <tr>
@@ -139,16 +144,16 @@ const ResultsScreen = ({ teams, quizComplete, onNextQuestion }) => {
               )}
             </div>
           ))}
-          
-          <div className="next-button-container">
-            <button className="next-button" onClick={nextOrNavigateToSimulation}>
-              {quizComplete ? 'See Results' : 'Next'}
-            </button>
-          </div>
         </div>
+      </div>
+
+      <div className="quiz-results-next-button-container">
+        <button className="quiz-results-next-button" onClick={nextOrNavigateToSimulation}>
+          {quizComplete ? 'See Results' : 'Next'}
+        </button>
       </div>
     </div>
   );
 };
 
-export default ResultsScreen; 
+export default Leaderboard; 
