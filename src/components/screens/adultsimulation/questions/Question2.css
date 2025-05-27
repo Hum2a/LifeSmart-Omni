@@ -554,4 +554,56 @@
 
 .question2-cost-table tr:last-child td {
   border-bottom: none;
+}
+
+.question2-explanation-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin: 24px 0 0 0;
+}
+
+.question2-explanation-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 18px 24px 14px 24px;
+  min-width: 220px;
+  max-width: 270px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.question2-explanation-card.fund {
+  border-left: 6px solid #0ea5e9;
+}
+.question2-explanation-card.costs {
+  border-left: 6px solid #6366f1;
+}
+.question2-explanation-card.leftover {
+  border-left: 6px solid #22c55e;
+}
+
+.question2-explanation-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #003F91;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.question2-explanation-main {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.question2-explanation-desc {
+  font-size: 0.98rem;
+  color: #475569;
 } 

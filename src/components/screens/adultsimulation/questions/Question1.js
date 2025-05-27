@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Question1.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 import q1Image from '../../../../assets/icons/q1image.png';
+import { MdFlashOn } from 'react-icons/md';
 
 const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -127,10 +128,12 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Task Header */}
       <div className="question1-task-header">
         <div className="question1-header-content">
-          <div className="question1-points-section">
-            <h3>Challenge 1</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="question1-lightning-bolt" />
-            <p className="question1-points">3 points</p>
+          <div className="question1-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h3 style={{ margin: 0 }}>Challenge 1</h3>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <MdFlashOn size={32} color="#0b57bd" style={{ verticalAlign: 'middle' }} />
+              <span className="question1-points">3 points</span>
+            </span>
           </div>
           <div className="question1-button-container">
             <button className="question1-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
@@ -142,12 +145,36 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           She's given 10,000 Mars Credits (MC) to start her new life. Her task is to allocate these funds 
           across four categories:
         </p>
-        <ul>
-          <li>Habitat (life pod, air recycling)</li>
-          <li>Life-Support (food, water, utilities)</li>
-          <li>Safety Fund (unexpected repairs)</li>
-          <li>Exploration & Fun (holo-games, rover trips)</li>
-        </ul>
+        <div className="question1-category-cards-container">
+          <div className="question1-category-card">
+            <span role="img" aria-label="Habitat" className="question1-category-icon">🏠</span>
+            <div>
+              <div className="question1-category-title">Habitat</div>
+              <div className="question1-category-desc">Life pod, air recycling</div>
+            </div>
+          </div>
+          <div className="question1-category-card">
+            <span role="img" aria-label="Life-Support" className="question1-category-icon">💧</span>
+            <div>
+              <div className="question1-category-title">Life-Support</div>
+              <div className="question1-category-desc">Food, water, utilities</div>
+            </div>
+          </div>
+          <div className="question1-category-card">
+            <span role="img" aria-label="Safety Fund" className="question1-category-icon">🛡️</span>
+            <div>
+              <div className="question1-category-title">Safety Fund</div>
+              <div className="question1-category-desc">Unexpected repairs</div>
+            </div>
+          </div>
+          <div className="question1-category-card">
+            <span role="img" aria-label="Exploration & Fun" className="question1-category-icon">🚀</span>
+            <div>
+              <div className="question1-category-title">Exploration & Fun</div>
+              <div className="question1-category-desc">Holo-games, rover trips</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Results Section */}
@@ -156,11 +183,23 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <h4>Correct Answer:</h4>
           <p className="question1-correct-answer">Option A: Habitat – 30%, Life-Support – 20%, Safety Fund – 20%, Exploration and Fun – 30%</p>
           <p className="question1-correct-answer-description">This follows the 50/30/20 rule:</p>
-          <ul className="question1-correct-answer-description">
-            <li>Needs (Habitat + Life-Support): ≈50% – keeps Zara safe and healthy</li>
-            <li>Savings (Safety Fund): ≈20% – builds an emergency cushion for Mars mishaps</li>
-            <li>Wants (Exploration & Fun): ≈30% – leaves room for enjoyment without derailing her budget</li>
-          </ul>
+          <div className="question1-explanation-cards-container">
+            <div className="question1-explanation-card needs">
+              <div className="question1-explanation-label">Needs</div>
+              <div className="question1-explanation-main">Habitat + Life-Support ≈ 50%</div>
+              <div className="question1-explanation-desc">Keeps Zara safe and healthy</div>
+            </div>
+            <div className="question1-explanation-card savings">
+              <div className="question1-explanation-label">Savings</div>
+              <div className="question1-explanation-main">Safety Fund ≈ 20%</div>
+              <div className="question1-explanation-desc">Builds an emergency cushion for Mars mishaps</div>
+            </div>
+            <div className="question1-explanation-card wants">
+              <div className="question1-explanation-label">Wants</div>
+              <div className="question1-explanation-main">Exploration & Fun ≈ 30%</div>
+              <div className="question1-explanation-desc">Leaves room for enjoyment without derailing her budget</div>
+            </div>
+          </div>
           <h4 className="question1-your-answers">Your answers</h4>
 
           <div className="question1-team-answer-comparison">

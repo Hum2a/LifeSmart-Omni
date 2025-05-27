@@ -117,10 +117,12 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Task Description */}
       <div className="question4-task-header">
         <div className="question4-top-layer">
-          <div className="question4-points-section">
-            <h3>Challenge 4</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="question4-lightning-bolt" />
-            <p className="question4-points">3 points</p>
+          <div className="question4-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h3 style={{ margin: 0 }}>Challenge 4</h3>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img src={lightningBolt} alt="Lightning Bolt" className="question4-lightning-bolt" style={{ width: 28, height: 28, verticalAlign: 'middle' }} />
+              <span className="question4-points">3 points</span>
+            </span>
           </div>
           <div className="question4-button-container">
             <button className="question4-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
@@ -227,17 +229,22 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <h4>Correct Answer:</h4>
           <div className="question4-correct-answer">Option B: 7,470 MC</div>
           <div className="question4-correct-answer-description">
-            <strong>Explanation:</strong>
-            <ul>
-              <li>A solid emergency fund should cover at least three months of Zara's essential (needs) costs.</li>
-              <li><strong>Essential category</strong> Monthly cost (MC):<br />
-                Habitat pod rent: 1,350<br />
-                Life-Support: 900<br />
-                Transport: 240<br />
-                <strong>Total monthly needs:</strong> 2,490<br />
-                <strong>Three months' cover:</strong> 2,490 MC × 3 = 7,470 MC → Option B.
-              </li>
-            </ul>
+            <div className="question4-explanation-cards-container">
+              <div className="question4-explanation-card rule">
+                <div className="question4-explanation-label">Emergency Fund Rule</div>
+                <div className="question4-explanation-main">A solid emergency fund should cover at least three months of Zara's essential (needs) costs.</div>
+              </div>
+              <div className="question4-explanation-card costs">
+                <div className="question4-explanation-label">Essential Costs</div>
+                <div className="question4-explanation-main">Habitat pod rent: 1,350<br/>Life-Support: 900<br/>Transport: 240<br/><b>Total monthly needs: 2,490 MC</b></div>
+                <div className="question4-explanation-desc">Sum of all essential monthly costs</div>
+              </div>
+              <div className="question4-explanation-card answer">
+                <div className="question4-explanation-label">Three Months' Cover</div>
+                <div className="question4-explanation-main">2,490 MC × 3 = <b>7,470 MC</b> → Option B</div>
+                <div className="question4-explanation-desc">Minimum emergency fund needed</div>
+              </div>
+            </div>
           </div>
 
           {/* Display each team's answer with comparison */}

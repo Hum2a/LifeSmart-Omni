@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Chart, ArcElement, Tooltip, Legend, Title } from 'chart.js';
 import { 
   FaCalculator, 
@@ -9,7 +9,11 @@ import {
   FaTrashAlt, 
   FaArrowRight,
   FaPlus,
-  FaDice
+  FaDice,
+  FaChartLine,
+  FaChartPie,
+  FaEdit,
+  FaTimes
 } from 'react-icons/fa';
 import SimulationControls from './SimulationControls';
 import SimulationHistory from './PastSimulations';
@@ -18,10 +22,10 @@ import LifeSmartLogo from '../../../../assets/icons/LifeSmartLogo.png';
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
-const GroupCreation = () => {
+const SimSetup = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showCalculator, setShowCalculator] = useState(false);
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
   const [showSimulationControls, setShowSimulationControls] = useState(false);
   const [showSimulationHistory, setShowSimulationHistory] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -30,204 +34,210 @@ const GroupCreation = () => {
   const [maxPortfolioValue, setMaxPortfolioValue] = useState(100000);
   const [roundTo, setRoundTo] = useState(5000);
   const [enableRandomGeneration, setEnableRandomGeneration] = useState(true);
-  const [groups, setGroups] = useState([
-    { name: 'Group 1', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' },
-    { name: 'Group 2', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' },
-    { name: 'Group 3', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' },
-    { name: 'Group 4', equity: '', bonds: '', realestate: '', commodities: '', other: '', equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: '' }
-  ]);
+  const [groups, setGroups] = useState([]);
   const chartsRef = useRef([]);
 
-  const toggleCalculator = () => {
-    navigate('/investment-calculator');
+  useEffect(() => {
+    // Only use navigation state for teams/points
+    const teamsFromState = location.state?.teams;
+    if (teamsFromState) {
+      const teamsData = teamsFromState.map(team => ({
+        name: team.name,
+        points: team.points,
+        assets: {
+          equity: 0,
+          bonds: 0,
+          realestate: 0,
+          commodities: 0,
+          other: 0,
+        },
+        percentages: {
+          equity: 0,
+          bonds: 0,
+          realestate: 0,
+          commodities: 0,
+          other: 0,
+        },
+        usePercentage: true,
+        allocatedFunds: 0,
+      }));
+      setGroups(teamsData);
+    }
+    setIsLoading(false);
+  }, [location.state]);
+
+  const getTotalSpendableAmount = (points) => {
+    return 100000 + (points * 5000);
   };
 
-  const toggleSimulationControls = () => {
-    setShowSimulationControls(!showSimulationControls);
+  const getRemainingSpendableAmount = (group) => {
+    const totalSpendable = getTotalSpendableAmount(group.points);
+    const totalAllocated = Object.values(group.assets).reduce(
+      (sum, value) => sum + parseFloat(value || 0),
+      0
+    );
+    return totalSpendable - totalAllocated;
   };
 
-  const toggleSimulationHistory = () => {
-    setShowSimulationHistory(!showSimulationHistory);
-    setCurrentSimulationIndex(null);
+  const updateSpendableAmount = (index) => {
+    setGroups(prevGroups => {
+      const newGroups = [...prevGroups];
+      const group = newGroups[index];
+      const remaining = getRemainingSpendableAmount(group);
+      newGroups[index].allocatedFunds = remaining;
+      return newGroups;
+    });
   };
 
-  const handleViewSimulationDetails = (simulationIndex) => {
-    setCurrentSimulationIndex(simulationIndex);
-    setShowSimulationHistory(false);
+  const handleAssetInputChange = (index, key, value) => {
+    setGroups(prevGroups => {
+      const newGroups = [...prevGroups];
+      const group = newGroups[index];
+      const totalSpendable = getTotalSpendableAmount(group.points);
+      if (value === '') {
+        group.percentages[key] = '';
+        group.assets[key] = 0;
+        return newGroups;
+      }
+      const newPercentage = parseFloat(value);
+      if (newPercentage < 0 || newPercentage > 100) {
+        alert('Percentage must be between 0 and 100');
+        return prevGroups;
+      }
+      const newAmount = (newPercentage / 100) * totalSpendable;
+      const currentTotalPercentage = Object.values(group.percentages).reduce(
+        (sum, val) => sum + parseFloat(val || 0),
+        0
+      );
+      const newTotalPercentage = currentTotalPercentage - (parseFloat(group.percentages[key]) || 0) + newPercentage;
+      if (newTotalPercentage > 100) {
+        alert('Total allocation cannot exceed 100%');
+        return prevGroups;
+      }
+      group.percentages[key] = newPercentage;
+      group.assets[key] = newAmount;
+      return newGroups;
+    });
+    updateSpendableAmount(index);
+  };
+
+  const generateRandomValues = (index) => {
+    if (!enableRandomGeneration) return;
+    setGroups(prevGroups => {
+      const newGroups = [...prevGroups];
+      const group = newGroups[index];
+      const totalSpendable = getTotalSpendableAmount(group.points);
+      let remainingPercentage = 100;
+      const percentages = [];
+      for (let i = 0; i < 4; i++) {
+        const max = remainingPercentage - (4 - i);
+        const percentage = Math.floor(Math.random() * max) + 1;
+        percentages.push(percentage);
+        remainingPercentage -= percentage;
+      }
+      percentages.push(remainingPercentage);
+      for (let i = percentages.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [percentages[i], percentages[j]] = [percentages[j], percentages[i]];
+      }
+      const assetTypes = ['equity', 'bonds', 'realestate', 'commodities', 'other'];
+      assetTypes.forEach((type, i) => {
+        group.percentages[type] = percentages[i];
+        group.assets[type] = (percentages[i] / 100) * totalSpendable;
+      });
+      return newGroups;
+    });
+  };
+
+  const editGroupName = (index) => {
+    const newName = prompt("Enter new group name:", groups[index].name);
+    if (newName && newName.trim() !== '') {
+      setGroups(prevGroups => {
+        const newGroups = [...prevGroups];
+        newGroups[index].name = newName.trim();
+        return newGroups;
+      });
+    }
+  };
+
+  const removeGroup = (index) => {
+    setGroups(prevGroups => {
+      const newGroups = prevGroups.filter((_, i) => i !== index);
+      if (chartsRef.current[index]) {
+        chartsRef.current[index].destroy();
+        chartsRef.current = chartsRef.current.filter((_, i) => i !== index);
+      }
+      return newGroups;
+    });
   };
 
   const addGroup = () => {
     setShowModal(true);
   };
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
-
   const confirmAddGroup = () => {
     if (newGroupName.trim()) {
-      setGroups([...groups, {
+      setGroups(prevGroups => [...prevGroups, {
         name: newGroupName.trim(),
-        equity: '', bonds: '', realestate: '', commodities: '', other: '',
-        equityTemp: '', bondsTemp: '', realestateTemp: '', commoditiesTemp: '', otherTemp: ''
+        points: 0,
+        assets: {
+          equity: 0,
+          bonds: 0,
+          realestate: 0,
+          commodities: 0,
+          other: 0,
+        },
+        percentages: {
+          equity: 0,
+          bonds: 0,
+          realestate: 0,
+          commodities: 0,
+          other: 0,
+        },
+        usePercentage: true,
+        allocatedFunds: 0,
       }]);
       setNewGroupName('');
-      toggleModal();
+      setShowModal(false);
     } else {
       alert('Please enter a group name.');
     }
   };
 
-  const editGroupName = (index) => {
-    const newName = prompt("Enter new group name:", groups[index].name);
-    if (newName && newName.trim() !== '') {
-      const newGroups = [...groups];
-      newGroups[index].name = newName.trim();
-      setGroups(newGroups);
-    }
-  };
-
-  const removeGroup = (index) => {
-    const newGroups = groups.filter((_, i) => i !== index);
-    setGroups(newGroups);
-    if (chartsRef.current[index]) {
-      chartsRef.current[index].destroy();
-      chartsRef.current = chartsRef.current.filter((_, i) => i !== index);
-    }
-  };
-
-  const updateGroupValue = (index, field) => {
-    const newGroups = [...groups];
-    newGroups[index][field] = newGroups[index][`${field}Temp`];
-    setGroups(newGroups);
-    updatePieChart(index);
-  };
-
-  const updateAllGroupValues = (index) => {
-    const newGroups = [...groups];
-    const fields = ['equity', 'bonds', 'realestate', 'commodities', 'other'];
-    fields.forEach(field => {
-      newGroups[index][field] = newGroups[index][`${field}Temp`];
+  const startSimulation = async () => {
+    const hasEmptyValues = groups.some(group => {
+      const totalPercentage = Object.values(group.percentages).reduce(
+        (sum, val) => sum + parseFloat(val || 0),
+        0
+      );
+      return totalPercentage === 0;
     });
-    setGroups(newGroups);
-    updatePieChart(index);
-  };
-
-  const getTotalValue = (group) => {
-    return Object.keys(group).reduce((total, key) => {
-      if (key !== 'name' && !key.endsWith('Temp')) {
-        total += parseFloat(group[key]) || 0;
-      }
-      return total;
-    }, 0);
-  };
-
-  const renderPieChart = (index) => {
-    const group = groups[index];
-    const canvasId = `pieChart_${index}`;
-    const canvas = document.getElementById(canvasId);
-    
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-
-    if (!ctx) return;
-
-    if (chartsRef.current[index]) {
-      chartsRef.current[index].destroy();
+    if (hasEmptyValues) {
+      alert('Please fill in allocation values for each group before starting the simulation.');
+      return;
     }
-
-    const data = {
-      labels: ['Equity', 'Bonds', 'Real Estate', 'Commodities', 'Other'],
-      datasets: [{
-        label: `${group.name} Asset Allocation`,
-        data: [group.equity, group.bonds, group.realestate, group.commodities, group.other],
-        backgroundColor: [
-          'rgba(114, 93, 255, 1)',
-          'rgba(230, 96, 131, 1)',
-          'rgba(255, 133, 76, 1)',
-          'rgba(30, 174, 174, 1)',
-          'rgba(54, 48, 82, 1)'
-        ],
-        borderColor: [
-          'rgba(114, 93, 255, 1)',
-          'rgba(230, 96, 131, 1)',
-          'rgba(255, 133, 76, 1)',
-          'rgba(30, 174, 174, 1)',
-          'rgba(54, 48, 82, 1)'
-        ],
-        borderWidth: 1
-      }]
-    };
-
-    chartsRef.current[index] = new Chart(ctx, {
-      type: 'pie',
-      data: data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom',
-            labels: {
-              color: '#000',
-              font: {
-                size: 10,
-                family: 'Helvetica'
-              },
-              boxWidth: 20,
-              usePointStyle: true
-            }
-          }
-        },
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-        },
-        cutout: '65%'
+    const formattedGroups = groups.map(group => ({
+      name: group.name,
+      equity: group.assets.equity.toString(),
+      bonds: group.assets.bonds.toString(),
+      realestate: group.assets.realestate.toString(),
+      commodities: group.assets.commodities.toString(),
+      other: group.assets.other.toString(),
+      points: group.points || 0,
+      equityTemp: group.assets.equity.toString(),
+      bondsTemp: group.assets.bonds.toString(),
+      realestateTemp: group.assets.realestate.toString(),
+      commoditiesTemp: group.assets.commodities.toString(),
+      otherTemp: group.assets.other.toString()
+    }));
+    navigate('/adult-simulation-page', { 
+      state: { 
+        groups: formattedGroups,
+        maxPortfolioValue,
+        roundTo
       }
     });
   };
-
-  const updatePieChart = (index) => {
-    renderPieChart(index);
-  };
-
-  const generateRandomValues = (index) => {
-    if (!enableRandomGeneration) return;
-    
-    const newGroups = [...groups];
-    const fields = ['equityTemp', 'bondsTemp', 'realestateTemp', 'commoditiesTemp', 'otherTemp'];
-    
-    let remainingValue = maxPortfolioValue;
-    const values = [];
-    
-    for (let i = 0; i < 4; i++) {
-      const max = remainingValue - (4 - i) * 1000;
-      const value = Math.floor(Math.random() * max) + 1000;
-      values.push(value);
-      remainingValue -= value;
-    }
-    values.push(remainingValue);
-    
-    for (let i = values.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [values[i], values[j]] = [values[j], values[i]];
-    }
-    
-    fields.forEach((field, i) => {
-      newGroups[index][field] = values[i].toString();
-    });
-    
-    setGroups(newGroups);
-  };
-
-  useEffect(() => {
-    groups.forEach((_, index) => {
-      renderPieChart(index);
-    });
-  }, []);
 
   if (isLoading) {
     return <div className="GroupCreation-loading">Loading...</div>;
@@ -243,20 +253,17 @@ const GroupCreation = () => {
           <img src={LifeSmartLogo} alt="LifeSmart Logo" className="GroupCreation-logo" />
         </button>
         <div className="GroupCreation-header-icons">
-          <button onClick={toggleCalculator} className="GroupCreation-calculator-toggle">
-            <FaCalculator />
-          </button>
-          <button onClick={toggleSimulationControls} className="GroupCreation-simulation-controls-toggle">
+          <button onClick={() => setShowSimulationControls(!showSimulationControls)} className="GroupCreation-simulation-controls-toggle">
             <FaCog />
           </button>
-          <button onClick={toggleSimulationHistory} className="GroupCreation-simulation-history-toggle">
+          <button onClick={() => setShowSimulationHistory(!showSimulationHistory)} className="GroupCreation-simulation-history-toggle">
             <FaCalendarAlt />
           </button>
         </div>
       </header>
 
       {showSimulationControls && <SimulationControls />}
-      {showSimulationHistory && <SimulationHistory onViewSimulationDetails={handleViewSimulationDetails} />}
+      {showSimulationHistory && <SimulationHistory onViewSimulationDetails={setCurrentSimulationIndex} />}
 
       <main>
         {!currentSimulationIndex && (
@@ -296,15 +303,23 @@ const GroupCreation = () => {
             </div>
 
             <h1 className="GroupCreation-header-content">
+              <FaChartLine className="GroupCreation-blueline" />
               <span>Group Management</span>
             </h1>
+
+            <div className="GroupCreation-allocation-image">
+              <FaChartPie size={100} />
+            </div>
 
             <div className="GroupCreation-groups">
               {groups.map((group, index) => (
                 <div key={index} className="GroupCreation-group">
                   <div className="GroupCreation-group-header">
-                    <h2>{group.name}</h2>
-                    <div className="GroupCreation-button-group">
+                    <h2>
+                      {group.name}
+                      <span className="GroupCreation-group-points">({group.points} points)</span>
+                    </h2>
+                    <div className="GroupCreation-group-actions">
                       <button 
                         onClick={() => generateRandomValues(index)} 
                         className="GroupCreation-random-btn"
@@ -314,94 +329,38 @@ const GroupCreation = () => {
                         <FaDice />
                       </button>
                       <button onClick={() => editGroupName(index)} className="GroupCreation-edit-group-btn">
-                        <FaPencilAlt />
+                        <FaEdit />
                       </button>
                       <button onClick={() => removeGroup(index)} className="GroupCreation-remove-group-btn">
-                        <FaTrashAlt />
+                        <FaTimes />
                       </button>
                     </div>
                   </div>
                   <div className="GroupCreation-group-content">
                     <div className="GroupCreation-inputs">
-                      <div className="GroupCreation-input-row">
-                        <label htmlFor={`equity-${index}`}>Equity:</label>
-                        <input
-                          type="number"
-                          value={group.equityTemp}
-                          onChange={(e) => {
-                            const newGroups = [...groups];
-                            newGroups[index].equityTemp = e.target.value;
-                            setGroups(newGroups);
-                          }}
-                          id={`equity-${index}`}
-                          className="GroupCreation-modern-input"
-                        />
-                      </div>
-                      <div className="GroupCreation-input-row">
-                        <label htmlFor={`bonds-${index}`}>Bonds:</label>
-                        <input
-                          type="number"
-                          value={group.bondsTemp}
-                          onChange={(e) => {
-                            const newGroups = [...groups];
-                            newGroups[index].bondsTemp = e.target.value;
-                            setGroups(newGroups);
-                          }}
-                          id={`bonds-${index}`}
-                          className="GroupCreation-modern-input"
-                        />
-                      </div>
-                      <div className="GroupCreation-input-row">
-                        <label htmlFor={`realestate-${index}`}>Real Estate:</label>
-                        <input
-                          type="number"
-                          value={group.realestateTemp}
-                          onChange={(e) => {
-                            const newGroups = [...groups];
-                            newGroups[index].realestateTemp = e.target.value;
-                            setGroups(newGroups);
-                          }}
-                          id={`realestate-${index}`}
-                          className="GroupCreation-modern-input"
-                        />
-                      </div>
-                      <div className="GroupCreation-input-row">
-                        <label htmlFor={`commodities-${index}`}>Commodities:</label>
-                        <input
-                          type="number"
-                          value={group.commoditiesTemp}
-                          onChange={(e) => {
-                            const newGroups = [...groups];
-                            newGroups[index].commoditiesTemp = e.target.value;
-                            setGroups(newGroups);
-                          }}
-                          id={`commodities-${index}`}
-                          className="GroupCreation-modern-input"
-                        />
-                      </div>
-                      <div className="GroupCreation-input-row">
-                        <label htmlFor={`other-${index}`}>Other:</label>
-                        <input
-                          type="number"
-                          value={group.otherTemp}
-                          onChange={(e) => {
-                            const newGroups = [...groups];
-                            newGroups[index].otherTemp = e.target.value;
-                            setGroups(newGroups);
-                          }}
-                          id={`other-${index}`}
-                          className="GroupCreation-modern-input"
-                        />
-                      </div>
+                      {Object.entries(group.assets).map(([key, value]) => (
+                        <div key={key} className="GroupCreation-input-row">
+                          <label htmlFor={`${key}-${index}`}>{key.charAt(0).toUpperCase() + key.slice(1)} (%):</label>
+                          <input
+                            type="number"
+                            value={group.percentages[key]}
+                            onChange={(e) => handleAssetInputChange(index, key, e.target.value)}
+                            id={`${key}-${index}`}
+                            className="GroupCreation-modern-input"
+                            min="0"
+                            max="100"
+                            step="1"
+                          />
+                          <span className="GroupCreation-amount-display">
+                            (£{(value || 0).toLocaleString()})
+                          </span>
+                        </div>
+                      ))}
                       <div className="GroupCreation-total-value">
-                        Total Portfolio Value: ${getTotalValue(group).toFixed(2)}
+                        Total Spendable: £{getTotalSpendableAmount(group.points).toLocaleString()}
+                        <br />
+                        Remaining: £{getRemainingSpendableAmount(group).toLocaleString()}
                       </div>
-                      <button onClick={() => updateAllGroupValues(index)} className="GroupCreation-modern-button GroupCreation-enter-all-btn">
-                        Enter All
-                      </button>
-                    </div>
-                    <div className="GroupCreation-pie-chart-container">
-                      <canvas id={`pieChart_${index}`}></canvas>
                     </div>
                   </div>
                 </div>
@@ -413,26 +372,7 @@ const GroupCreation = () => {
 
             <button 
               className="GroupCreation-modern-button"
-              onClick={() => {
-                // Validate that all groups have values before proceeding
-                const hasEmptyValues = groups.some(group => {
-                  return !group.equity || !group.bonds || !group.realestate || !group.commodities || !group.other;
-                });
-
-                if (hasEmptyValues) {
-                  alert('Please fill in all values for each group before starting the simulation.');
-                  return;
-                }
-
-                // Navigate to simulation page with groups data
-                navigate('/simulation-page', { 
-                  state: { 
-                    groups,
-                    maxPortfolioValue,
-                    roundTo
-                  }
-                });
-              }}
+              onClick={startSimulation}
             >
               Start Simulation
               <FaArrowRight style={{ marginLeft: '5px' }} />
@@ -444,7 +384,7 @@ const GroupCreation = () => {
       {showModal && (
         <div className="GroupCreation-modal">
           <div className="GroupCreation-modal-content">
-            <span className="GroupCreation-close" onClick={toggleModal}>&times;</span>
+            <span className="GroupCreation-close" onClick={() => setShowModal(false)}>&times;</span>
             <h3>Add a new group</h3>
             <form onSubmit={(e) => {
               e.preventDefault();
@@ -467,4 +407,4 @@ const GroupCreation = () => {
   );
 };
 
-export default GroupCreation; 
+export default SimSetup; 

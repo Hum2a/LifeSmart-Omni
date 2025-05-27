@@ -162,7 +162,7 @@ const ResultsScreen = () => {
   };
 
   const restartGame = () => {
-    navigate('/sim-setup');
+    navigate('/adult-simulation-setup');
   };
 
   if (!teams || !teamData) {

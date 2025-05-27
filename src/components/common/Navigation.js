@@ -92,7 +92,7 @@ const Navigation = () => {
           <Route path="/adult-simulation-setup" element={<AdultSimSetup />} />
           <Route path="/adult-simulation-past-simulations" element={<AdultPastSimulations />} />
           <Route path="/adult-simulation-controls" element={<AdultSimulationControls />} />
-          <Route path="/adult-simulation" element={<AdultSimulation />} />
+          <Route path="/adult-simulation-page" element={<AdultSimulation />} />
 
           {/* Adult Quiz System */}
           <Route path="/adult-quiz" element={<AdultQuiz />} />

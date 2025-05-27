@@ -85,10 +85,12 @@ const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Task Header */}
       <div className="question3-task-header">
         <div className="question3-top-layer">
-          <div className="question3-points-section">
-            <h3>Challenge 3</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="question3-lightning-bolt" />
-            <p className="question3-points">4 points</p>
+          <div className="question3-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h3 style={{ margin: 0 }}>Challenge 3</h3>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img src={lightningBolt} alt="Lightning Bolt" className="question3-lightning-bolt" style={{ width: 28, height: 28, verticalAlign: 'middle' }} />
+              <span className="question3-points">4 points</span>
+            </span>
           </div>
           <div className="question3-button-container">
             <button className="question3-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
@@ -110,11 +112,16 @@ const Question3 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
             Option B: Skill-Boost Course (4 points)
           </div>
           <div className="question3-correct-answer-description">
-            <strong>Explanation:</strong>
-            <ul>
-              <li><strong>Option B wins</strong> because spending money on an up-skilling course creates a permanent pay-rise, giving Zara more income every month without risky debt or extreme lifestyle cuts.</li>
-              <li>The other choices either rely on unsustainable sacrifice (A), high risk and borrowing (C), extra time and limited scale (D), or small savings that take longer to reach the goal (E).</li>
-            </ul>
+            <div className="question3-explanation-cards-container">
+              <div className="question3-explanation-card best">
+                <div className="question3-explanation-label">Why Option B Wins</div>
+                <div className="question3-explanation-main">Spending money on an up-skilling course creates a permanent pay-rise, giving Zara more income every month without risky debt or extreme lifestyle cuts.</div>
+              </div>
+              <div className="question3-explanation-card others">
+                <div className="question3-explanation-label">Why Not the Others?</div>
+                <div className="question3-explanation-main">Other choices rely on unsustainable sacrifice (A), high risk and borrowing (C), extra time and limited scale (D), or small savings that take longer to reach the goal (E).</div>
+              </div>
+            </div>
           </div>
           <h4 className="question3-your-answers">Your answers</h4>
           <div className="question3-team-answer-comparison">

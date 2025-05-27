@@ -76,10 +76,12 @@ const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Task Header */}
       <div className="question2-task-header">
         <div className="question2-header-content">
-          <div className="question2-points-section">
-            <h3>Challenge 2</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="question2-lightning-bolt" />
-            <p className="question2-points">3 points</p>
+          <div className="question2-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h3 style={{ margin: 0 }}>Challenge 2</h3>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img src={lightningBolt} alt="Lightning Bolt" className="question2-lightning-bolt" style={{ width: 28, height: 28, verticalAlign: 'middle' }} />
+              <span className="question2-points">3 points</span>
+            </span>
           </div>
           <div className="question2-button-container">
             <button className="question2-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
@@ -87,7 +89,7 @@ const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
         <p>
           Two months later, Zara lands her first colony job as a junior rover-tech on New Horizon.<br />
-          She earns <strong>4,000 Mars Credits (MC)</strong> per month after the mandatory “O₂-tax” has already been deducted.<br />
+          She earns <strong>4,000 Mars Credits (MC)</strong> per month after the mandatory "O₂-tax" has already been deducted.<br />
           Below are her planned monthly costs (all in MC):
         </p>
         <div className="question2-cost-table-wrapper">
@@ -120,12 +122,23 @@ const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
             Option A: 120 MC
           </div>
           <div className="question2-correct-answer-description">
-            <strong>Calculations:</strong>
-            <ul>
-              <li>Safety-Fund (20% of 4,000 MC) = 800 MC</li>
-              <li>Total fixed & variable costs = 1 150 + 900 + 240 + 210 + 580 + 800 = 3 880 MC</li>
-              <li>Leftover = 4,000 – 3,880 = <strong>120 MC</strong> → Option A</li>
-            </ul>
+            <div className="question2-explanation-cards-container">
+              <div className="question2-explanation-card fund">
+                <div className="question2-explanation-label">Safety Fund</div>
+                <div className="question2-explanation-main">20% of 4,000 MC = <b>800 MC</b></div>
+                <div className="question2-explanation-desc">Emergency savings (auto-transfer)</div>
+              </div>
+              <div className="question2-explanation-card costs">
+                <div className="question2-explanation-label">Total Costs</div>
+                <div className="question2-explanation-main">1,150 + 900 + 240 + 210 + 580 + 800 = <b>3,880 MC</b></div>
+                <div className="question2-explanation-desc">All fixed & variable monthly costs</div>
+              </div>
+              <div className="question2-explanation-card leftover">
+                <div className="question2-explanation-label">Leftover</div>
+                <div className="question2-explanation-main">4,000 – 3,880 = <b>120 MC</b></div>
+                <div className="question2-explanation-desc">Money left after all expenses → Option A</div>
+              </div>
+            </div>
           </div>
           <h4 className="question2-your-answers">Your answers</h4>
           <div className="question2-team-answer-comparison">

@@ -117,10 +117,12 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
       {/* Task Description */}
       <div className="question5-task-header">
         <div className="question5-top-layer">
-          <div className="question5-points-section">
-            <h3>Challenge 5</h3>
-            <img src={lightningBolt} alt="Lightning Bolt" className="question5-lightning-bolt" />
-            <p className="question5-points">3 points</p>
+          <div className="question5-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h3 style={{ margin: 0 }}>Challenge 5</h3>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <img src={lightningBolt} alt="Lightning Bolt" className="question5-lightning-bolt" style={{ width: 28, height: 28, verticalAlign: 'middle' }} />
+              <span className="question5-points">3 points</span>
+            </span>
           </div>
           <div className="question5-button-container">
             <button className="question5-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
@@ -200,18 +202,23 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           <h4>Correct Answer:</h4>
           <div className="question5-correct-answer">Option E: Split & Invest</div>
           <div className="question5-correct-answer-description">
-            <strong>Explanation:</strong>
-            <ul>
-              <li>Option E is smartest because it lets Zara enjoy her raise and grow her wealth: she automatically diverts at least 50% (500 MC) to her Safety/Invest Fund, then uses the remainder to boost her lifestyle.</li>
-              <li>This "pay-yourself-first + invest" approach protects her from lifestyle-inflation, builds long-term security faster than Option B, is more sustainable than saving the whole 1,000 MC like Option C, and avoids the permanent cost hike of upgrading her pod (Option D) or spending everything on fun (Option A). In short, it balances reward now with freedom later.</li>
-            </ul>
+            <div className="question5-explanation-cards-container">
+              <div className="question5-explanation-card best">
+                <div className="question5-explanation-label">Why Option E is Smartest</div>
+                <div className="question5-explanation-main">Lets Zara enjoy her raise and grow her wealth: she automatically diverts at least 50% (500 MC) to her Safety/Invest Fund, then uses the remainder to boost her lifestyle.</div>
+              </div>
+              <div className="question5-explanation-card others">
+                <div className="question5-explanation-label">Why Not the Others?</div>
+                <div className="question5-explanation-main">This "pay-yourself-first + invest" approach protects from lifestyle-inflation, builds long-term security faster than Option B, is more sustainable than saving the whole 1,000 MC like Option C, and avoids the permanent cost hike of upgrading her pod (Option D) or spending everything on fun (Option A). In short, it balances reward now with freedom later.</div>
+              </div>
+            </div>
           </div>
 
           {/* Display each team's answer with comparison */}
           <div className="question5-team-answer-comparison">
             {teams.map((team, index) => (
-              <div key={team.name} className="question5-team-answer-box">
-                <p>{team.name}</p>
+              <div key={team.name} className="question5-team-answer-box stylish">
+                <div className="question5-team-answer-header">{team.name}</div>
                 <div className="question5-answers-display">
                   {teamAnswers[index].map((answer, answerIndex) => (
                     <div
@@ -223,9 +230,9 @@ const Question5 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                   ))}
                   {teamAnswers[index].length === 0 && <div className="question5-no-answer">-</div>}
                 </div>
-                <p className="question5-team-score">
+                <div className="question5-team-score">
                   Score: {teamAnswers[index].filter(answer => correctAnswer === answer).length}
-                </p>
+                </div>
               </div>
             ))}
           </div>

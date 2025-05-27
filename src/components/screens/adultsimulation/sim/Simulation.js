@@ -493,7 +493,7 @@ const Simulation = () => {
       await setDoc(doc(db, uid, 'Asset Market Simulations', 'Simulations', 'Simulation 1', "Results", "Quarters"), { quarterResults });
       
       // Pass the data directly to the results screen
-      navigate('/results', {
+      navigate('/adult-simulation-results', {
         state: {
           teams: groups.map(g => g.name),
           teamData: finalValues.reduce((acc, val) => {
