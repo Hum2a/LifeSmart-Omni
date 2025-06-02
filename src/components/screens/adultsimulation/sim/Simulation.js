@@ -186,6 +186,12 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   const simulationRef = useRef(null);
   const pausedRef = useRef(false);
   const calculatedQuartersRef = useRef([]);
+  const currentQuarterIndexRef = useRef(0);
+  const simulationIntervalRef = useRef(null);
+
+  useEffect(() => {
+    currentQuarterIndexRef.current = currentQuarterIndex;
+  }, [currentQuarterIndex]);
 
   const calculateAllQuarters = useCallback(() => {
     const totalQuarters = simulationYears * 4;
@@ -252,61 +258,53 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
 
   const nextQuarter = useCallback(() => {
     const nextIndex = currentQuarterIndex + 1;
+    console.log('[nextQuarter] currentQuarterIndex:', currentQuarterIndex, 'nextIndex:', nextIndex, 'max:', calculatedQuartersRef.current.length - 1);
     if (nextIndex >= calculatedQuartersRef.current.length) {
+      console.log('[nextQuarter] Reached end, setting isSimulating to false');
       setIsSimulating(false);
       return;
     }
-
     setCurrentQuarterIndex(nextIndex);
     setGroups(calculatedQuartersRef.current[nextIndex]);
+    console.log('[nextQuarter] Updated to nextIndex:', nextIndex);
   }, [currentQuarterIndex, setGroups]);
 
   const runFullSimulation = useCallback(() => {
-    if (isSimulating) return;
-    
-    console.log('Starting full simulation');
+    if (isSimulating) {
+      console.log('[runFullSimulation] Already simulating, aborting');
+      return;
+    }
+
+    console.log('[runFullSimulation] Starting full simulation');
     pausedRef.current = false;
     setIsSimulating(true);
 
-    const runNextQuarter = () => {
-      console.log('Running next quarter, paused:', pausedRef.current);
-      if (pausedRef.current) {
-        console.log('Simulation paused, stopping');
+    simulationIntervalRef.current = setInterval(() => {
+      const nextIndex = currentQuarterIndexRef.current + 1;
+      console.log('[interval] currentQuarterIndexRef:', currentQuarterIndexRef.current, 'nextIndex:', nextIndex, 'max:', calculatedQuartersRef.current.length - 1);
+
+      if (pausedRef.current || nextIndex >= calculatedQuartersRef.current.length) {
+        console.log('[interval] Stopping interval. pausedRef:', pausedRef.current, 'nextIndex:', nextIndex);
+        clearInterval(simulationIntervalRef.current);
+        setIsSimulating(false);
         return;
       }
 
-      setCurrentQuarterIndex(prevIndex => {
-        const nextIndex = prevIndex + 1;
-        console.log('Current index:', prevIndex, 'Next index:', nextIndex);
-        
-        if (nextIndex >= calculatedQuartersRef.current.length) {
-          console.log('Reached end of simulation');
-          setIsSimulating(false);
-          return prevIndex;
-        }
-
-        console.log('Updating groups for next quarter');
-        setGroups(calculatedQuartersRef.current[nextIndex]);
-        
-        // Clear any existing timeout to prevent multiple timers
-        if (simulationRef.current) {
-          console.log('Clearing existing timeout');
-          clearTimeout(simulationRef.current);
-        }
-
-        // Store the timeout ID
-        simulationRef.current = setTimeout(() => {
-          console.log('Timeout triggered, running next quarter');
-          runNextQuarter();
-        }, simulationSpeed);
-
-        return nextIndex;
-      });
-    };
-
-    // Start the simulation
-    runNextQuarter();
+      setCurrentQuarterIndex(nextIndex);
+      setGroups(calculatedQuartersRef.current[nextIndex]);
+      currentQuarterIndexRef.current = nextIndex;
+      console.log('[interval] Updated to nextIndex:', nextIndex);
+    }, simulationSpeed);
   }, [isSimulating, simulationSpeed, setGroups]);
+
+  useEffect(() => {
+    return () => {
+      if (simulationIntervalRef.current) {
+        console.log('[useEffect cleanup] Clearing simulationIntervalRef');
+        clearInterval(simulationIntervalRef.current);
+      }
+    };
+  }, []);
 
   const pauseSimulation = useCallback(() => {
     pausedRef.current = true;
@@ -314,6 +312,10 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
     if (simulationRef.current) {
       clearTimeout(simulationRef.current);
       simulationRef.current = null;
+    }
+    if (simulationIntervalRef.current) {
+      clearInterval(simulationIntervalRef.current);
+      simulationIntervalRef.current = null;
     }
   }, []);
 
