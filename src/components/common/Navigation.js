@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import SelectScreen from '../screens/SelectScreen';
 import ProfileScreen from '../screens/auth/ProfileScreen';
 import SettingsScreen from '../screens/auth/SettingsScreen';
+import NotFound from '../screens/NotFound';
 
 // Admin related screens
 import AdminHome from '../screens/admin/scripts/AdminHome';
@@ -120,6 +121,9 @@ const Navigation = () => {
           {/* Financial Tools */}
           <Route path="/investment-calculator" element={<InvestmentCalculator />} />
           <Route path="/budget-tool" element={<BudgetTool />} />
+
+          {/* 404 Route - Must be last */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
