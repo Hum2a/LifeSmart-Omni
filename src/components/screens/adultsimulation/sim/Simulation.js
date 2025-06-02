@@ -264,26 +264,47 @@ const useSimulation = (groups, assetChanges, simulationYears, setGroups, simulat
   const runFullSimulation = useCallback(() => {
     if (isSimulating) return;
     
+    console.log('Starting full simulation');
     pausedRef.current = false;
     setIsSimulating(true);
 
     const runNextQuarter = () => {
+      console.log('Running next quarter, paused:', pausedRef.current);
       if (pausedRef.current) {
+        console.log('Simulation paused, stopping');
         return;
       }
 
       setCurrentQuarterIndex(prevIndex => {
         const nextIndex = prevIndex + 1;
+        console.log('Current index:', prevIndex, 'Next index:', nextIndex);
+        
         if (nextIndex >= calculatedQuartersRef.current.length) {
+          console.log('Reached end of simulation');
           setIsSimulating(false);
           return prevIndex;
         }
+
+        console.log('Updating groups for next quarter');
         setGroups(calculatedQuartersRef.current[nextIndex]);
-        simulationRef.current = setTimeout(runNextQuarter, simulationSpeed);
+        
+        // Clear any existing timeout to prevent multiple timers
+        if (simulationRef.current) {
+          console.log('Clearing existing timeout');
+          clearTimeout(simulationRef.current);
+        }
+
+        // Store the timeout ID
+        simulationRef.current = setTimeout(() => {
+          console.log('Timeout triggered, running next quarter');
+          runNextQuarter();
+        }, simulationSpeed);
+
         return nextIndex;
       });
     };
 
+    // Start the simulation
     runNextQuarter();
   }, [isSimulating, simulationSpeed, setGroups]);
 
