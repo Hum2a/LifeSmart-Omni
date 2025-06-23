@@ -131,4 +131,34 @@
   .page3-title {
     font-size: 1.3rem;
   }
+}
+
+.page3-prev-label {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #bdbdbd;
+  margin-bottom: 0.2rem;
+  margin-top: 0.7rem;
+}
+.page3-prev-slider .page2-slider-track.filled {
+  background: #bdbdbd !important;
+}
+.page3-prev-slider .page2-slider-track.unfilled {
+  background: #e0e0e0 !important;
+}
+.page3-prev-thumb {
+  background: #e0e0e0 !important;
+  box-shadow: none !important;
+}
+.page3-prev-value {
+  color: #888 !important;
+  font-weight: 700;
+}
+
+.page2-next-btn-absolute {
+  position: fixed;
+  right: 2.5rem;
+  bottom: 2.5rem;
+  z-index: 100;
 } 

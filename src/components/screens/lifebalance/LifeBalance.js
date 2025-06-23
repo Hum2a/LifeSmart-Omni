@@ -25,6 +25,8 @@ const LifeBalance = () => {
   const [cashScores, setCashScores] = useState([]); // Page 3
   const [timeScores, setTimeScores] = useState([]); // Page 4
   const [page2Step, setPage2Step] = useState(1); // For progressive reveal
+  const [page3Step, setPage3Step] = useState(1); // For progressive reveal on Page 3
+  const [page4Step, setPage4Step] = useState(1); // For progressive reveal on Page 4
   const navigate = useNavigate();
 
   // Navigation handlers
@@ -96,9 +98,15 @@ const LifeBalance = () => {
   if (currentPage === 2) {
     currentStep = page2Step;
     totalSteps = 7;
-  } else if (currentPage > 2 && currentPage <= 5) {
-    currentStep = currentPage - 1;
-    totalSteps = 3;
+  } else if (currentPage === 3) {
+    currentStep = page3Step;
+    totalSteps = 7;
+  } else if (currentPage === 4) {
+    currentStep = page4Step;
+    totalSteps = 7;
+  } else if (currentPage === 5) {
+    currentStep = 7;
+    totalSteps = 7;
   }
 
   const renderPage = () => {
@@ -108,9 +116,9 @@ const LifeBalance = () => {
       case 2:
         return <Page2 onSubmit={handlePage2Submit} onStepChange={setPage2Step} />;
       case 3:
-        return <Page3 baseScores={baseScores} onSubmit={handlePage3Submit} />;
+        return <Page3 baseScores={baseScores} onSubmit={handlePage3Submit} onStepChange={setPage3Step} />;
       case 4:
-        return <Page4 baseScores={baseScores} onFinish={handlePage4Submit} />;
+        return <Page4 baseScores={baseScores} onFinish={handlePage4Submit} onStepChange={setPage4Step} />;
       case 5:
         return <Page5 averages={averages} biggestMoney={biggestMoney} biggestTime={biggestTime} onSubmit={handlePage5Submit} />;
       default:

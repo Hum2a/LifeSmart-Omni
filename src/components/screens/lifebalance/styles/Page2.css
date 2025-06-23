@@ -7,6 +7,7 @@
     align-items: center;
     position: relative;
     min-height: 600px;
+    font-family: 'Poppins', sans-serif;
   }
 
   .page2-title {
@@ -90,7 +91,7 @@
     left: 10%;
     right: 10%;
     position: absolute;
-    bottom: -2.2rem;
+    bottom: -1rem;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -139,8 +140,9 @@
 
   .page2-slider-value-inside {
     color: #D58F56;
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
     pointer-events: none;
     z-index: 3;
     text-shadow: 0 0 2px #fff, 0 0 2px #fff;
@@ -208,16 +210,8 @@
 
   .page2-slider-label {
     color: #E0E0E0;
-    font-size: 1.1rem;
+    font-size: 16px;
     font-weight: 400;
-  }
-
-  .page2-card-label {
-    color: #A99CFF;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    text-align: center;
   }
 
   .page2-card-prompt {
@@ -285,15 +279,15 @@
 
   .page2-card-label {
     color: #A99CFF;
-    font-size: 1.1rem;
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 0.5rem;
     text-align: center;
   }
 
   .page2-card-prompt {
     color: #fff;
-    font-size: 1rem;
+    font-size: 20px;
+    font-weight: 400;
     text-align: center;
   }
 
@@ -397,4 +391,14 @@
     right: 2.5rem;
     bottom: 2.5rem;
     z-index: 10;
+  }
+
+  .card-dark .page2-slider-value-inside {
+    color: #6456D5 !important;
+  }
+  .card-green .page2-slider-value-inside {
+    color: #136C55 !important;
+  }
+  .card-pink .page2-slider-value-inside {
+    color: #D58F56 !important;
   } 
