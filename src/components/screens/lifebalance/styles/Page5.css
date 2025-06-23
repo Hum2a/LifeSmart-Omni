@@ -1,168 +1,232 @@
-.page5-container {
+/* === Custom Layout for Snapshot Page === */
+.page5-container.custom-layout {
   color: #fff;
   background: none;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
-.page5-title {
-  font-size: 2rem;
-  color: #4CAF50;
+.snapshot-title {
+  color: #fff;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 2%;
+  text-align: center;
   margin-bottom: 0.5rem;
-  font-weight: 700;
 }
+.snapshot-accent {
+  color: #97A1FF;
+  font-style: italic;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 2%;
+  text-align: center;
 
-.page5-desc {
-  color: #ccc;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+}
+.snapshot-subtitle {
+  color: #fff;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 2%;
   text-align: center;
 }
 
-.page5-dashboard {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 1.5rem;
-}
-
-.page5-dashboard-title {
-  color: #90caf9;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-.page5-dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(255,255,255,0.04);
-  border-radius: 12px;
+/* Three-column averages */
+.snapshot-averages-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 2.2rem;
+  background: rgba(25, 21, 58, 0.7); /* or your preferred color */
+  border: 1px solid #39395A;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  min-width: 360px;
+  max-width: 500px;
 }
-
-.page5-dashboard-table th, .page5-dashboard-table td {
-  padding: 0.8rem 0.7rem;
-  text-align: left;
-}
-
-.page5-dashboard-table th {
-  background: rgba(33,150,243,0.12);
-  color: #4CAF50;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.page5-dashboard-table td {
-  color: #fff;
-  font-size: 1.1rem;
-}
-
-.page5-jumps {
-  width: 100%;
-  max-width: 700px;
-  margin-bottom: 1.5rem;
+.snapshot-average-col {
+  flex: 1;
+  background: transparent;
+  border: none;
+  min-width: 0;
+  padding: 1.1rem 0;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-
-.page5-jump-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 1.2rem;
-  background: rgba(255,255,255,0.05);
-  border-radius: 10px;
-  padding: 1rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.snapshot-average-col:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  right: 0;
+  width: 1px;
+  height: 60%;
+  background: #39395A;
 }
-
-.page5-jump-label {
-  min-width: 170px;
-  color: #4CAF50;
-  font-weight: 600;
+.snapshot-average-label {
+  color: #64FFD0;
+  font-size: 1.08rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 0.3rem;
 }
-
-.page5-jump-area {
-  min-width: 200px;
-  color: #90caf9;
-  font-style: italic;
-  font-size: 1.1rem;
-}
-
-.page5-jump-action {
+.snapshot-average-value {
+  font-size: 24px;
+  font-weight: 700;
   color: #fff;
-  font-size: 1rem;
-  flex: 1;
+  font-family: 'Poppins', sans-serif;
 }
 
-.page5-key-takeaway {
-  background: rgba(255,255,255,0.07);
-  border-radius: 10px;
-  padding: 1.2rem 1.5rem;
+/* Jumps row */
+.snapshot-jumps-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2.2rem;
+  margin-bottom: 2.2rem;
+}
+.snapshot-jump-box {
+  background: transparent;
+  border: 1px solid #39395A;
+  border-radius: 14px;
+  min-width: 220px;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+}
+.snapshot-jump-label {
   color: #fff;
   font-size: 1.08rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  max-width: 800px;
-}
-
-.page5-reference-note {
-  color: #b39ddb;
-  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   margin-bottom: 0.5rem;
+}
+.money-accent {
+  color: #FFB398; /* placeholder, update as needed */
+}
+.time-accent {
+  color: #FFB398; /* placeholder, update as needed */
+}
+.snapshot-jump-area {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   text-align: center;
 }
 
-.page5-table-section {
+/* Section divider */
+.snapshot-section-divider {
   width: 100%;
-  max-width: 900px;
-  margin-bottom: 2rem;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  margin: 2.2rem 0 1.2rem 0;
+  position: relative;
 }
-
-.page5-table-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+.snapshot-section-divider:before,
+.snapshot-section-divider:after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #39395a;
+  margin: 0 1.2rem;
 }
-.page5-table-title.money {
-  color: #4CAF50;
-}
-.page5-table-title.time {
-  color: #2196F3;
-}
-
-.page5-action-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(255,255,255,0.04);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-}
-
-.page5-action-table th, .page5-action-table td {
-  padding: 0.8rem 0.7rem;
-  text-align: left;
-}
-
-.page5-action-table th {
-  background: rgba(33,150,243,0.12);
-  color: #4CAF50;
-  font-size: 1.1rem;
+.snapshot-section-title {
+  color: #90caf9;
+  font-size: 24px;
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
 }
 
-.page5-action-table td {
+/* Actions row */
+.snapshot-actions-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2.2rem;
+  margin-bottom: 2.2rem;
+}
+.snapshot-action-card {
+  background: transparent;
+  border: 1px solid #39395A;
+  border-radius: 14px;
+  min-width: 280px;
+  max-width: 350px;
+  padding: 1.2rem 1.5rem;
+  font-size: 24px;
+  font-weight: 400;
+  font-family: 'Poppins', sans-serif;
   color: #fff;
-  font-size: 1.05rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  text-align: left;
+  display: flex;
+  align-items: center;
 }
 
-.page5-action-table tr:not(:last-child) {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+/* Key Takeaway */
+.snapshot-key-takeaway {
+  background: transparent;
+  border: 1px solid #39395A;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 400;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  max-width: 900px;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .snapshot-averages-row,
+  .snapshot-jumps-row,
+  .snapshot-actions-row {
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+  }
+  .snapshot-action-card {
+    min-width: 180px;
+    max-width: 100%;
+  }
+}
+
+/* Remove old table-based styles if not needed */
+.page5-dashboard,
+.page5-dashboard-title,
+.page5-dashboard-table,
+.page5-jumps,
+.page5-jump-row,
+.page5-jump-label,
+.page5-jump-area,
+.page5-jump-action,
+.page5-key-takeaway,
+.page5-reference-note,
+.page5-table-section,
+.page5-table-title,
+.page5-action-table {
+  display: none !important;
 }
 
 @media (max-width: 700px) {

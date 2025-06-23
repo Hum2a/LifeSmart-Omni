@@ -23,98 +23,65 @@ const TIME_ACTIONS = [
 
 const Page5 = ({
   averages = { now: 6.1, money: 7.8, time: 7.3 },
-  biggestMoney = { area: 'Housing, Safety & Security', value: 3.0, action: 'Build or top-up an emergency fund (3-6 months expenses) or pay down high-interest debt. This single move reduces financial anxiety quickly.' },
-  biggestTime = { area: 'Family & Connections', value: 2.5, action: 'Schedule a weekly device-free meal or call with loved ones. Consistency matters more than extravagant plans.' },
+  biggestMoney = { area: 'Health & Well being', value: 3.0, action: 'Build or top-up an emergency fund (3-6 months expenses) or pay down high-interest debt. This single move reduces financial anxiety quickly.' },
+  biggestTime = { area: 'Personal Growth & Purpose', value: 2.5, action: 'Schedule a weekly device-free meal for call with loved ones. Consistency matters more than extravagant plans.' },
 }) => {
   return (
-    <div className="page5-container">
-      <h2 className="page5-title">Your Personal Snapshot</h2>
-      <p className="page5-desc">
-        Here's a clear view of how <b>MONEY</b> and <b>TIME</b> could reshape your life-balance—and where to focus first.
+    <div className="page5-container custom-layout">
+      <h2 className="page5-title snapshot-title">
+        Here's your <span className="snapshot-accent">Personal Snapshot</span>
+      </h2>
+      <p className="page5-desc snapshot-subtitle">
+        On an average, here's how you rate your life
       </p>
 
-      <div className="page5-dashboard">
-        <div className="page5-dashboard-title"><em>Impact at-a-Glance (mini-dashboard)</em></div>
-        <table className="page5-dashboard-table">
-          <thead>
-            <tr>
-              <th>Metric</th>
-              <th>Now</th>
-              <th>With ££</th>
-              <th>With Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Overall average</td>
-              <td>{averages.now} / 10</td>
-              <td>{averages.money} / 10</td>
-              <td>{averages.time} / 10</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div className="page5-jumps">
-        <div className="page5-jump-row">
-          <div className="page5-jump-label">Biggest jump with money</div>
-          <div className="page5-jump-area"><em>{biggestMoney.area} (+{biggestMoney.value})</em></div>
-          <div className="page5-jump-action">{biggestMoney.action}</div>
+      {/* Three-column average score box */}
+      <div className="snapshot-averages-row">
+        <div className="snapshot-average-col">
+          <div className="snapshot-average-label">Now</div>
+          <div className="snapshot-average-value">{averages.now}/10</div>
         </div>
-        <div className="page5-jump-row">
-          <div className="page5-jump-label">Biggest jump with time</div>
-          <div className="page5-jump-area"><em>{biggestTime.area} (+{biggestTime.value})</em></div>
-          <div className="page5-jump-action">{biggestTime.action}</div>
+        <div className="snapshot-average-col">
+          <div className="snapshot-average-label">with $$$</div>
+          <div className="snapshot-average-value">{averages.money}/10</div>
+        </div>
+        <div className="snapshot-average-col">
+          <div className="snapshot-average-label">with Time</div>
+          <div className="snapshot-average-value">{averages.time}/10</div>
         </div>
       </div>
 
-      <div className="page5-key-takeaway">
-        <b>Key Takeaway</b><br/>
+      {/* Two horizontally aligned jump boxes */}
+      <div className="snapshot-jumps-row">
+        <div className="snapshot-jump-box">
+          <div className="snapshot-jump-label">Biggest jump with <span className="money-accent">money</span></div>
+          <div className="snapshot-jump-area">{biggestMoney.area}</div>
+        </div>
+        <div className="snapshot-jump-box">
+          <div className="snapshot-jump-label">Biggest jump with <span className="time-accent">time</span></div>
+          <div className="snapshot-jump-area">{biggestTime.area}</div>
+        </div>
+      </div>
+
+      {/* What can you do now? section */}
+      <div className="snapshot-section-divider">
+        <span className="snapshot-section-title">What can you do now?</span>
+      </div>
+      <div className="snapshot-actions-row">
+        <div className="snapshot-action-card">
+          {biggestMoney.action}
+        </div>
+        <div className="snapshot-action-card">
+          {biggestTime.action}
+        </div>
+      </div>
+
+      {/* Key Takeaway section */}
+      <div className="snapshot-section-divider">
+        <span className="snapshot-section-title">Key Takeaway</span>
+      </div>
+      <div className="snapshot-key-takeaway">
         Money is only a tool – its real power is the freedom and security it can buy. Yet time is a resource you can never earn back. This exercise shows where extra cash or extra hours would truly change your life, so you can aim for independence and contentment instead of simply chasing more money at the cost of other things.
-      </div>
-
-      <div className="page5-reference-note">
-        <em>(Use the tables below to cross reference the comments that appear above)</em>
-      </div>
-
-      <div className="page5-table-section">
-        <div className="page5-table-title money">A. Largest Gain Driven by Money</div>
-        <table className="page5-action-table">
-          <thead>
-            <tr>
-              <th>Life Area</th>
-              <th>What you can do now (show to user)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {MONEY_ACTIONS.map(row => (
-              <tr key={row.area}>
-                <td>{row.area}</td>
-                <td>{row.action}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="page5-table-section">
-        <div className="page5-table-title time">B. Largest Gain Driven by Time</div>
-        <table className="page5-action-table">
-          <thead>
-            <tr>
-              <th>Life Area</th>
-              <th>What you can do now (show to user)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {TIME_ACTIONS.map(row => (
-              <tr key={row.area}>
-                <td>{row.area}</td>
-                <td>{row.action}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );
