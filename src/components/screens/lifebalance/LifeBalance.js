@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/LifeBalance.css';
+import './styles/buttons.css';
 import WelcomePage from './pages/WelcomePage';
 import Page2 from './pages/Page2';
 import Page3 from './pages/Page3';
 import Page4 from './pages/Page4';
 import Page5 from './pages/Page5';
+import LifeBalanceHeader from './components/LifeBalanceHeader';
 
 const LIFE_AREAS = [
   'Health & Well-being',
@@ -22,6 +24,7 @@ const LifeBalance = () => {
   const [baseScores, setBaseScores] = useState([]); // Page 2
   const [cashScores, setCashScores] = useState([]); // Page 3
   const [timeScores, setTimeScores] = useState([]); // Page 4
+  const [page2Step, setPage2Step] = useState(1); // For progressive reveal
   const navigate = useNavigate();
 
   // Navigation handlers
@@ -87,12 +90,23 @@ const LifeBalance = () => {
   biggestMoney.action = moneyActions[biggestMoney.area] || '';
   biggestTime.action = timeActions[biggestTime.area] || '';
 
+  // Calculate currentStep for progress bar
+  let currentStep = 1;
+  let totalSteps = 7;
+  if (currentPage === 2) {
+    currentStep = page2Step;
+    totalSteps = 7;
+  } else if (currentPage > 2 && currentPage <= 5) {
+    currentStep = currentPage - 1;
+    totalSteps = 3;
+  }
+
   const renderPage = () => {
     switch (currentPage) {
       case 1:
         return <WelcomePage onNext={handleWelcomeNext} />;
       case 2:
-        return <Page2 onSubmit={handlePage2Submit} />;
+        return <Page2 onSubmit={handlePage2Submit} onStepChange={setPage2Step} />;
       case 3:
         return <Page3 baseScores={baseScores} onSubmit={handlePage3Submit} />;
       case 4:
@@ -106,6 +120,7 @@ const LifeBalance = () => {
 
   return (
     <div className="lifebalance-container">
+      <LifeBalanceHeader currentStep={currentStep} totalSteps={totalSteps} />
       <div className="lifebalance-content">
         {renderPage()}
       </div>
