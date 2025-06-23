@@ -4,7 +4,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background: #0D0B1A;
+  background: radial-gradient(70.76% 70.76% at 44.55% 9.17%, #21203D 0%, #13112F 31.23%, #110F29 41.06%, #0D0C20 59.28%, #000000 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
   padding: 0;
   padding-top: 2rem;
 }
