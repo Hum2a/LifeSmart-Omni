@@ -1,72 +1,126 @@
 .welcome-page {
   text-align: center;
   color: #ffffff;
+  padding: 2rem;
 }
 
 .welcome-title {
-  font-size: 2.5rem;
-  color: #2196F3;
-  margin-bottom: 2rem;
+  font-size: 2.8rem;
   font-weight: 700;
+  color: #E0E0E0;
+  margin-bottom: 1.5rem;
 }
 
 .welcome-content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
   align-items: center;
 }
 
 .welcome-description {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   line-height: 1.6;
-  color: #cccccc;
-  max-width: 600px;
+  color: #BDBDBD;
+  max-width: 650px;
   margin: 0 auto;
 }
 
-.welcome-section {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 12px;
+.welcome-description .highlight-text {
+  color: #C89BFF;
+}
+
+.welcome-section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+}
+
+.welcome-section {
+  padding: 1.5rem;
+  border-radius: 16px;
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.welcome-section.matters {
+  background: linear-gradient(176.06deg, rgba(232, 131, 88, 0.3) -9.69%, rgba(133, 52, 18, 0.3) 96.68%);
+  border-color: rgba(209, 97, 6, 0.5);
+}
+
+.welcome-section.get {
+  background: linear-gradient(180deg, rgba(100, 255, 208, 0.3) -4.57%, rgba(8, 81, 59, 0.3) 107.63%);
+  border-color: rgba(0, 150, 136, 0.5);
 }
 
 .welcome-section h2 {
-  color: #2196F3;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.welcome-section.matters h2 {
+  color: #FFB74D;
+}
+
+.welcome-section.get h2 {
+  color: #4DB6AC;
 }
 
 .welcome-section p {
-  color: #cccccc;
+  color: #E0E0E0;
   line-height: 1.5;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.welcome-page .btn {
+  margin-top: 1rem;
+}
+
+/* Styles for the journey screen */
+.journey-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  height: 60vh;
+}
+
+.journey-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #A99CFF;
   margin: 0;
 }
 
-.welcome-button {
-  background: #2196F3;
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  font-size: 1.2rem;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+.journey-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #BDBDBD;
+  max-width: 400px;
+  margin: 0;
+  text-align: center;
 }
 
-.welcome-button:hover {
-  background: #1976D2;
+.welcome-button.journey-button {
+  background: linear-gradient(178.12deg, #B79BFF -39%, #4E3BD3 98.38%);
+  border-radius: 12px;
+  padding: 1rem 3rem;
+  box-shadow: 3px 4px 2px 0px #ABA1CF40;
+  border: 1px solid #8872C6;
+}
+
+.welcome-button.journey-button:hover {
+  background: linear-gradient(178.12deg, #c4afff -39%, #5e4bdd 98.38%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+  box-shadow: 4px 5px 3px 0px #ABA1CF60;
 }
 
 @media (max-width: 768px) {
