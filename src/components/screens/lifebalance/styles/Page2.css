@@ -11,16 +11,36 @@
   }
 
   .page2-title {
-    font-size: 2rem;
-    color: #4CAF50;
     margin-bottom: 1rem;
-    font-weight: 700;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0.02em;
+    text-align: center;
+    color: #fff;
   }
 
   .page2-desc {
-    color: #ccc;
-    font-size: 1.1rem;
+    color: #ffffff;
     margin-bottom: 2rem;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  .page2-desc-em {
+    color: #ffffff;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: 0.02em;
     text-align: center;
   }
 
@@ -155,10 +175,12 @@
     transform: translateY(-50%);
     position: absolute;
   }
+
   .page2-slider-track.filled {
     background: #A99CFF;
     z-index: 1;
   }
+
   .page2-slider-track.unfilled {
     background: #E0E0E0;
     z-index: 1;
@@ -180,18 +202,22 @@
     z-index: 3;
     height: 40px;
   }
+
   .page2-slider-arrow {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
   .page2-slider-arrow.left {
     left: 0;
   }
+
   .page2-slider-arrow.right {
     right: 0;
   }
+
   .page2-slider-arrow-line {
     width: 1px;
     height: 44px;
@@ -199,6 +225,7 @@
     margin-bottom: 0;
     border-radius: 1px;
   }
+
   .page2-slider-arrow-down {
     width: 0;
     height: 0;
@@ -240,17 +267,30 @@
     transform: translateY(-2px);
   }
 
-  @media (max-width: 700px) {
-    .page2-table th, .page2-table td {
-      padding: 0.7rem 0.3rem;
-      font-size: 0.97rem;
-    }
-    .page2-table-wrapper {
-      margin-bottom: 1.2rem;
-    }
-    .page2-title {
-      font-size: 1.3rem;
-    }
+  .page2-remember {
+    color: #fff;
+    font-size: 1.05rem;
+    margin: 2.5rem 0 0.5rem 0;
+    text-align: center;
+  }
+
+  .page2-remember .page2-desc-em {
+    color: #A99CFF;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .page2-next-btn {
+    float: right;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .page2-next-btn-absolute {
+    position: absolute;
+    right: 2.5rem;
+    bottom: 2.5rem;
+    z-index: 10;
   }
 
   /* Card layout and colors */
@@ -275,6 +315,19 @@
     border-radius: 17px;
     border: 1px solid;
     border-image-source: linear-gradient(180.22deg, rgba(255, 255, 255, 0.4) 0.19%, rgba(40, 40, 40, 0.4) 128.52%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .page2-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3), 0 0 20px rgba(169, 156, 255, 0.2);
+    border-color: rgba(169, 156, 255, 0.6);
+  }
+
+  .page2-card:active {
+    transform: translateY(-4px) scale(1.01);
+    transition: transform 0.1s ease;
   }
 
   .page2-card-label {
@@ -284,50 +337,82 @@
     text-align: center;
   }
 
-  .page2-card-prompt {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 400;
-    text-align: center;
+  /* Card color variants */
+  .card-green {
+    background: linear-gradient(180deg, rgba(112, 196, 142, 0.2) 36.07%, rgba(14, 76, 47, 0.2) 107.63%) !important;
   }
 
-  .page2-title {
-    font-size: 1.5rem;
-    color: #fff;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-    text-align: center;
+  .card-pink {
+    background: linear-gradient(180deg, rgba(255, 176, 188, 0.2) 36.07%, rgba(246, 111, 149, 0.186) 107.63%) !important;
   }
 
-  .page2-desc {
-    color: #ccc;
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+  .card-dark {
+    background: linear-gradient(180deg, rgba(30, 33, 53, 0.3) 36.07%, rgba(93, 93, 97, 0.3) 107.63%) !important;
   }
 
-  .page2-desc-em {
-    color: #A99CFF;
-    font-weight: 600;
+  .card-green .page2-slider-track.filled {
+    background: #64FFD0 !important;
   }
 
-  .page2-remember {
-    color: #fff;
-    font-size: 1.05rem;
-    margin: 2.5rem 0 0.5rem 0;
-    text-align: center;
+  .card-pink .page2-slider-track.filled {
+    background: #FF9264 !important;
   }
 
-  .page2-remember .page2-desc-em {
-    color: #A99CFF;
-    font-style: italic;
-    font-weight: 400;
+  .card-green .page2-card-label {
+    color: #97FFE8 !important;
   }
 
-  .page2-next-btn {
-    float: right;
-    margin-top: 2.5rem;
-    margin-bottom: 1.5rem;
+  .card-pink .page2-card-label {
+    color: #FFB398 !important;
+  }
+
+  .card-dark .page2-slider-value-inside {
+    color: #6456D5 !important;
+  }
+
+  .card-green .page2-slider-value-inside {
+    color: #136C55 !important;
+  }
+
+  .card-pink .page2-slider-value-inside {
+    color: #D58F56 !important;
+  }
+
+  /* Animation classes */
+  .slide-card-enter {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .slide-card-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .slide-card-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .slide-card-exit-active {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* Media queries */
+  @media (max-width: 700px) {
+    .page2-table th, .page2-table td {
+      padding: 0.7rem 0.3rem;
+      font-size: 0.97rem;
+    }
+    .page2-table-wrapper {
+      margin-bottom: 1.2rem;
+    }
+    .page2-title {
+      font-size: 1.3rem;
+    }
   }
 
   @media (max-width: 600px) {
@@ -341,64 +426,4 @@
     .page2-title {
       font-size: 1.1rem;
     }
-  }
-
-  .card-green {
-    background: linear-gradient(180deg, rgba(112, 196, 142, 0.2) 36.07%, rgba(14, 76, 47, 0.2) 107.63%) !important;
-  }
-  .card-pink {
-    background: linear-gradient(180deg, rgba(255, 176, 188, 0.2) 36.07%, rgba(246, 111, 149, 0.186) 107.63%) !important;
-  }
-  .card-dark {
-    background: linear-gradient(180deg, rgba(30, 33, 53, 0.3) 36.07%, rgba(93, 93, 97, 0.3) 107.63%) !important;
-  }
-
-  .card-green .page2-slider-track.filled {
-    background: #64FFD0 !important;
-  }
-  .card-pink .page2-slider-track.filled {
-    background: #FF9264 !important;
-  }
-
-  .card-green .page2-card-label {
-    color: #97FFE8 !important;
-  }
-  .card-pink .page2-card-label {
-    color: #FFB398 !important;
-  }
-
-  .slide-card-enter {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  .slide-card-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1);
-  }
-  .slide-card-exit {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .slide-card-exit-active {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1);
-  }
-
-  .page2-next-btn-absolute {
-    position: absolute;
-    right: 2.5rem;
-    bottom: 2.5rem;
-    z-index: 10;
-  }
-
-  .card-dark .page2-slider-value-inside {
-    color: #6456D5 !important;
-  }
-  .card-green .page2-slider-value-inside {
-    color: #136C55 !important;
-  }
-  .card-pink .page2-slider-value-inside {
-    color: #D58F56 !important;
   } 

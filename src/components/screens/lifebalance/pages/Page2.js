@@ -11,7 +11,7 @@ const LIFE_AREAS = [
   },
   {
     label: 'Family & Connections',
-    prompt: 'Do I have people I rely on - and who rely on me?'
+    prompt: 'Do I have people I rely on and who rely on me?'
   },
   {
     label: 'Career & Income',
