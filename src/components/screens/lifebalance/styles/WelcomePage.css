@@ -7,7 +7,12 @@
 .welcome-title {
   font-size: 2.8rem;
   font-weight: 700;
-  color: #E0E0E0;
+  color: #97A1FF;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 0.02em;
+  text-align: center;
   margin-bottom: 1.5rem;
 }
 
@@ -24,10 +29,17 @@
   color: #BDBDBD;
   max-width: 650px;
   margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .welcome-description .highlight-text {
-  color: #C89BFF;
+  color: #97A1FF;
+  ;
 }
 
 .welcome-section-container {
@@ -65,11 +77,23 @@
 }
 
 .welcome-section.matters h2 {
-  color: #FFB74D;
+  color: #FF9264;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .welcome-section.get h2 {
-  color: #4DB6AC;
+  color: #64FFD0;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .welcome-section p {
@@ -77,6 +101,12 @@
   line-height: 1.5;
   margin: 0;
   font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .welcome-page .btn {
