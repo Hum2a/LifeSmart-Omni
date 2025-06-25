@@ -126,17 +126,26 @@
 .journey-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #A99CFF;
+  color: #97A1FF;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 0.02em;
+  text-align: center;
   margin: 0;
 }
 
 .journey-description {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #BDBDBD;
+  color: #ffffff;
   max-width: 400px;
-  margin: 0;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: 0.02em;
+  margin: 0;
 }
 
 .welcome-button.journey-button {
