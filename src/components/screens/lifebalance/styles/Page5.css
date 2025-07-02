@@ -33,12 +33,13 @@
 }
 .snapshot-subtitle {
   color: #fff;
-  font-family: 'Urbanist', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
   letter-spacing: 2%;
   text-align: center;
+  margin-bottom: 0;
 }
 
 /* Three-column averages */
@@ -125,8 +126,10 @@
 }
 .snapshot-jump-area {
   color: #fff;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: 2%;
   font-family: 'Poppins', sans-serif;
   text-align: center;
 }
@@ -171,14 +174,18 @@
   min-width: 280px;
   max-width: 350px;
   padding: 1.2rem 1.5rem;
-  font-size: 24px;
-  font-weight: 400;
   font-family: 'Poppins', sans-serif;
   color: #fff;
   box-shadow: 0 2px 10px rgba(0,0,0,0.10);
   text-align: left;
   display: flex;
   align-items: center;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
+  letter-spacing: 2%;
+  text-align: center;
+
 }
 
 /* Key Takeaway */
@@ -188,13 +195,18 @@
   border-radius: 14px;
   padding: 1.5rem 2rem;
   color: #fff;
-  font-size: 24px;
-  font-weight: 400;
   font-family: 'Poppins', sans-serif;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 10px rgba(0,0,0,0.10);
   max-width: 900px;
   text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
+  letter-spacing: 2%;
+  text-align: center;
+
+
 }
 
 /* Responsive adjustments */

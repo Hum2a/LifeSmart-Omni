@@ -23,9 +23,13 @@ const TIME_ACTIONS = [
 
 const Page5 = ({
   averages = { now: 6.1, money: 7.8, time: 7.3 },
-  biggestMoney = { area: 'Health & Well being', value: 3.0, action: 'Build or top-up an emergency fund (3-6 months expenses) or pay down high-interest debt. This single move reduces financial anxiety quickly.' },
-  biggestTime = { area: 'Personal Growth & Purpose', value: 2.5, action: 'Schedule a weekly device-free meal for call with loved ones. Consistency matters more than extravagant plans.' },
+  biggestMoney = { area: 'Health & Wellbeing', value: 3.0 },
+  biggestTime = { area: 'Health & Wellbeing', value: 2.5 },
 }) => {
+  // Find the recommended action for the biggest jump area
+  const moneyAction = MONEY_ACTIONS.find(a => a.area === biggestMoney.area)?.action || '';
+  const timeAction = TIME_ACTIONS.find(a => a.area === biggestTime.area)?.action || '';
+
   return (
     <div className="page5-container custom-layout">
       <h2 className="page5-title snapshot-title">
@@ -69,10 +73,10 @@ const Page5 = ({
       </div>
       <div className="snapshot-actions-row">
         <div className="snapshot-action-card">
-          {biggestMoney.action}
+          {moneyAction}
         </div>
         <div className="snapshot-action-card">
-          {biggestTime.action}
+          {timeAction}
         </div>
       </div>
 
