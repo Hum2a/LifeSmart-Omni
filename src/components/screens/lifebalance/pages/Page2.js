@@ -132,11 +132,13 @@ const Page2 = ({ onSubmit, onStepChange }) => {
       <button type="submit" className="btn btn-primary-active page2-next-btn page2-next-btn-absolute">
         {revealed < LIFE_AREAS.length ? 'Next' : 'Complete'}
       </button>
-      <div className="page2-remember">
-        <b>Remember</b><br/>
-        Let the question under each heading guide your reflection<br/>
-        <span className="page2-desc-em">There are no right answers here.</span>
-      </div>
+      {revealed === 1 && (
+        <div className="page2-remember">
+          <b>Remember</b><br/>
+          Let the question under each heading guide your reflection<br/>
+          <span className="page2-desc-em">There are no right answers here.</span>
+        </div>
+      )}
     </form>
   );
 };

@@ -67,7 +67,7 @@ const Page3 = ({ baseScores = [], onSubmit, onStepChange }) => {
     }
   };
 
-  // Show tutorial slide first
+  // Only show the tutorial slide if tutorialStep === 0
   if (tutorialStep === 0) {
     return (
       <form className="page2-form" onSubmit={handleNext}>
@@ -75,7 +75,7 @@ const Page3 = ({ baseScores = [], onSubmit, onStepChange }) => {
           <span style={{color: '#97A1FF'}}>Now imagine a</span> full year's salary lands in your<br/>bank account <span style={{color: '#97A1FF'}}>tomorrow.</span>
         </h2>
         <div className="page2-cards-wrapper" style={{minHeight: 'unset', margin: '0 auto 2.5rem auto', maxWidth: 500}}>
-          <div className="page2-card tutorial-card">
+          <div className="page2-card card-dark">
             <div className="page2-slider-row" style={{margin: 0}}>
               <div className="page2-slider-arrows">
                 <div className="page2-slider-arrow left">
@@ -147,7 +147,7 @@ const Page3 = ({ baseScores = [], onSubmit, onStepChange }) => {
     );
   }
 
-  // After tutorial, show the questions as before
+  // Only show the questions if tutorialStep > 0
   return (
     <form className="page2-form" onSubmit={handleNext}>
       <h2 className="page2-title">For each area, ask yourself: if you put extra money into it, what score do you think you could reach?</h2>
@@ -249,11 +249,14 @@ const Page3 = ({ baseScores = [], onSubmit, onStepChange }) => {
           {revealed < LIFE_AREAS.length ? 'Next' : 'Complete'}
         </button>
       </div>
-      <div className="page2-remember">
-        <b>Remember</b><br/>
-        Let the question under each heading guide your reflection<br/>
-        <span className="page2-desc-em">There are no right answers here.</span>
-      </div>
+      {/* Show the Remember box only for the first question */}
+      {revealed === 1 && (
+        <div className="page2-remember">
+          <b>Remember</b><br/>
+          Let the question under each heading guide your reflection<br/>
+          <span className="page2-desc-em">There are no right answers here.</span>
+        </div>
+      )}
     </form>
   );
 };
