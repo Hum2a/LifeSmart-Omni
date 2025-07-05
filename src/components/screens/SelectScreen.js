@@ -15,7 +15,8 @@ import {
   FaFire,
   FaGraduationCap,
   FaBalanceScale,
-  FaAndroid
+  FaAndroid,
+  FaMoneyBillWave
 } from 'react-icons/fa';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/initFirebase';
@@ -45,12 +46,12 @@ const TOOL_CONFIG = {
     icon: <FaBalanceScale size={40} color="#FF5722" />,
     text: 'Life Balance'
   },
-  adultSimulation: {
+  financeQuest: {
     enabled: true,
-    in_development: true,
-    path: '/adult-simulation',
-    icon: <FaAndroid size={40} color="#000000" />,
-    text: 'Adult Simulation'
+    in_development: false,
+    path: '/finance-quest',
+    icon: <FaMoneyBillWave size={40} color="#000000" />,
+    text: 'Finance Quest'
   },
   financialQuiz: {
     enabled: false,

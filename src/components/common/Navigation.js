@@ -26,14 +26,14 @@ import SchoolQuizSimulation from '../screens/simulation/scripts/QuizSimulation';
 import SchoolSimSetup from '../screens/quiz/sim/SimSetup';
 
 // Adult Simulation related screens
-import AdultFinancialQuiz from '../screens/adultsimulation/FinancialQuiz';
-import AdultLandingPage from '../screens/adultsimulation/LandingPage';
-import AdultLeaderboard from '../screens/adultsimulation/Leaderboard';
-import AdultSimSetup from '../screens/adultsimulation/sim/SimSetup';
-import AdultPastSimulations from '../screens/adultsimulation/sim/PastSimulations';
-import AdultSimulation from '../screens/adultsimulation/sim/Simulation';
-import AdultSimulationControls from '../screens/adultsimulation/sim/SimulationControls';
-import AdultResultsScreen from '../screens/adultsimulation/sim/ResultsScreen';
+import FinanceQuestFinancialQuiz from '../screens/financeQuest/FinancialQuiz';
+import FinanceQuestLandingPage from '../screens/financeQuest/LandingPage';
+import FinanceQuestLeaderboard from '../screens/financeQuest/Leaderboard';
+import FinanceQuestSimSetup from '../screens/financeQuest/sim/SimSetup';
+import FinanceQuestPastSimulations from '../screens/financeQuest/sim/PastSimulations';
+import FinanceQuestSimulation from '../screens/financeQuest/sim/Simulation';
+import FinanceQuestSimulationControls from '../screens/financeQuest/sim/SimulationControls';
+import FinanceQuestResultsScreen from '../screens/financeQuest/sim/ResultsScreen';
 
 // Adult Quiz related screens
 import AdultQuiz from '../screens/adult/scripts/AdultQuiz';
@@ -86,14 +86,14 @@ const Navigation = () => {
           <Route path="/sim-setup" element={<SchoolSimSetup />} />
 
           {/* Adult Simulation System */}
-          <Route path="/adult-simulation" element={<AdultLandingPage />} />
-          <Route path="/adult-simulation-quiz" element={<AdultFinancialQuiz />} />
-          <Route path="/adult-simulation-leaderboard" element={<AdultLeaderboard />} />
-          <Route path="/adult-simulation-results" element={<AdultResultsScreen />} />
-          <Route path="/adult-simulation-setup" element={<AdultSimSetup />} />
-          <Route path="/adult-simulation-past-simulations" element={<AdultPastSimulations />} />
-          <Route path="/adult-simulation-controls" element={<AdultSimulationControls />} />
-          <Route path="/adult-simulation-page" element={<AdultSimulation />} />
+          <Route path="/finance-quest" element={<FinanceQuestLandingPage />} />
+          <Route path="/finance-quest-quiz" element={<FinanceQuestFinancialQuiz />} />
+          <Route path="/finance-quest-leaderboard" element={<FinanceQuestLeaderboard />} />
+          <Route path="/finance-quest-results" element={<FinanceQuestResultsScreen />} />
+          <Route path="/finance-quest-setup" element={<FinanceQuestSimSetup />} />
+          <Route path="/finance-quest-past-simulations" element={<FinanceQuestPastSimulations />} />
+          <Route path="/finance-quest-controls" element={<FinanceQuestSimulationControls />} />
+          <Route path="/finance-quest-page" element={<FinanceQuestSimulation />} />
 
           {/* Adult Quiz System */}
           <Route path="/adult-quiz" element={<AdultQuiz />} />
