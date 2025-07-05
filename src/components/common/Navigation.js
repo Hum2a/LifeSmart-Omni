@@ -28,6 +28,7 @@ import SchoolSimSetup from '../screens/quiz/sim/SimSetup';
 // Adult Simulation related screens
 import FinanceQuestFinancialQuiz from '../screens/financeQuest/FinancialQuiz';
 import FinanceQuestLandingPage from '../screens/financeQuest/QuestLandingPage';
+import FinanceQuestTeamCreationPage from '../screens/financeQuest/TeamCreationPage';
 import FinanceQuestLeaderboard from '../screens/financeQuest/Leaderboard';
 import FinanceQuestSimSetup from '../screens/financeQuest/sim/SimSetup';
 import FinanceQuestPastSimulations from '../screens/financeQuest/sim/PastSimulations';
@@ -88,6 +89,7 @@ const Navigation = () => {
           {/* Adult Simulation System */}
           <Route path="/finance-quest" element={<FinanceQuestLandingPage />} />
           <Route path="/finance-quest-quiz" element={<FinanceQuestFinancialQuiz />} />
+          <Route path="/finance-quest-team-creation" element={<FinanceQuestTeamCreationPage />} />
           <Route path="/finance-quest-leaderboard" element={<FinanceQuestLeaderboard />} />
           <Route path="/finance-quest-results" element={<FinanceQuestResultsScreen />} />
           <Route path="/finance-quest-setup" element={<FinanceQuestSimSetup />} />
