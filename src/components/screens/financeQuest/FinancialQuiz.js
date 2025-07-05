@@ -47,21 +47,40 @@ const FinancialQuiz = () => {
       navigate('/');
     }
 
-    // Parse teams from URL query parameters
-    const searchParams = new URLSearchParams(location.search);
-    const teamsParam = searchParams.get('teams');
-    
-    if (teamsParam) {
-      const teamsList = teamsParam.split(',').map(name => ({
+    // Debug logging
+    console.log('location.state:', location.state);
+    if (location.state) {
+      console.log('location.state.teams:', location.state.teams);
+    }
+
+    // Prefer teams from location.state, fallback to query string
+    let teamsList = [];
+    if (location.state && Array.isArray(location.state.teams)) {
+      teamsList = location.state.teams.map(name => ({
         name,
         points: 0,
         taskScores: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
       }));
+    } else {
+      const searchParams = new URLSearchParams(location.search);
+      const teamsParam = searchParams.get('teams');
+      if (teamsParam) {
+        teamsList = teamsParam.split(',').map(name => ({
+          name,
+          points: 0,
+          taskScores: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
+        }));
+      }
+    }
+
+    console.log('teamsList:', teamsList);
+
+    if (teamsList.length > 0) {
       setTeams(teamsList);
     } else {
-      navigate('/adult-simulation-landing');
+      navigate('/finance-quest');
     }
-  }, [location.search, navigate, auth.currentUser]);
+  }, [location, navigate, auth.currentUser]);
 
   const handleAnswer = (answer) => {
     console.log("Team answered:", answer);

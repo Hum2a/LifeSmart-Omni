@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './TeamCreationPage.css';
 
 const TeamCreationPage = () => {
@@ -6,6 +7,7 @@ const TeamCreationPage = () => {
   const [teams, setTeams] = useState(['', '']);
   const [selectedTeam, setSelectedTeam] = useState(0);
   const maxTeams = 8;
+  const navigate = useNavigate();
 
   const increaseTeams = () => {
     if (teamCount < maxTeams) {
@@ -34,8 +36,8 @@ const TeamCreationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Placeholder for next step logic
-    alert('Teams: ' + teams.slice(0, teamCount).join(', '));
+    const teamNames = teams.slice(0, teamCount).map(name => encodeURIComponent(name)).join(',');
+    navigate(`/finance-quest-quiz?teams=${teamNames}`);
   };
 
   return (
