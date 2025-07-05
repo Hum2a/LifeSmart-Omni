@@ -3,6 +3,12 @@ import './Question1.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 import q1Image from '../../../../assets/icons/q1image.png';
 import { MdFlashOn } from 'react-icons/md';
+import QuestionHeader from './QuestionHeader';
+
+const PLANET_EARTH = '/financeQuest/celestialBodies/Earth.png';
+const PLANET_MOON = '/financeQuest/celestialBodies/Moon.png';
+const PLANET_MARS = '/financeQuest/celestialBodies/Mars.png';
+const ALARM_CLOCK = '/financeQuest/icons/8bitAlarm.png';
 
 const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -105,145 +111,69 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   };
 
   return (
-    <div className="question1-container">
-      {/* Progress Bar Container */}
-      <div className="question1-progress-bar-container">
-        <div className="question1-progress-bar">
-          <div className="question1-progress" style={{ width: `${progressBarWidth}%` }}></div>
-        </div>
-        
-        <div className="question1-timer-container">
-          {!timerStarted ? (
-            <button onClick={startTimer} className="question1-start-timer-button">
-              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
-            </button>
-          ) : (
-            <div className="question1-timer">
-              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Task Header */}
-      <div className="question1-task-header">
-        <div className="question1-header-content">
-          <div className="question1-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <h3 style={{ margin: 0 }}>Challenge 1</h3>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <MdFlashOn size={32} color="#0b57bd" style={{ verticalAlign: 'middle' }} />
-              <span className="question1-points">3 points</span>
-            </span>
-          </div>
-          <div className="question1-button-container">
-            <button className="question1-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
-          </div>
-        </div>
-        <img src={q1Image} alt="Task 1 Image" className="question1-task-image" />
-        <p>
-          The year is 2150. Zara, an 18-year-old, has just arrived at the New Horizon Colony on Mars. 
-          She's given 10,000 Mars Credits (MC) to start her new life. Her task is to allocate these funds 
-          across four categories:
-        </p>
-        <div className="question1-category-cards-container">
-          <div className="question1-category-card">
-            <span role="img" aria-label="Habitat" className="question1-category-icon">🏠</span>
-            <div>
-              <div className="question1-category-title">Habitat</div>
-              <div className="question1-category-desc">Life pod, air recycling</div>
+    <>
+      <QuestionHeader />
+      <div className="financeQuest-question1-pixel-bg">
+        {/* Floating Planets */}
+        <img src={PLANET_EARTH} alt="Earth" className="financeQuest-question1-planet earth" />
+        <img src={PLANET_MOON} alt="Moon" className="financeQuest-question1-planet moon" />
+        <img src={PLANET_MARS} alt="Mars" className="financeQuest-question1-planet mars" />
+        {/* Main Content Card */}
+        <div className="financeQuest-question1-main-card">
+          {/* Story Section */}
+          <div className="financeQuest-question1-story-box">
+            <div className="financeQuest-question1-story-text">
+              <span className="financeQuest-question1-story-year">The year is <b>2150</b>.</span><br />
+              Zara, 18-years-old, has just move to the New Horizon city on <b>Mars</b>. She's given 10,000 Mars Credits (MC) to start her new life.<br /><br />
+              She has to <b>split the money</b> across <b>four categories</b>:<br />
+              <span className="financeQuest-question1-story-categories">
+                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Habitat">🏠</span> <b>Habitat</b> (life pod, air recycling)</span><br />
+                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Life-Support">💧</span> <b>Life-Support</b> (food, water, utilities)</span><br />
+                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Safety Fund">🛡️</span> <b>Safety Fund</b> (unexpected repairs)</span><br />
+                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Exploration & Fun">🚀</span> <b>Exploration & Fun</b> (holo-games, rover trips)</span>
+              </span>
             </div>
           </div>
-          <div className="question1-category-card">
-            <span role="img" aria-label="Life-Support" className="question1-category-icon">💧</span>
-            <div>
-              <div className="question1-category-title">Life-Support</div>
-              <div className="question1-category-desc">Food, water, utilities</div>
-            </div>
-          </div>
-          <div className="question1-category-card">
-            <span role="img" aria-label="Safety Fund" className="question1-category-icon">🛡️</span>
-            <div>
-              <div className="question1-category-title">Safety Fund</div>
-              <div className="question1-category-desc">Unexpected repairs</div>
-            </div>
-          </div>
-          <div className="question1-category-card">
-            <span role="img" aria-label="Exploration & Fun" className="question1-category-icon">🚀</span>
-            <div>
-              <div className="question1-category-title">Exploration & Fun</div>
-              <div className="question1-category-desc">Holo-games, rover trips</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Results Section */}
-      {showResults ? (
-        <div className="question1-result-section">
-          <h4>Correct Answer:</h4>
-          <p className="question1-correct-answer">Option A: Habitat – 30%, Life-Support – 20%, Safety Fund – 20%, Exploration and Fun – 30%</p>
-          <p className="question1-correct-answer-description">This follows the 50/30/20 rule:</p>
-          <div className="question1-explanation-cards-container">
-            <div className="question1-explanation-card needs">
-              <div className="question1-explanation-label">Needs</div>
-              <div className="question1-explanation-main">Habitat + Life-Support ≈ 50%</div>
-              <div className="question1-explanation-desc">Keeps Zara safe and healthy</div>
-            </div>
-            <div className="question1-explanation-card savings">
-              <div className="question1-explanation-label">Savings</div>
-              <div className="question1-explanation-main">Safety Fund ≈ 20%</div>
-              <div className="question1-explanation-desc">Builds an emergency cushion for Mars mishaps</div>
-            </div>
-            <div className="question1-explanation-card wants">
-              <div className="question1-explanation-label">Wants</div>
-              <div className="question1-explanation-main">Exploration & Fun ≈ 30%</div>
-              <div className="question1-explanation-desc">Leaves room for enjoyment without derailing her budget</div>
-            </div>
-          </div>
-          <h4 className="question1-your-answers">Your answers</h4>
-
-          <div className="question1-team-answer-comparison">
-            {teams.map((team, index) => (
-              <div key={team.name} className="question1-team-answer-box">
-                <p>{team.name}</p>
-                <div className={teamAnswers[index] === correctAnswer ? 'question1-correct' : 'question1-incorrect'}>
-                  {teamAnswers[index] || '-'}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button className="question1-next-button" onClick={nextQuestion}>Next</button>
-        </div>
-      ) : (
-        <div>
           {/* Question Section */}
-          <div className="question1-question-section">
-            <p className="question1-question">Decide the best allocation for how she should spend her money:</p>
+          <div className="financeQuest-question1-question-section">
+            <span className="financeQuest-question1-question-title">Decide the <span className="financeQuest-question1-best-split">best split</span> for her money</span>
           </div>
-
-          {/* Multiple Choice Options */}
-          <div className="question1-choices-container">
-            <button className="question1-choice-button">A. Habitat – 30%, Life-Support – 20%, Safety Fund – 20%, Exploration and Fun – 30%</button>
-            <button className="question1-choice-button">B. Habitat – 15%, Life-Support – 30%, Safety Fund – 30%, Exploration and Fun – 25%</button>
-            <button className="question1-choice-button">C. Habitat – 25%, Life-Support – 30%, Safety Fund – 30%, Exploration and Fun – 15%</button>
-            <button className="question1-choice-button">D. Habitat – 30%, Life-Support – 30%, Safety Fund – 35%, Exploration and Fun – 5%</button>
-            <button className="question1-choice-button">E. Habitat – 25%, Life-Support – 20%, Safety Fund – 5%, Exploration and Fun – 50%</button>
+          {/* Choices Section */}
+          <div className="financeQuest-question1-choices-pixel-grid">
+            <div className="financeQuest-question1-choice-pixel-card">A
+              <img src="/financeQuest/icons/8bitPieA.png" alt="A" className="financeQuest-question1-choice-pie" />
+              <div className="financeQuest-question1-choice-desc">Exploration and Fun 30%<br />Habitat 30%<br />Safety Fund 20%<br />Life Support 20%</div>
+            </div>
+            <div className="financeQuest-question1-choice-pixel-card">B
+              <img src="/financeQuest/icons/8bitPieB.png" alt="B" className="financeQuest-question1-choice-pie" />
+              <div className="financeQuest-question1-choice-desc">Exploration and Fun 25%<br />Habitat 15%<br />Safety Fund 30%<br />Life Support 30%</div>
+            </div>
+            <div className="financeQuest-question1-choice-pixel-card">C
+              <img src="/financeQuest/icons/8bitPieC.png" alt="C" className="financeQuest-question1-choice-pie" />
+              <div className="financeQuest-question1-choice-desc">Exploration and Fun 15%<br />Habitat 25%<br />Safety Fund 30%<br />Life Support 30%</div>
+            </div>
+            <div className="financeQuest-question1-choice-pixel-card">D
+              <img src="/financeQuest/icons/8bitPieD.png" alt="D" className="financeQuest-question1-choice-pie" />
+              <div className="financeQuest-question1-choice-desc">Exploration and Fun 5%<br />Habitat 30%<br />Safety Fund 35%<br />Life Support 30%</div>
+            </div>
+            <div className="financeQuest-question1-choice-pixel-card">E
+              <img src="/financeQuest/icons/8bitPieE.png" alt="E" className="financeQuest-question1-choice-pie" />
+              <div className="financeQuest-question1-choice-desc">Exploration and Fun 50%<br />Habitat 25%<br />Safety Fund 5%<br />Life Support 20%</div>
+            </div>
           </div>
-
           {/* Team Answer Section */}
-          <div className="question1-team-answer-section">
-            <h4>Your answers</h4>
-            <div className="question1-team-answer-container">
-              {teams.map((team, index) => (
-                <div key={team.name} className="question1-team-answer-box">
-                  <p>{team.name}</p>
+          <div className="financeQuest-question1-team-answer-section">
+            <span className="financeQuest-question1-select-answers">Select your <span className="financeQuest-question1-answers-highlight">answers</span></span>
+            <div className="financeQuest-question1-team-dropdowns">
+              {teams.map((team, idx) => (
+                <div className="financeQuest-question1-team-dropdown" key={team.name}>
+                  <span className="financeQuest-question1-team-label">{idx + 1}. <b>{team.name}</b></span>
                   <select
-                    value={teamAnswers[index]}
-                    onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
-                    className="question1-team-answer-select"
+                    value={teamAnswers[idx]}
+                    onChange={e => handleTeamAnswerChange(idx, e.target.value)}
+                    className="financeQuest-question1-team-select"
                   >
-                    <option value="">Select an answer</option>
+                    <option value="">Select one</option>
                     <option value="A">A</option>
                     <option value="B">B</option>
                     <option value="C">C</option>
@@ -253,17 +183,11 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                 </div>
               ))}
             </div>
-            <button 
-              className="question1-submit-button" 
-              onClick={submitAnswers}
-              disabled={teamAnswers.some(answer => !answer)}
-            >
-              Submit Answers
-            </button>
+            <button className="financeQuest-question1-submit-pixel" onClick={submitAnswers} disabled={teamAnswers.some(a => !a)}>SUBMIT</button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
