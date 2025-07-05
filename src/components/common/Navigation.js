@@ -27,7 +27,7 @@ import SchoolSimSetup from '../screens/quiz/sim/SimSetup';
 
 // Adult Simulation related screens
 import FinanceQuestFinancialQuiz from '../screens/financeQuest/FinancialQuiz';
-import FinanceQuestLandingPage from '../screens/financeQuest/LandingPage';
+import FinanceQuestLandingPage from '../screens/financeQuest/QuestLandingPage';
 import FinanceQuestLeaderboard from '../screens/financeQuest/Leaderboard';
 import FinanceQuestSimSetup from '../screens/financeQuest/sim/SimSetup';
 import FinanceQuestPastSimulations from '../screens/financeQuest/sim/PastSimulations';
