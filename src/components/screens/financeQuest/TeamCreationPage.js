@@ -57,15 +57,17 @@ const TeamCreationPage = () => {
                   Team {idx + 1}
                 </span>
               </div>
-              <input
-                className="financeQuest-teamCreation-input"
-                type="text"
-                placeholder="ENTER TEAM NAME"
-                value={teams[idx]}
-                onChange={e => handleTeamNameChange(idx, e.target.value)}
-                onFocus={() => handleFocus(idx)}
-                required
-              />
+              <div className="financeQuest-teamCreation-input-pixel-wrapper">
+                <input
+                  className="financeQuest-teamCreation-input"
+                  type="text"
+                  placeholder="ENTER TEAM NAME"
+                  value={teams[idx]}
+                  onChange={e => handleTeamNameChange(idx, e.target.value)}
+                  onFocus={() => handleFocus(idx)}
+                  required
+                />
+              </div>
             </div>
           ))}
           {teamCount < maxTeams && (
