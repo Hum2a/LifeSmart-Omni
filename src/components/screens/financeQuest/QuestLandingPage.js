@@ -1,10 +1,11 @@
 import React from 'react';
 import './QuestLandingPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const QuestLandingPage = () => {
+  const navigate = useNavigate();
   const handlePressStart = () => {
-    // Placeholder for navigation or game start logic
-    alert('Game starting!');
+    navigate('/finance-quest-team-creation');
   };
 
   return (
