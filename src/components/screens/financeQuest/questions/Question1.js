@@ -135,15 +135,31 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         <div className="financeQuest-question1-main-card">
           {/* Story Section */}
           <div className="financeQuest-question1-story-box">
+            <div className="financeQuest-question1-story-topbar">
+              <span className="financeQuest-question1-story-ellipsis">&hellip;</span>
+              <span className="financeQuest-question1-story-x">&#10005;</span>
+            </div>
             <div className="financeQuest-question1-story-text">
               <span className="financeQuest-question1-story-year">The year is <b>2150</b>.</span><br />
               Zara, 18-years-old, has just move to the New Horizon city on <b>Mars</b>. She's given 10,000 Mars Credits (MC) to start her new life.<br /><br />
               She has to <b>split the money</b> across <b>four categories</b>:<br />
               <span className="financeQuest-question1-story-categories">
-                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Habitat">🏠</span> <b>Habitat</b> (life pod, air recycling)</span><br />
-                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Life-Support">💧</span> <b>Life-Support</b> (food, water, utilities)</span><br />
-                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Safety Fund">🛡️</span> <b>Safety Fund</b> (unexpected repairs)</span><br />
-                <span className="financeQuest-question1-story-category"><span role="img" aria-label="Exploration & Fun">🚀</span> <b>Exploration & Fun</b> (holo-games, rover trips)</span>
+                <span className="financeQuest-question1-story-category">
+                  <img src="/financeQuest/icons/8bitPotion.png" alt="Habitat Icon" className="financeQuest-question1-story-icon" />
+                  <b>Habitat</b> (life pod, air recycling)
+                </span><br />
+                <span className="financeQuest-question1-story-category">
+                  <img src="/financeQuest/icons/8bitPinkHeart.png" alt="Life-Support Icon" className="financeQuest-question1-story-icon" />
+                  <b>Life-Support</b> (food, water, utilities)
+                </span><br />
+                <span className="financeQuest-question1-story-category">
+                  <img src="/financeQuest/icons/8bitDiamond.png" alt="Safety Fund Icon" className="financeQuest-question1-story-icon" />
+                  <b>Safety Fund</b> (unexpected repairs)
+                </span><br />
+                <span className="financeQuest-question1-story-category">
+                  <img src="/financeQuest/icons/8bitStoneSword.png" alt="Exploration & Fun Icon" className="financeQuest-question1-story-icon" />
+                  <b>Exploration & Fun</b> (holo-games, rover trips)
+                </span>
               </span>
             </div>
           </div>

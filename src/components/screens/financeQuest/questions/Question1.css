@@ -145,12 +145,18 @@
   background: #1C0032;
   border-radius: 10px;
   margin: 32px 32px 0 32px;
-  padding: 32px 32px 24px 32px;
+  /* padding: 32px 32px 24px 32px; */
   box-shadow: 0 2px 0 #0008;
-  border: 2px solid #3a1a5d;
+  border: 2px solid #ffffff54;
   width: calc(100% - 64px);
   max-width: 800px;
   z-index: 2;
+}
+.financeQuest-question1-story-text,
+.financeQuest-question1-story-year,
+.financeQuest-question1-story-categories,
+.financeQuest-question1-story-category {
+  font-family: 'Montserrat', Arial, sans-serif !important;
 }
 .financeQuest-question1-story-text {
   font-size: 1.15rem;
@@ -160,7 +166,7 @@
   text-align: center;
 }
 .financeQuest-question1-story-year {
-  color: #FF9524;
+  color: #ffffff;
   font-size: 1.2rem;
   font-family: inherit;
   font-weight: bold;
@@ -175,6 +181,47 @@
   display: block;
   margin-bottom: 2px;
   font-family: inherit;
+}
+.financeQuest-question1-story-icon {
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  image-rendering: pixelated;
+  display: inline-block;
+}
+
+/* Story Topbar */
+.financeQuest-question1-story-topbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 16px;
+  color: #fff;
+  font-size: 1.3rem;
+  opacity: 0.7;
+  letter-spacing: 2px;
+  border: 2px solid #ffffff54;
+}
+.financeQuest-question1-story-ellipsis {
+  font-size: 1.5rem;
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+.financeQuest-question1-story-x {
+  font-size: 1.5rem;
+  opacity: 0.7;
+  cursor: default;
+}
+.financeQuest-question1-story-divider {
+  width: 100%;
+  height: 2px;
+  background: #A084F3;
+  margin: 0 0 18px 0;
+  border-radius: 2px;
 }
 
 /* Question Section */
@@ -205,6 +252,7 @@
   width: 90%;
   max-width: 800px;
   justify-items: center;
+  font-family: 'Montserrat', Arial, sans-serif !important;
 }
 .financeQuest-question1-choice-pixel-card {
   background: #2a0a4d;
@@ -216,7 +264,7 @@
   max-width: 320px;
   min-height: 210px;
   color: #fff;
-  font-family: inherit;
+  font-family: 'Montserrat', Arial, sans-serif !important;
   font-size: 1.1rem;
   text-align: center;
   position: relative;
@@ -244,7 +292,7 @@
 .financeQuest-question1-choice-desc {
   font-size: 1.05rem;
   color: #fff;
-  font-family: inherit;
+  font-family: 'Montserrat', Arial, sans-serif !important;
   margin-top: 2px;
   line-height: 1.5;
 }
@@ -254,6 +302,7 @@
   margin: 48px 0 0 0;
   text-align: center;
   width: 100%;
+  font-family: 'Montserrat', Arial, sans-serif !important;
 }
 .financeQuest-question1-select-answers {
   font-size: 1.2rem;
@@ -424,5 +473,10 @@
   .financeQuest-question1-points-box {
     font-size: 1rem;
     padding: 4px 8px 4px 6px;
+  }
+  .financeQuest-question1-story-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
   }
 } 
