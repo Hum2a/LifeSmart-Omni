@@ -113,6 +113,19 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   return (
     <>
       <QuestionHeader />
+      <div className="financeQuest-question1-topbar-row">
+        <div className="financeQuest-question1-points-box">
+          <img src="/financeQuest/icons/8bitLightning.png" alt="points" className="financeQuest-question1-points-icon" />
+          <span className="financeQuest-question1-points-label">3 points</span>
+        </div>
+        <div className="financeQuest-question1-challenge-title">CHALLENGE 1</div>
+        <div className="financeQuest-question1-timer-container">
+          <div className="financeQuest-question1-timer-box">
+            <span className="financeQuest-question1-timer-label">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
+          </div>
+          <img src="/financeQuest/icons/8bitAlarm.png" alt="timer" className="financeQuest-question1-timer-icon" />
+        </div>
+      </div>
       <div className="financeQuest-question1-pixel-bg">
         {/* Floating Planets */}
         <img src={PLANET_EARTH} alt="Earth" className="financeQuest-question1-planet earth" />
