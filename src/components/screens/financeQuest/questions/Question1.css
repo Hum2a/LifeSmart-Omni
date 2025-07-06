@@ -108,38 +108,55 @@
   min-width: 120px;
   height: 64px;
 }
-.financeQuest-question1-timer-box {
+.financeQuest-question1-timer-btn {
+  width: 260px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #E1551D;
-  border-radius: 24px;
-  padding: 0 32px;
-  min-width: 120px;
-  min-height: 64px;
-  font-size: 2.4rem;
-  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
-  color: #fff;
-  box-shadow: 0 4px 24px #0006;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px #0008;
+  margin: 0;
+  padding: 0;
+  transition: box-shadow 0.18s, border 0.18s, opacity 0.18s;
+  cursor: pointer;
+  outline: none;
   position: relative;
-  z-index: 1;
+}
+.financeQuest-question1-timer-btn:hover:not(:disabled) {
+  box-shadow: 0 12px 48px #FF9524cc;
+  border-color: #FF9524;
+}
+.financeQuest-question1-timer-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.financeQuest-question1-timer-box {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  min-width: 0;
+  min-height: 0;
+  font-size: 1.8rem;
+  padding: 0 32px 0 0;
+  color: #fff;
+  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .financeQuest-question1-timer-label {
-  font-family: inherit;
-  font-size: 2.4rem;
-  color: #fff;
+  font-size: 1.8rem;
   letter-spacing: 2px;
   text-shadow: 0 2px 0 #000a;
 }
 .financeQuest-question1-timer-icon {
-  position: absolute;
-  right: -36px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 64px;
-  height: 64px;
-  z-index: 2;
-  margin: 0;
+  position: static;
+  width: 80px;
+  height: 80px;
+  margin-left: 0;
+  margin-right: 0;
   pointer-events: none;
 }
 
@@ -548,19 +565,21 @@
     min-width: 80px;
     height: 40px;
   }
+  .financeQuest-question1-timer-btn {
+    width: 180px;
+    height: 60px;
+    border-radius: 16px;
+  }
   .financeQuest-question1-timer-box {
-    min-width: 80px;
-    min-height: 40px;
     font-size: 1.2rem;
-    padding: 0 16px;
+    padding: 0 8px 0 0;
   }
   .financeQuest-question1-timer-label {
     font-size: 1.2rem;
   }
   .financeQuest-question1-timer-icon {
-    width: 32px;
-    height: 32px;
-    right: -18px;
+    width: 36px;
+    height: 36px;
   }
   .financeQuest-question1-points-box {
     font-size: 1rem;

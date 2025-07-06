@@ -41,13 +41,14 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     return () => clearInterval(intervalId);
   }, [timerStarted, timer]);
 
-  const minutes = Math.floor(timer / 60);
-  const seconds = timer % 60;
+  const minutes = timerStarted ? Math.floor(timer / 60) : 3;
+  const seconds = timerStarted ? timer % 60 : 0;
   const progressBarWidth = (timer / 180) * 100;
 
   const startTimer = () => {
     if (!timerStarted) {
       setTimerStarted(true);
+      setTimer(180);
     }
   };
 
@@ -121,10 +122,22 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
         </div>
         <div className="financeQuest-question1-challenge-title">CHALLENGE 1</div>
         <div className="financeQuest-question1-timer-container">
-          <div className="financeQuest-question1-timer-box">
-            <span className="financeQuest-question1-timer-label">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
-          </div>
-          <img src="/financeQuest/icons/8bitAlarm.png" alt="timer" className="financeQuest-question1-timer-icon" />
+          <button
+            className="financeQuest-question1-timer-btn"
+            aria-label="Start timer"
+            onClick={() => { if (!timerStarted) startTimer(); }}
+            style={{ cursor: timerStarted ? 'default' : 'pointer' }}
+            disabled={timerStarted}
+          >
+            <div className="financeQuest-question1-timer-box">
+              <span className="financeQuest-question1-timer-label">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
+            </div>
+            <img
+              src="/financeQuest/icons/8bitAlarm.png"
+              alt="timer"
+              className="financeQuest-question1-timer-icon"
+            />
+          </button>
         </div>
       </div>
       <div className="financeQuest-question1-pixel-bg">
