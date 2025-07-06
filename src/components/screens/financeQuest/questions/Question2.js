@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QuestionHeader from './QuestionHeader';
 import './Question2.css';
-import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 
 const Question2 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
