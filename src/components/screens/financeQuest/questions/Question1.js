@@ -222,7 +222,11 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
                 </div>
               ))}
             </div>
-            <button className="financeQuest-question1-submit-pixel" onClick={submitAnswers} disabled={teamAnswers.some(a => !a)}>SUBMIT</button>
+            {!showResults ? (
+              <button className="financeQuest-question1-submit-pixel" onClick={submitAnswers} disabled={teamAnswers.some(a => !a)}>SUBMIT</button>
+            ) : (
+              <button className="financeQuest-question1-submit-pixel" onClick={onNextQuestion}>NEXT QUESTION</button>
+            )}
           </div>
           {showResults && (
             <div className="financeQuest-question1-why-section" ref={whyRef}>
