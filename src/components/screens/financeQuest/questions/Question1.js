@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Question1.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 import q1Image from '../../../../assets/icons/q1image.png';
@@ -27,6 +27,7 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [modalContent, setModalContent] = useState('');
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
+  const whyRef = useRef(null);
 
   const correctAnswer = 'A';
 
@@ -169,26 +170,18 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
           </div>
           {/* Choices Section */}
           <div className="financeQuest-question1-choices-pixel-grid">
-            <div className="financeQuest-question1-choice-pixel-card">A
-              <img src="/financeQuest/icons/8bitPieA.png" alt="A" className="financeQuest-question1-choice-pie" />
-              <div className="financeQuest-question1-choice-desc">Exploration and Fun 30%<br />Habitat 30%<br />Safety Fund 20%<br />Life Support 20%</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <img src={showResults ? "/financeQuest/pieCharts/correctPieChartA.png" : "/financeQuest/pieCharts/drawnPieChartA.png"} alt="A" className="financeQuest-question1-choice-pie" />
+              {showResults && (
+                <button className="financeQuest-question1-why-btn" onClick={() => whyRef.current && whyRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                  WANT TO KNOW WHY?
+                </button>
+              )}
             </div>
-            <div className="financeQuest-question1-choice-pixel-card">B
-              <img src="/financeQuest/icons/8bitPieB.png" alt="B" className="financeQuest-question1-choice-pie" />
-              <div className="financeQuest-question1-choice-desc">Exploration and Fun 25%<br />Habitat 15%<br />Safety Fund 30%<br />Life Support 30%</div>
-            </div>
-            <div className="financeQuest-question1-choice-pixel-card">C
-              <img src="/financeQuest/icons/8bitPieC.png" alt="C" className="financeQuest-question1-choice-pie" />
-              <div className="financeQuest-question1-choice-desc">Exploration and Fun 15%<br />Habitat 25%<br />Safety Fund 30%<br />Life Support 30%</div>
-            </div>
-            <div className="financeQuest-question1-choice-pixel-card">D
-              <img src="/financeQuest/icons/8bitPieD.png" alt="D" className="financeQuest-question1-choice-pie" />
-              <div className="financeQuest-question1-choice-desc">Exploration and Fun 5%<br />Habitat 30%<br />Safety Fund 35%<br />Life Support 30%</div>
-            </div>
-            <div className="financeQuest-question1-choice-pixel-card">E
-              <img src="/financeQuest/icons/8bitPieE.png" alt="E" className="financeQuest-question1-choice-pie" />
-              <div className="financeQuest-question1-choice-desc">Exploration and Fun 50%<br />Habitat 25%<br />Safety Fund 5%<br />Life Support 20%</div>
-            </div>
+            <img src="/financeQuest/pieCharts/drawnPieChartB.png" alt="B" className="financeQuest-question1-choice-pie" />
+            <img src="/financeQuest/pieCharts/drawnPieChartC.png" alt="C" className="financeQuest-question1-choice-pie" />
+            <img src="/financeQuest/pieCharts/drawnPieChartD.png" alt="D" className="financeQuest-question1-choice-pie" />
+            <img src="/financeQuest/pieCharts/drawnPieChartE.png" alt="E" className="financeQuest-question1-choice-pie" />
           </div>
           {/* Team Answer Section */}
           <div className="financeQuest-question1-team-answer-section">
@@ -197,23 +190,47 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
               {teams.map((team, idx) => (
                 <div className="financeQuest-question1-team-dropdown" key={team.name}>
                   <span className="financeQuest-question1-team-label">{idx + 1}. <b>{team.name}</b></span>
-                  <select
-                    value={teamAnswers[idx]}
-                    onChange={e => handleTeamAnswerChange(idx, e.target.value)}
-                    className="financeQuest-question1-team-select"
-                  >
-                    <option value="">Select one</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                  </select>
+                  {showResults ? (
+                    <div className={`financeQuest-question1-team-answer-box ${teamAnswers[idx] === 'A' ? 'financeQuest-question1-team-answer-correct' : 'financeQuest-question1-team-answer-incorrect'}`}>{teamAnswers[idx]}</div>
+                  ) : (
+                    <select
+                      value={teamAnswers[idx]}
+                      onChange={e => handleTeamAnswerChange(idx, e.target.value)}
+                      className="financeQuest-question1-team-select"
+                    >
+                      <option value="">Select one</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                    </select>
+                  )}
                 </div>
               ))}
             </div>
             <button className="financeQuest-question1-submit-pixel" onClick={submitAnswers} disabled={teamAnswers.some(a => !a)}>SUBMIT</button>
           </div>
+          {showResults && (
+            <div className="financeQuest-question1-why-section" ref={whyRef}>
+              <div className="financeQuest-question1-why-title">THE WHY</div>
+              <div className="financeQuest-question1-why-body">
+                <ul style={{ marginLeft: 0, paddingLeft: 24 }}>
+                  <li>
+                    <strong>Follows the 50 / 30 / 20 rule.</strong>
+                    <ul style={{ marginTop: 8, marginBottom: 8 }}>
+                      <li><strong>Needs (Habitat + Life-Support): ≈50 %</strong> – keeps Zara safe and healthy.</li>
+                      <li><strong>Savings (Safety Fund): ≈20 %</strong> – builds an emergency cushion for Mars mishaps.</li>
+                      <li><strong>Wants (Exploration & Fun): ≈30 %</strong> – leaves room for enjoyment without derailing her budget.</li>
+                    </ul>
+                  </li>
+                </ul>
+                <p style={{ marginTop: 18 }}>
+                  Allocations that push <strong>too much into Wants</strong> or <strong>too little into Savings</strong> score fewer points because they increase the risk of running short when an unexpected repair or expense hits.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
