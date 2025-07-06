@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Question4.css';
 import lightningBolt from '../../../../assets/icons/Lightning Bolt.png';
 import moneyBars from '../../../../assets/icons/moneybars.png';
 import InvestmentCalculator from '../../../widgets/InvestmentCalculator';
 
+const PLANET_EARTH = '/financeQuest/celestialBodies/Earth.png';
+const PLANET_MOON = '/financeQuest/celestialBodies/Moon.png';
+const PLANET_MARS = '/financeQuest/celestialBodies/Mars.png';
+
 const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   const [showResults, setShowResults] = useState(false);
-  const [timer, setTimer] = useState(240);
+  const [timer, setTimer] = useState(180);
   const [timerStarted, setTimerStarted] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHintModal, setShowHintModal] = useState(false);
@@ -20,7 +24,8 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     y: 0,
   });
   const [teamAnswers, setTeamAnswers] = useState(Array(teams.length).fill(''));
-  const [detailedAnswerShown, setDetailedAnswerShown] = useState(false);
+  const [showWhy, setShowWhy] = useState(false);
+  const whyRef = useRef(null);
 
   const correctAnswer = 'B';
 
@@ -36,7 +41,7 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;
-  const progressBarWidth = (timer / 240) * 100;
+  const progressBarWidth = (timer / 180) * 100;
 
   const startTimer = () => {
     if (!timerStarted) {
@@ -83,10 +88,6 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     onNextQuestion();
   };
 
-  const toggleDetailedAnswer = () => {
-    setDetailedAnswerShown(!detailedAnswerShown);
-  };
-
   const handleTeamAnswerChange = (index, value) => {
     const newAnswers = [...teamAnswers];
     newAnswers[index] = value;
@@ -94,90 +95,178 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
   };
 
   return (
-    <div className="question4-container">
-      {/* Header and Progress Bar */}
-      <div className="question4-progress-bar-container">
-        <div className="question4-progress-bar">
-          <div className="question4-progress" style={{ width: `${progressBarWidth}%` }}></div>
+    <>
+      <div className="financeQuest-question4-pixel-bg">
+        {/* Floating Planets */}
+        <img src={PLANET_EARTH} alt="Earth" className="financeQuest-question4-planet earth" />
+        <img src={PLANET_MOON} alt="Moon" className="financeQuest-question4-planet moon" />
+        <img src={PLANET_MARS} alt="Mars" className="financeQuest-question4-planet mars" />
+        {/* Top Bar Row */}
+        <div className="financeQuest-question4-topbar-row">
+          <div className="financeQuest-question4-points-box">
+            <img src="/financeQuest/icons/8bitLightning.png" alt="points" className="financeQuest-question4-points-icon" />
+            <span className="financeQuest-question4-points-label">3 points</span>
+          </div>
+          <div className="financeQuest-question4-challenge-title">CHALLENGE 4</div>
+          <div className="financeQuest-question4-timer-container">
+            {!timerStarted ? (
+              <button onClick={startTimer} className="financeQuest-question4-timer-btn">
+                <span className="financeQuest-question4-timer-label">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
+                <img src="/financeQuest/icons/8bitAlarm.png" alt="Timer" className="financeQuest-question4-timer-icon" />
+              </button>
+            ) : (
+              <div className="financeQuest-question4-timer-btn financeQuest-question4-timer-btn-disabled">
+                <span className="financeQuest-question4-timer-label">{minutes}:{seconds < 10 ? '0' + seconds : seconds}</span>
+                <img src="/financeQuest/icons/8bitAlarm.png" alt="Timer" className="financeQuest-question4-timer-icon" />
+              </div>
+            )}
+          </div>
         </div>
-
-        <div className="question4-timer-container">
-          {!timerStarted ? (
-            <button onClick={startTimer} className="question4-start-timer-button">
-              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds} Start Timer
+        <div className="financeQuest-question4-main-content">
+          {/* Story Card */}
+          <div className="financeQuest-question4-story-box">
+            <div className="financeQuest-question4-story-topbar">
+              <span className="financeQuest-question4-story-ellipsis">&hellip;</span>
+              <span className="financeQuest-question4-story-x">&#10005;</span>
+            </div>
+            <div className="financeQuest-question4-story-text">
+              A meteor storm is coming. Zara <b>needs to build an emergency "Shield Fund."</b><br />
+              How much should she set aside based on her costs?
+            </div>
+            <div className="financeQuest-question4-cost-table-wrapper">
+              <table className="financeQuest-question4-cost-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Cost (MC)</th>
+                    <th>Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Habitat pod rent</td><td>Includes air-recycling fee</td><td>1,150</td><td>Need</td></tr>
+                  <tr><td>Life Support</td><td>Food, water, basic utilities</td><td>900</td><td>Need</td></tr>
+                  <tr><td>Colony Data plan</td><td>Communicator & holo-net</td><td>210</td><td>Want</td></tr>
+                  <tr><td>Exploration & Fun</td><td>Holo-games subscription, eating out with friends</td><td>580</td><td>Want</td></tr>
+                  <tr><td>Safety Fund auto-transfer</td><td>Emergency Savings (20% of income target)</td><td>800</td><td>Savings</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* Question Section */}
+          <div className="financeQuest-question4-question-text">
+            Which one is the <span className="financeQuest-question4-purple">smartest</span> and most <span className="financeQuest-question4-purple">realistic choice?</span>
+          </div>
+          {/* Choices */}
+          <div className="financeQuest-question4-choices-list">
+            {['A', 'B', 'C', 'D', 'E'].map((letter, idx) => {
+              const values = ['2,050 MC', '6,150 MC', '3,640 MC', '12,300 MC', '10,920 MC'];
+              const isCorrect = letter === correctAnswer && showResults;
+              return (
+                <div
+                  key={letter}
+                  className={`financeQuest-question4-choice-card${isCorrect ? ' financeQuest-question4-choice-correct' : ''}`}
+                  style={isCorrect ? { background: '#023B35', color: '#fff', fontWeight: 'bold', border: '2px solid #1DE782' } : {}}
+                >
+                  <span className={`financeQuest-question4-choice-letter${isCorrect ? ' financeQuest-question4-choice-letter-correct' : ''}`}>{letter}</span>{values[idx]}
+                </div>
+              );
+            })}
+          </div>
+          {/* WANT TO KNOW WHY Button */}
+          {showResults && !showWhy && (
+            <button
+              className="financeQuest-question4-why-btn"
+              onClick={() => setShowWhy(true)}
+              style={{ margin: '32px auto 0 auto', display: 'block' }}
+            >
+              WANT TO KNOW WHY?
             </button>
+          )}
+          {/* Team Answers/Results */}
+          {!showResults ? (
+            <div className="financeQuest-question4-team-answers-section">
+              <div className="financeQuest-question4-team-answers-title">
+                Select your <span className="financeQuest-question4-purple">answers</span>
+              </div>
+              <div className="financeQuest-question4-team-answers-list">
+                {teams.map((team, index) => (
+                  <div key={team.name} className="financeQuest-question4-team-answer-box">
+                    <div className="financeQuest-question4-team-name">{index + 1}. {team.name}</div>
+                    <select
+                      value={teamAnswers[index]}
+                      onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
+                      className="financeQuest-question4-team-answer-select"
+                    >
+                      <option value="">Select one</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
+              <button 
+                className="financeQuest-question4-submit-btn" 
+                onClick={submitAnswers}
+                disabled={teamAnswers.some(answer => !answer)}
+              >
+                SUBMIT
+              </button>
+            </div>
           ) : (
-            <div className="question4-timer">
-              ⏳ {minutes}:{seconds < 10 ? '0' + seconds : seconds}
+            <div className="financeQuest-question4-results-section">
+              <div className="financeQuest-question4-results-title">Correct Answer: B</div>
+              <div className="financeQuest-question4-results-answer">6,150 MC</div>
+              <div className="financeQuest-question4-results-list">
+                {teams.map((team, index) => (
+                  <div key={team.name} className="financeQuest-question4-results-team-box">
+                    <div className="financeQuest-question4-team-name">{index + 1}. {team.name}</div>
+                    <div className={
+                      `financeQuest-question4-results-team-answer ${teamAnswers[index] === correctAnswer ? 'financeQuest-question4-correct' : 'financeQuest-question4-incorrect'}`
+                    }>
+                      {teamAnswers[index] || '-'}
+                    </div>
+                    <div className="financeQuest-question4-results-team-points">
+                      {teamAnswers[index] === correctAnswer ? 3 : 0} points
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button className="financeQuest-question4-next-btn" onClick={nextQuestion}>NEXT</button>
+            </div>
+          )}
+          {/* THE WHY Section */}
+          {showResults && showWhy && (
+            <div className="financeQuest-question4-why-section">
+              <hr className="financeQuest-question4-why-divider" />
+              <div className="financeQuest-question4-why-title">THE WHY</div>
+              <div className="financeQuest-question4-why-text">
+                <p>A solid emergency fund should cover at least three months of Zara's essential (needs) costs.</p>
+                <p><b>Essential category</b><br/>
+                Monthly cost (MC)<br/>
+                Habitat pod rent: 1,350<br/>
+                Life-Support: 900<br/>
+                Transport: 240<br/>
+                <br/>
+                <b>Total monthly needs</b>: 2,490</p>
+                <p>Three months' cover: 2,490 MC × 3 = 7,470 MC → <b>Option B</b>.</p>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Task Description */}
-      <div className="question4-task-header">
-        <div className="question4-top-layer">
-          <div className="question4-points-section" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <h3 style={{ margin: 0 }}>Challenge 4</h3>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <img src={lightningBolt} alt="Lightning Bolt" className="question4-lightning-bolt" style={{ width: 28, height: 28, verticalAlign: 'middle' }} />
-              <span className="question4-points">3 points</span>
-            </span>
-          </div>
-          <div className="question4-button-container">
-            <button className="question4-hint-button" onClick={() => setShowHintModal(true)}>Hint?</button>
-          </div>
-        </div>
-        <div className="question4-task-header-question">
-          <p>Zara hears on the colony news that a powerful meteor shower is forecast for next week.<br />
-          The governor urges every resident to build a personal "Shield-Fund" - cash kept aside for emergencies.</p>
-        </div>
-      </div>
-
-      {/* Cost Table */}
-      <div className="question4-cost-table-wrapper">
-        <table className="question4-cost-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Description</th>
-              <th>Cost (MC)</th>
-              <th>Category</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Habitat pod rent</td><td>Includes air-recycling fee</td><td>1 150</td><td>Needs</td></tr>
-            <tr><td>Life-Support</td><td>Food, water, basic utilities</td><td>900</td><td>Need</td></tr>
-            <tr><td>Transport</td><td>Mag-tram pass to the rover bay</td><td>240</td><td>Need</td></tr>
-            <tr><td>Colony Data plan</td><td>Communicator & holo-net</td><td>210</td><td>Want</td></tr>
-            <tr><td>Exploration & Fun</td><td>Holo-games subscription, eating out with friends</td><td>580</td><td>Want</td></tr>
-            <tr><td>Safety Fund auto-transfer</td><td>Emergency savings (20 % of income target)</td><td>800</td><td>Savings</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Question Section */}
-      <div className="question4-question-section">
-        <p className="question4-question-text">Given Zara's expenses, what is the minimum amount she should set aside in her Emergency Fund?</p>
-      </div>
-
-      {/* Multiple Choice Options */}
-      <div className="question4-choices-container">
-        <button className="question4-choice-button">A. 3,500 MC</button>
-        <button className="question4-choice-button">B. 7,470 MC</button>
-        <button className="question4-choice-button">C. 10,500 MC</button>
-        <button className="question4-choice-button">D. 14,940 MC</button>
-        <button className="question4-choice-button">E. 21,000 MC</button>
-      </div>
-
       {/* Glossary Sidebar */}
       {showGlossary && (
-        <div className="question4-glossary-sidebar">
-          <div className="question4-glossary-header">
+        <div className="financeQuest-question4-glossary-sidebar">
+          <div className="financeQuest-question4-glossary-header">
             <h2>{glossaryTitle}</h2>
-            <button className="question4-close-button" onClick={() => setShowGlossary(false)}>X</button>
+            <button className="financeQuest-question4-close-button" onClick={() => setShowGlossary(false)}>X</button>
           </div>
-          <div className="question4-glossary-content">
+          <div className="financeQuest-question4-glossary-content">
             <p>{glossaryContent}</p>
           </div>
         </div>
@@ -185,92 +274,23 @@ const Question4 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
 
       {/* Hint Modal */}
       {showHintModal && (
-        <div className="question4-hint-modal-overlay">
-          <div className="question4-hint-modal">
+        <div className="financeQuest-question4-hint-modal-overlay">
+          <div className="financeQuest-question4-hint-modal">
             <h3>Hint</h3>
             <p>Consider the risk and potential return of each investment option.</p>
-            <button onClick={() => setShowHintModal(false)} className="question4-close-modal-button">Close</button>
+            <button onClick={() => setShowHintModal(false)} className="financeQuest-question4-close-modal-button">Close</button>
           </div>
-        </div>
-      )}
-
-      {/* Conditionally display answer options or result section */}
-      {!showResults ? (
-        <div>
-          {/* Team Answer Section */}
-          <div className="question4-team-answer-section">
-            <h4>Your answers</h4>
-            <div className="question4-team-answer-container">
-              {teams.map((team, index) => (
-                <div key={team.name} className="question4-team-answer-box">
-                  <p>{team.name}</p>
-                  <select
-                    value={teamAnswers[index]}
-                    onChange={(e) => handleTeamAnswerChange(index, e.target.value)}
-                    className="question4-answer-select"
-                  >
-                    <option value="" disabled>Select answer</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                  </select>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button className="question4-submit-button" onClick={submitAnswers}>Submit</button>
-        </div>
-      ) : (
-        <div className="question4-result-section">
-          <h4>Correct Answer:</h4>
-          <div className="question4-correct-answer">Option B: 7,470 MC</div>
-          <div className="question4-correct-answer-description">
-            <div className="question4-explanation-cards-container">
-              <div className="question4-explanation-card rule">
-                <div className="question4-explanation-label">Emergency Fund Rule</div>
-                <div className="question4-explanation-main">A solid emergency fund should cover at least three months of Zara's essential (needs) costs.</div>
-              </div>
-              <div className="question4-explanation-card costs">
-                <div className="question4-explanation-label">Essential Costs</div>
-                <div className="question4-explanation-main">Habitat pod rent: 1,350<br/>Life-Support: 900<br/>Transport: 240<br/><b>Total monthly needs: 2,490 MC</b></div>
-                <div className="question4-explanation-desc">Sum of all essential monthly costs</div>
-              </div>
-              <div className="question4-explanation-card answer">
-                <div className="question4-explanation-label">Three Months' Cover</div>
-                <div className="question4-explanation-main">2,490 MC × 3 = <b>7,470 MC</b> → Option B</div>
-                <div className="question4-explanation-desc">Minimum emergency fund needed</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Display each team's answer with comparison */}
-          <div className="question4-team-answer-comparison">
-            {teams.map((team, index) => (
-              <div key={team.name} className="question4-team-answer-box">
-                <p>{team.name}</p>
-                <div className={teamAnswers[index] === correctAnswer ? 'question4-correct' : 'question4-incorrect'}>
-                  {teamAnswers[index] || '-'}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button className="question4-next-button" onClick={nextQuestion}>Next</button>
         </div>
       )}
 
       {/* Hover Modal */}
       {hoverModal.show && (
-        <div className="question4-hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
+        <div className="financeQuest-question4-hover-modal" style={{ top: hoverModal.y + 'px', left: hoverModal.x + 'px' }}>
           <h3>{hoverModal.title}</h3>
           <p>{hoverModal.content}</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
