@@ -38,7 +38,7 @@ const Leaderboard = ({ teams, quizComplete, onNextQuestion }) => {
     return (points / maxPoints) * 100;
   };
 
-  const toggleTeamExpansion = (teamName) => {
+  const handleExpand = (teamName) => {
     setExpandedTeam(expandedTeam === teamName ? null : teamName);
   };
 
@@ -78,80 +78,50 @@ const Leaderboard = ({ teams, quizComplete, onNextQuestion }) => {
   }, [rankedTeams]);
 
   return (
-    <div className="quiz-results-container">
-      <div className="quiz-results-header-container">
-        <button onClick={goHome} className="quiz-results-home-button">Go to Home</button>
-        <h2 className="quiz-results-title">Scoreboard</h2>
-        {/* <button onClick={() => navigate('/sim-setup')} className="quiz-results-simulation-button">
-          Go to Simulation
-        </button> */}
+    <div className="pixel-leaderboard-bg">
+      <div className="pixel-leaderboard-header-outer">
+        <img src="/financeQuest/icons/8bitRedFlag.png" alt="flag" className="pixel-leaderboard-flag-img" />
+        <span className="pixel-leaderboard-title">LEADERBOARD</span>
       </div>
-
-      <div className="quiz-results-content-wrapper">
-        <div className="quiz-results-team-results">
-          {rankedTeams.map((team, index) => (
-            <div
-              key={team.name}
-              className={`quiz-results-team-bar-container ${expandedTeam === team.name ? 'expanded' : ''} ${team.rank === 1 ? 'quiz-results-winning-team' : ''}`}
-              style={{
-                backgroundColor: team.rank === 1 ? '#C5FF9A' : '',
-                color: team.rank === 1 ? 'black' : ''
-              }}
-              onClick={() => toggleTeamExpansion(team.name)}
-            >
-              <div className="quiz-results-team-bar">
-                <p className="quiz-results-team-name">
-                  {team.rank}. {team.name}
-                  {team.rank === 1 && (
-                    <img src={crownIcon} alt="Crown" className="quiz-results-crown-icon" />
-                  )}
-                </p>
-                <div className="quiz-results-bar-wrapper">
-                  <div
-                    className="quiz-results-bar"
-                    style={{
-                      width: `${barWidths[team.name]}%`,
-                      transitionDelay: `${index * 0.2}s`
-                    }}
-                  />
-                </div>
-                <div className="quiz-results-points-info">
-                  <p className="quiz-results-points" style={{ color: team.rank === 1 ? 'black' : 'white' }}>
-                    ⚡ {team.points}
-                  </p>
-                </div>
-              </div>
-
-              {expandedTeam === team.name && (
-                <div className="quiz-results-team-points-breakdown">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Task</th>
-                        <th>Points</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(team.taskScores || {}).map(([task, points]) => (
-                        <tr key={task}>
-                          <td>Task {task}</td>
-                          <td>{points}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          ))}
+      <div className="pixel-leaderboard-card">
+        <div className="pixel-leaderboard-table-wrapper">
+          <table className="pixel-leaderboard-table">
+            <tbody>
+              {rankedTeams.map((team, idx) => [
+                <tr key={team.name} className="pixel-leaderboard-row" onClick={() => handleExpand(team.name)} style={{ cursor: 'pointer' }}>
+                  <td className="pixel-leaderboard-rank">{idx + 1}.</td>
+                  <td className="pixel-leaderboard-team">{team.name}</td>
+                  <td className="pixel-leaderboard-points">{team.points} POINTS</td>
+                </tr>,
+                expandedTeam === team.name && (
+                  <tr key={team.name + '-expanded'} className="pixel-leaderboard-breakdown-row">
+                    <td colSpan={3}>
+                      <table className="pixel-leaderboard-breakdown-table">
+                        <thead>
+                          <tr>
+                            <th>Question</th>
+                            <th>Points</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {team.taskScores && Object.entries(team.taskScores).map(([q, pts]) => (
+                            <tr key={q}>
+                              <td>Q{q}</td>
+                              <td>{pts}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )
+              ])}
+            </tbody>
+          </table>
         </div>
+        <img src="/financeQuest/icons/8bitStar.png" alt="star" className="pixel-leaderboard-star" />
       </div>
-
-      <div className="quiz-results-next-button-container">
-        <button className="quiz-results-next-button" onClick={nextOrNavigateToSimulation}>
-          {quizComplete ? 'See Results' : 'Next'}
-        </button>
-      </div>
+      <button className="pixel-leaderboard-next-btn" onClick={onNextQuestion}>NEXT</button>
     </div>
   );
 };

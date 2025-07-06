@@ -1,3 +1,175 @@
+/* PIXEL-ART LEADERBOARD STYLES */
+.pixel-leaderboard-bg {
+  min-height: 100vh;
+  width: 100vw;
+  background: url('../../../../public/financeQuest/background/Mountain.png') center center no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-leaderboard-header-outer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  margin-top: 32px;
+  width: 100%;
+}
+
+.pixel-leaderboard-card {
+  background: #180237;
+  border: 0.1rem solid #fff;
+  border-radius: 18px;
+  box-shadow: 0 0 0 6px #fff, 0 8px 32px #0008;
+  width: 90vw;
+  margin: 0 auto;
+  padding: 32px 0 32px 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.pixel-leaderboard-flag-img {
+  width: 54px;
+  height: 54px;
+  margin-right: 18px;
+  image-rendering: pixelated;
+}
+.pixel-leaderboard-title {
+  font-size: 2.6rem;
+  color: #FFDF8C;
+  letter-spacing: 2px;
+  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
+  font-weight: bold;
+  text-shadow: 0 2px 0 #000, 0 0 8px #FFDF8C55;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.pixel-leaderboard-table-wrapper {
+  width: 100%;
+  margin: 0 auto 0 auto;
+  display: flex;
+  justify-content: center;
+}
+.pixel-leaderboard-table {
+  width: 90%;
+  border-collapse: separate;
+  border-spacing: 0 18px;
+  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
+}
+.pixel-leaderboard-row {
+  background: #2B1A5A;
+  border-radius: 12px;
+  box-shadow: 0 2px 0 #0008;
+  color: #fff;
+  font-size: 1.25rem;
+  height: 64px;
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.pixel-leaderboard-row:hover {
+  background: #3C2A6A;
+  box-shadow: 0 4px 12px #FF9524aa;
+}
+.pixel-leaderboard-rank,
+.pixel-leaderboard-team,
+.pixel-leaderboard-points {
+  padding: 0 32px;
+  font-family: inherit;
+  font-size: 1.15rem;
+  text-align: left;
+  vertical-align: middle;
+}
+.pixel-leaderboard-rank {
+  width: 48px;
+  text-align: left;
+}
+.pixel-leaderboard-team {
+  width: 220px;
+  text-align: left;
+}
+.pixel-leaderboard-points {
+  width: 120px;
+  text-align: right;
+}
+
+.pixel-leaderboard-star {
+  position: absolute;
+  bottom: -24px;
+  right: -24px;
+  width: 64px;
+  height: 64px;
+  z-index: 3;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 0 #fff8);
+}
+
+.pixel-leaderboard-next-btn {
+  position: fixed;
+  bottom: 40px;
+  right: 60px;
+  z-index: 10;
+  background: #180237;
+  color: #fff;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
+  font-size: 1.2rem;
+  padding: 16px 38px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #fff8, 0 8px 32px #0008;
+  text-shadow: 0 2px 0 #fff8;
+  transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s;
+}
+.pixel-leaderboard-next-btn:hover {
+  background: #fff;
+  color: #180237;
+  border: 3px solid #FFDF8C;
+  box-shadow: 0 8px 24px #FFDF8Caa, 0 0 0 4px #fff;
+  text-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .pixel-leaderboard-card {
+    max-width: 99vw;
+    padding: 12px 0 32px 0;
+  }
+  .pixel-leaderboard-header-outer {
+    margin-top: 18px;
+  }
+  .pixel-leaderboard-table {
+    width: 99%;
+    font-size: 0.9rem;
+  }
+  .pixel-leaderboard-row {
+    font-size: 0.9rem;
+    height: 44px;
+  }
+  .pixel-leaderboard-star {
+    width: 40px;
+    height: 40px;
+    bottom: -12px;
+    right: -12px;
+  }
+  .pixel-leaderboard-next-btn {
+    font-size: 0.9rem;
+    padding: 10px 18px;
+    bottom: 16px;
+    right: 12px;
+  }
+}
+
 .quiz-results-container {
   position: relative;
   text-align: center;
@@ -437,4 +609,41 @@ tbody tr:hover {
 
 .quiz-results-content-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
+}
+
+/* Remove or override the old .pixel-leaderboard-header-row, .pixel-leaderboard-flag, .pixel-leaderboard-mountain if not used */
+.pixel-leaderboard-header-row, .pixel-leaderboard-flag, .pixel-leaderboard-mountain {
+  display: none !important;
+}
+
+.pixel-leaderboard-breakdown-row td {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+.pixel-leaderboard-breakdown-table {
+  width: 100%;
+  background: #1C0032;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  margin: 0 auto 12px auto;
+  font-family: 'Press Start 2P', 'VT323', 'Consolas', 'monospace', Arial, sans-serif;
+  color: #fff;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px #0008;
+}
+.pixel-leaderboard-breakdown-table th,
+.pixel-leaderboard-breakdown-table td {
+  padding: 8px 18px;
+  text-align: left;
+  border-bottom: 1px solid #fff2;
+}
+.pixel-leaderboard-breakdown-table th {
+  color: #FFDF8C;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.pixel-leaderboard-breakdown-table tr:last-child td {
+  border-bottom: none;
 } 
