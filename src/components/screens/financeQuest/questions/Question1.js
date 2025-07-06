@@ -95,8 +95,9 @@ const Question1 = ({ teams, onAnswer, onNextQuestion, onAwardPoints }) => {
     setShowResults(true);
     const pointsArray = teamAnswers.map(answer => {
       if (answer === 'A') return 3;
-      if (answer === 'B' || answer === 'C') return 2;
-      if (answer === 'D' || answer === 'E') return 1;
+      if (answer === 'B') return 2;
+      if (answer === 'E') return 1;
+      // C and D give 0
       return 0;
     });
     onAwardPoints(pointsArray);
