@@ -64,16 +64,20 @@
   cursor: pointer;
   margin-top: 1.5rem;
   transition: filter 0.15s, transform 0.1s;
-  outline: none;
-  box-sizing: border-box;
+  background-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .financeQuest-landingPage-pressStart:hover {
   transform: scale(1.04);
 }
 
+.financeQuest-landingPage-pressStart:focus,
 .financeQuest-landingPage-pressStart:active {
-  transform: scale(0.98);
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
 }
 
 /* Remove any previous pixel-corner, border, and box-shadow styles for this button */
