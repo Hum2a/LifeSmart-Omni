@@ -16,7 +16,7 @@ const PLANET_EARTH = '/financeQuest/celestialBodies/Earth.png';
 const PLANET_MOON = '/financeQuest/celestialBodies/Moon.png';
 const PLANET_MARS = '/financeQuest/celestialBodies/Mars.png';
 
-const BASE_FUNDS = 100000;
+const BASE_FUNDS = 10000;
 const POINTS_MULTIPLIER = 1000;
 
 const pots = [
