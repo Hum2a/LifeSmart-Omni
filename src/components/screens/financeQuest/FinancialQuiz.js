@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getFirestore, collection, setDoc, doc, getDocs, deleteDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import Question1 from './questions/Question1';
 import Question2 from './questions/Question2';
 import Question3 from './questions/Question3';
@@ -9,7 +7,10 @@ import Question4 from './questions/Question4';
 import Question5 from './questions/Question5';
 import Question6 from './questions/Question6';
 import Leaderboard from './Leaderboard';
+import FinanceQuestSimulation from '../financeQuest/FinanceQuestSimulation';
 import '../../styles/FinancialQuiz.css';
+
+const BASE_FUNDS = 100000;
 
 const FinancialQuiz = () => {
   const navigate = useNavigate();
@@ -18,9 +19,7 @@ const FinancialQuiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizComplete, setQuizComplete] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [uid, setUid] = useState(null);
-  const db = getFirestore();
-  const auth = getAuth();
+  const [allocations, setAllocations] = useState(null); // Store allocations from Q6
 
   const questions = [
     Question1,
@@ -31,29 +30,10 @@ const FinancialQuiz = () => {
     Question6
   ];
 
-  // Get the current question component (using PascalCase)
   const CurrentQuestionComponent = questions[currentQuestionIndex];
-
-  // Calculate sorted teams
   const sortedTeams = [...teams].sort((a, b) => b.points - a.points);
 
   useEffect(() => {
-    // Get current user's UID
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      setUid(currentUser.uid);
-    } else {
-      console.error("No user is logged in.");
-      navigate('/');
-    }
-
-    // Debug logging
-    console.log('location.state:', location.state);
-    if (location.state) {
-      console.log('location.state.teams:', location.state.teams);
-    }
-
-    // Prefer teams from location.state, fallback to query string
     let teamsList = [];
     if (location.state && Array.isArray(location.state.teams)) {
       teamsList = location.state.teams.map(name => ({
@@ -72,15 +52,12 @@ const FinancialQuiz = () => {
         }));
       }
     }
-
-    console.log('teamsList:', teamsList);
-
     if (teamsList.length > 0) {
       setTeams(teamsList);
     } else {
       navigate('/finance-quest');
     }
-  }, [location, navigate, auth.currentUser]);
+  }, [location, navigate]);
 
   const handleAnswer = (answer) => {
     console.log("Team answered:", answer);
@@ -102,63 +79,22 @@ const FinancialQuiz = () => {
     });
   };
 
-  const nextQuestion = () => {
-    setShowResults(false);
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-    } else {
-      setQuizComplete(true);
-      saveResultsAndNavigate();
-    }
+  // Capture allocations from Question6 and move to simulation
+  const handleQ6Submit = (allocs) => {
+    setAllocations(allocs);
+    setQuizComplete(true);
   };
 
-  const goHome = () => {
-    navigate('/');
-  };
-
-  const saveResultsAndNavigate = async () => {
-    if (!uid) {
-      alert("No user is logged in. Please sign in.");
-      navigate('/');
-      return;
-    }
-
-    const teamsCollectionRef = collection(db, uid, "Adult Simulations", "Teams");
-
-    try {
-      // Step 1: Retrieve and delete all existing team documents for this user
-      const snapshot = await getDocs(teamsCollectionRef);
-      const deletePromises = snapshot.docs.map(docSnapshot =>
-        deleteDoc(docSnapshot.ref)
-      );
-      await Promise.all(deletePromises);
-
-      console.log("All old teams deleted from Firebase for this user.");
-
-      // Step 2: Save each new team's data from the current session
-      const savePromises = sortedTeams.map(team => {
-        const teamDocRef = doc(teamsCollectionRef, team.name);
-        return setDoc(teamDocRef, {
-          name: team.name,
-          points: team.points,
-          taskScores: team.taskScores
-        });
-      });
-
-      await Promise.all(savePromises);
-
-      console.log("New results saved to Firebase:", sortedTeams);
-
-      // Step 3: Navigate to the SimSetup screen with teams data
-      navigate('/adult-simulation-setup', { 
-        state: { 
-          teams: sortedTeams
-        }
-      });
-    } catch (error) {
-      console.error("Error during saving results to Firebase:", error);
-    }
-  };
+  // After quiz is complete, show simulation
+  if (quizComplete && allocations) {
+    return (
+      <FinanceQuestSimulation
+        teams={teams}
+        initialAllocations={allocations}
+        baseFunds={BASE_FUNDS}
+      />
+    );
+  }
 
   if (teams.length === 0) {
     return <div className="loading">Loading...</div>;
@@ -171,18 +107,24 @@ const FinancialQuiz = () => {
           <Leaderboard
             teams={sortedTeams}
             quizComplete={quizComplete}
-            onNextQuestion={nextQuestion}
+            onNextQuestion={() => setShowResults(false)}
           />
         ) : (
           <CurrentQuestionComponent
             teams={teams}
             onAnswer={handleAnswer}
-            onNextQuestion={() => setShowResults(true)}
+            onNextQuestion={
+              currentQuestionIndex === 5
+                ? (allocs) => handleQ6Submit(allocs)
+                : () => {
+                    setShowResults(true);
+                    setCurrentQuestionIndex((prev) => prev + 1);
+                  }
+            }
             onAwardPoints={updateScores}
           />
         )}
       </main>
-
       <footer className="footer">
         <p className="footer-text">© 2024 Our App. All rights reserved.</p>
       </footer>
