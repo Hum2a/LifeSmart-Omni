@@ -338,7 +338,7 @@
 }
 .financeQuest-question6-allocation-pot-row {
   display: grid;
-  grid-template-columns: 44px 1.5fr 1fr 1fr 1.2fr;
+  grid-template-columns: 44px 1.5fr 0.7fr 0.6fr 1fr;
   align-items: center;
   background: #2e02450e;
   border-bottom: 1.5px solid #FFD43B44;
@@ -346,6 +346,7 @@
   min-width: 180px;
   min-height: 54px;
   position: relative;
+  overflow: hidden;
 }
 .financeQuest-question6-allocation-pot-row:last-child {
   border-bottom: none;
@@ -393,7 +394,7 @@
   text-align: right;
   outline: none;
   border-radius: 5px;
-  margin: 0 20px;
+  margin: 0 8px;
   transition: background 0.15s, box-shadow 0.15s;
   box-shadow: 0 1px 4px #0002;
 }
@@ -422,9 +423,15 @@
   color: #CA70E3;
   font-family: 'Montserrat', Arial, sans-serif;
   font-size: 0.92rem;
-  margin-left: 8px;
+  margin-left: 4px;
   text-shadow: 1px 1px 0 #000, 0 0 6px #000a;
   text-align: right;
+  word-break: break-all;
+  max-width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 .financeQuest-question6-allocation-total {
   font-family: 'Press Start 2P', monospace;
