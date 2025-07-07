@@ -385,18 +385,20 @@
 }
 .financeQuest-question6-allocation-input {
   width: 40px;
-  font-size: 1.08rem;
+  font-size: 1.25rem;
+  font-weight: bold;
   border: none;
   background: #ffffff33;
   color: #1C0032;
-  font-family: 'Montserrat', monospace;
-  padding: 6px 0 6px 0;
-  text-align: right;
+  font-family: 'Press Start 2P', monospace;
+  padding: 8px 0 8px 0;
+  text-align: center;
   outline: none;
-  border-radius: 5px;
+  border-radius: 7px;
   margin: 0 8px;
   transition: background 0.15s, box-shadow 0.15s;
   box-shadow: 0 1px 4px #0002;
+  letter-spacing: 1px;
 }
 .financeQuest-question6-allocation-input:focus {
   background: #FFD43B22;
@@ -574,6 +576,44 @@
   transform: scale(0.98);
 }
 .financeQuest-question6-submit-btn:disabled {
+  background: #ccc;
+  color: #888;
+  border-color: #aaa;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.financeQuest-question6-dev-randomize-btn {
+  margin: 0 auto 18px auto;
+  display: block;
+  width: 220px;
+  background: #FFD43B;
+  color: #1C0032;
+  border: 3px solid #CA70E3;
+  border-radius: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.08rem;
+  padding: 13px 0;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #CA70E344, 0 0 8px #FFD43B55;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 #fff8, 0 0 6px #fff4;
+  transition: background 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+}
+.financeQuest-question6-dev-randomize-btn:hover:not(:disabled) {
+  background: #CA70E3;
+  color: #FFD43B;
+  border-color: #FFD43B;
+  transform: scale(1.04);
+  box-shadow: 0 8px 24px #FFD43B44;
+}
+.financeQuest-question6-dev-randomize-btn:active:not(:disabled) {
+  background: #FF9524;
+  color: #fff;
+  border-color: #FF9524;
+  transform: scale(0.98);
+}
+.financeQuest-question6-dev-randomize-btn:disabled {
   background: #ccc;
   color: #888;
   border-color: #aaa;
