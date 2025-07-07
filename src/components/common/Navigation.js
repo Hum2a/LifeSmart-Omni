@@ -32,7 +32,7 @@ import FinanceQuestTeamCreationPage from '../screens/financeQuest/TeamCreationPa
 import FinanceQuestLeaderboard from '../screens/financeQuest/Leaderboard';
 import FinanceQuestSimSetup from '../screens/financeQuest/sim/SimSetup';
 import FinanceQuestPastSimulations from '../screens/financeQuest/sim/PastSimulations';
-import FinanceQuestSimulation from '../screens/financeQuest/sim/Simulation';
+import FinanceQuestSimulation from '../screens/financeQuest/FinanceQuestSimulation';
 import FinanceQuestSimulationControls from '../screens/financeQuest/sim/SimulationControls';
 import FinanceQuestResultsScreen from '../screens/financeQuest/sim/ResultsScreen';
 
