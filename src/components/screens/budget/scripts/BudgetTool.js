@@ -569,7 +569,7 @@ const BudgetTool = () => {
               </div>
               {wantsReduction > 0 && (
                 <div className="budgettool-analysis-warning">
-                  Action: You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
+                  <strong>Top Tip:</strong> You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
                 </div>
               )}
               {/* <div className="budgettool-analysis-savings">

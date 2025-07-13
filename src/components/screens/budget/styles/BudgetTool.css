@@ -507,9 +507,9 @@
 }
 
 .budgettool-analysis-warning {
-  color: #ff5757;
-  background: rgba(255, 87, 87, 0.13);
-  border: 1px solid rgba(255, 87, 87, 0.18);
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.10);
+  border: 1px solid rgba(33, 150, 243, 0.18);
   border-radius: 8px;
   padding: 1rem;
   margin: 1.5rem 0 2rem 0;
@@ -1753,9 +1753,14 @@
   color: #1a1a1a;
 }
 [data-theme='light'] .budgettool-analysis-warning {
-  color: #e53935;
-  background: #fff3f3;
-  border: 1px solid #ffbdbd;
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.10);
+  border: 1px solid rgba(33, 150, 243, 0.18);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0 2rem 0;
+  font-weight: 600;
+  text-align: center;
 }
 [data-theme='light'] .budgettool-analysis-savings h4 {
   color: #1a1a1a;
