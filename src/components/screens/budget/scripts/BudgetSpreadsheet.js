@@ -265,7 +265,9 @@ const BudgetSpreadsheet = ({ formData }) => {
 
   const formatCurrency = (value) => {
     const cleanValue = String(value || 0).replace(/[£\u00A0]/g, '').trim();
-    return `£${Number(cleanValue).toFixed(2)}`;
+    const num = Number(cleanValue);
+    if (num === 0) return '';
+    return `£${num.toFixed(2)}`;
   };
 
   const getNextMonths = () => {

@@ -1,15 +1,17 @@
 .budgetspreadsheet-container {
   min-height: 100vh;
   padding: 2rem;
-  background-color: #f8fafc;
+  background-color: #393939;
+  border-radius: 12px;
 }
 
 .budgetspreadsheet-content {
+  max-width: 1200px;
   margin: 0 auto;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 2.5rem 2rem;
 }
 
 .budgetspreadsheet-header {
@@ -33,12 +35,14 @@
   margin-bottom: 2rem;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
+  width: 100%;
 }
 
 .budgetspreadsheet-table {
   width: 100%;
+  min-width: 1200px;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
 .budgetspreadsheet-table th,
@@ -46,36 +50,40 @@
   padding: 0.75rem 1rem;
   text-align: right;
   border: 1px solid #e2e8f0;
+  color: #111827; /* Darker text for better contrast */
 }
 
 .budgetspreadsheet-table th {
-  background-color: #f8fafc;
+  background-color: #f1f5f9; /* Slightly darker for more contrast */
   font-weight: 600;
-  color: #1e293b;
+  color: #111827; /* Darker text */
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 .budgetspreadsheet-table .fixed-column {
+  position: -webkit-sticky;
   position: sticky;
   left: 0;
-  background-color: #f8fafc;
+  background-color: #e5e7eb; /* Lighter background for more contrast */
   z-index: 5;
   text-align: left;
   font-weight: 500;
-  color: #1e293b;
+  color: #111827; /* Darker text */
 }
 
 .budgetspreadsheet-table .section-header {
-  background-color: #f1f5f9;
-  font-weight: 600;
+  background-color: #dbeafe; /* Lighter blue for more contrast */
+  font-weight: 700;
   color: #0f172a;
 }
 
 .budgetspreadsheet-table .section-header td {
   text-align: left;
   padding-left: 1rem;
+  color: #0f172a; /* Ensure section header text is dark */
 }
 
 .column-subheader {
