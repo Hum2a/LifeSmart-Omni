@@ -196,9 +196,6 @@ const BudgetTool = () => {
             } />
             <span className="budgettool-info-popover-label">Where do I find this information?</span>
           </div>
-          {/* <div className="budgettool-step-tip">
-            Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
-          </div> */}
         </>
       ),
       questions: [
@@ -276,9 +273,6 @@ const BudgetTool = () => {
             } />
             <span className="budgettool-info-popover-label">Where do I find this information?</span>
           </div>
-          {/* <div className="budgettool-step-tip">
-            Tip: This is not compulsory and is just to get an idea of how much money you spend for each category. This is also possible to get from the free versions so you do not need to pay for any subscriptions.
-          </div> */}
         </>
       ),
       questions: [
@@ -371,83 +365,6 @@ const BudgetTool = () => {
           placeholder: 'Enter amount',
         },
       ],
-    },
-    {
-      category: 'Savings & Safety Nets',
-      description: (
-        <>
-          <div className="budgettool-step-description">
-            <strong>Record how many savings you have and how you organise them.</strong>
-          </div>
-        </>
-      ),
-      questions: [
-        // Savings questions
-        {
-          id: 'totalSavings',
-          label: (
-            <>
-              Total savings balance
-              <InfoButton text={"Cash + easy-access accounts."} />
-            </>
-          ),
-          type: 'number',
-          placeholder: 'Enter your total savings',
-        },
-        {
-          id: 'hasSavingsPot',
-          label: (
-            <>
-              Do you already split your savings into pots?
-            </>
-          ),
-          type: 'select',
-          options: [
-            { value: 'yes', label: 'Yes' },
-            { value: 'no', label: 'No' },
-          ],
-        },
-        // (Add more savings questions here if needed)
-      ],
-      renderCustomContent: (formData, setFormData) => {
-        // Only show savings pots guidance and visual demo, no input fields
-        return (
-          <>
-            <div className="budgettool-savings-info">
-              <div className="budgettool-savings-message">
-                {formData.hasSavingsPot === 'yes' && (
-                  <span><strong>Great, this is how we recommend you organise your savings funds:</strong></span>
-                )}
-                {formData.hasSavingsPot === 'no' && (
-                  <span><strong>No problem, we can help you build out your savings funds:</strong></span>
-                )}
-              </div>
-              <div className="budgettool-savings-pots-explanation">
-                <span style={{ fontStyle: 'italic', fontWeight: 500 }}>
-                  We recommend splitting your savings into 3 funds and filling up each one in turn.
-                </span>
-                <div className="budgettool-savings-pots-demo">
-                  <div className="budgettool-savings-pot-demo emergency">
-                    <div className="budgettool-savings-pot-icon">🛡️</div>
-                    <div className="budgettool-savings-pot-title">Emergency Fund</div>
-                    <div className="budgettool-savings-pot-desc">3-6 months of your <em>needs</em> for unexpected situations</div>
-                  </div>
-                  <div className="budgettool-savings-pot-demo sinking">
-                    <div className="budgettool-savings-pot-icon">🎯</div>
-                    <div className="budgettool-savings-pot-title">Sinking Fund</div>
-                    <div className="budgettool-savings-pot-desc">For planned large expenses (holidays, home repairs, etc.)</div>
-                  </div>
-                  <div className="budgettool-savings-pot-demo goal">
-                    <div className="budgettool-savings-pot-icon">💎</div>
-                    <div className="budgettool-savings-pot-title">Goal / Investment Fund</div>
-                    <div className="budgettool-savings-pot-desc">For long-term goals and building wealth</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        );
-      }
     },
     {
       category: 'Spending Snapshot',
@@ -572,23 +489,6 @@ const BudgetTool = () => {
                   <strong>Top Tip:</strong> You need to reduce your wants spending by £{wantsReduction.toFixed(2)} each month to hit that target.
                 </div>
               )}
-              {/* <div className="budgettool-analysis-savings">
-                <h4>Savings Recommendations</h4>
-                <p>Total Savings Target:</p>
-                <ul className="budgettool-analysis-list">
-                  <li>Minimum target: £{recommendedMinimumSavings.toFixed(2)} (3 months of needs)</li>
-                  <li>Ideal target: £{recommendedIdealSavings.toFixed(2)} (6 months of needs)</li>
-                  <li>Current savings: £{currentSavings.toFixed(2)}</li>
-                  {savingsGap > 0 && (
-                    <li className="budgettool-analysis-warning">
-                      You need £{savingsGap.toFixed(2)} more to reach the minimum target
-                    </li>
-                  )}
-                </ul>
-                <p className="budgettool-analysis-text">
-                  Having savings is crucial for financial stability. We recommend saving at least 20% of your income each month to build up your savings and work towards your financial goals.
-                </p>
-              </div> */}
             </div>
           </div>
         );
