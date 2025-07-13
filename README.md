@@ -8,6 +8,8 @@
   [![Chart.js](https://img.shields.io/badge/Chart.js-4.4.8-green.svg)](https://www.chartjs.org/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+  <strong>Repository:</strong> <a href="https://github.com/Hum2a/LifeSmart-Omni">https://github.com/Hum2a/LifeSmart-Omni</a>
+
   A comprehensive financial education platform empowering users to make informed financial decisions through interactive tools, personalized guidance, and real-world simulations.
 </div>
 
@@ -112,8 +114,8 @@ src/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/lifesmart.git
-   cd lifesmart
+   git clone https://github.com/Hum2a/LifeSmart-Omni.git
+   cd LifeSmart-Omni
    ```
 
 2. **Install dependencies**
