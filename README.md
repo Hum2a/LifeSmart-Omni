@@ -156,6 +156,42 @@ Run tests with:
 npm test
 ```
 
+## 🚀 Release Process
+
+To create a new release, use the `release.sh` script in the project root:
+
+```bash
+./release.sh
+```
+
+This script will:
+1. Ensure you are in the project root.
+2. Pull the latest changes from `origin/master`.
+3. Install dependencies.
+4. Run all tests.
+5. Build the production bundle.
+6. Auto-increment and create a new git tag for the release.
+7. Output next steps for pushing tags and deploying.
+
+**Windows users:**
+- If you are on Windows, run the script with Git Bash or WSL:
+  ```bash
+  bash release.sh
+  ```
+- You may need to make the script executable on Unix systems:
+  ```bash
+  chmod +x release.sh
+  ```
+- **PowerShell Bash Alias (Git Bash workaround):**
+  If you have Git for Windows installed, you can set a temporary alias in PowerShell so `bash` works:
+  ```powershell
+  Set-Alias -Name bash -Value "C:\Program Files\Git\bin\bash.exe"
+  bash release.sh
+  ```
+  Replace the path if your Git is installed elsewhere. This alias lasts for the current session.
+
+After running the script, follow the output instructions to push tags and deploy as needed.
+
 ## 📱 Browser Support
 
 The application supports all modern browsers:

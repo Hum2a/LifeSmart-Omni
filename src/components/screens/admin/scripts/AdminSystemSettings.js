@@ -27,7 +27,7 @@ const AdminSystemSettings = () => {
       maxClassSize: 35,
       allowNewRegistrations: true,
       requireSchoolCode: true,
-      defaultSchoolCode: 'BELINCA2024',
+      defaultSchoolCode: 'LIFESMART2024',
       academicYear: '2023-2024',
       terms: ['Autumn', 'Spring', 'Summer'],
       currentTerm: 'Spring'
