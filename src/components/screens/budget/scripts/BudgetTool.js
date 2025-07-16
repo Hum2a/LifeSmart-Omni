@@ -494,113 +494,113 @@ const BudgetTool = () => {
         );
       }
     },
-    // {
-    //   category: 'Savings Deep Dive',
-    //   description: (
-    //     <>
-    //       <div className="budgettool-step-description">
-    //         <strong>Savings are the foundation you need to deal with issues, start investing and reach financial freedom.</strong>
-    //       </div>
-    //     </>
-    //   ),
-    //   questions: [],
-    //   renderCustomContent: (formData, setFormData) => {
-    //     // Helper for currency
-    //     const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
-    //     // Calculate essentials (needs) for emergency fund using the same logic as calculateBudgetSummary
-    //     const essentials =
-    //       Number(formData.housingPayment || 0) +
-    //       Number(formData.utilities || 0) +
-    //       Number(formData.transportation || 0) +
-    //       Number(formData.groceries || 0) +
-    //       Number(formData.healthInsurance || 0) +
-    //       Number(formData.medicalExpenses || 0) +
-    //       Number(formData.otherLoanPayment || 0);
-    //     const emergencyMin = essentials * 3;
-    //     const totalSavings = Number(formData.totalSavings) || 0;
-    //     const currentEmergency = Math.min(totalSavings, emergencyMin);
-    //     const emergencyShortfall = Math.max(0, emergencyMin - totalSavings);
-    //     const recommendedMonthlySaving = Math.round((formData.monthlyIncome - essentials) * 0.33) || 0;
-    //     const monthsToTarget = recommendedMonthlySaving > 0 ? Math.ceil(emergencyShortfall / recommendedMonthlySaving) : null;
-    //     // Sinking Fund
-    //     const plannedExpenses = Number(formData.sinkingPlannedExpenses) || 0;
-    //     const sinkingFund = Math.max(0, totalSavings - emergencyMin);
-    //     // Goal/Investment Fund
-    //     const goalFund = Math.max(0, totalSavings - emergencyMin - plannedExpenses);
-    //     // Handlers
-    //     const handleEditTotalSavings = () => {
-    //       const val = prompt('Enter your total savings:', formData.totalSavings || '');
-    //       if (val !== null && !isNaN(val)) setFormData({ ...formData, totalSavings: val });
-    //     };
-    //     const handleEditGoalFund = () => {
-    //       const val = prompt('Enter your current goal/investment fund:', formData.goalFund || goalFund || '');
-    //       if (val !== null && !isNaN(val)) setFormData({ ...formData, goalFund: val });
-    //     };
-    //     return (
-    //       <div className="budgettool-savings-deepdive">
-    //         {/* Total Savings */}
-    //         <div className="budgettool-savings-deepdive-row">
-    //           <span className="budgettool-savings-deepdive-label">Total Savings:</span>
-    //           <span className="budgettool-savings-deepdive-value">{formatCurrency(totalSavings)}</span>
-    //           <button className="budgettool-savings-deepdive-edit" onClick={handleEditTotalSavings}>Edit</button>
-    //         </div>
-    //         {/* Emergency Fund */}
-    //         <div className="budgettool-savings-deepdive-section">
-    //           <div className="budgettool-savings-deepdive-title">Emergency Fund</div>
-    //           <div className="budgettool-savings-deepdive-row">
-    //             <span>Minimum Amount (3 months of Essentials):</span>
-    //             <span>{formatCurrency(emergencyMin)}</span>
-    //           </div>
-    //           <div className="budgettool-savings-deepdive-row">
-    //             <span>Current Savings:</span>
-    //             <span>{formatCurrency(currentEmergency)}</span>
-    //           </div>
-    //           <div className="budgettool-savings-deepdive-row budgettool-savings-deepdive-action">
-    //             {emergencyShortfall > 0 ? (
-    //               <>
-    //                 <span>Action:</span>
-    //                 <span>You need another {formatCurrency(emergencyShortfall)} to reach the minimum amount. {monthsToTarget !== null && `Based on your ideal savings target above this will take ${monthsToTarget} month${monthsToTarget > 1 ? 's' : ''} to build up.`}</span>
-    //               </>
-    //             ) : (
-    //               <span>Fantastic, you have enough in your savings to cover this. Make sure you keep it aside from your other savings funds.</span>
-    //             )}
-    //           </div>
-    //         </div>
-    //         {/* Sinking Fund */}
-    //         <div className="budgettool-savings-deepdive-section">
-    //           <div className="budgettool-savings-deepdive-title">Sinking Fund</div>
-    //           <div className="budgettool-savings-deepdive-row">
-    //             <span>Total planned expenses:</span>
-    //             <input
-    //               type="number"
-    //               className="budgettool-savings-deepdive-input"
-    //               value={formData.sinkingPlannedExpenses || ''}
-    //               onChange={e => setFormData({ ...formData, sinkingPlannedExpenses: e.target.value })}
-    //               placeholder="Enter amount"
-    //             />
-    //             <span className="budgettool-info-button" tabIndex="0">💡<span className="budgettool-info-tooltip">Estimate any large expenses you have coming up in the next couple of years that aren't part of your usual spending such as home repair, wedding, large holiday etc. If you do not have any, then you can leave this blank.</span></span>
-    //           </div>
-    //           <div className="budgettool-savings-deepdive-row">
-    //             <span>Current Fund Balance:</span>
-    //             <span>{formatCurrency(sinkingFund)}</span>
-    //           </div>
-    //         </div>
-    //         {/* Goal / Investment Fund */}
-    //         <div className="budgettool-savings-deepdive-section">
-    //           <div className="budgettool-savings-deepdive-title">Goal / Investment Fund</div>
-    //           <div className="budgettool-savings-deepdive-row">
-    //             <span>Current goal/Investment fund:</span>
-    //             <span>{formatCurrency(formData.goalFund || goalFund)}</span>
-    //             <button className="budgettool-savings-deepdive-edit" onClick={handleEditGoalFund}>Edit</button>
-    //           </div>
-    //           <div className="budgettool-savings-deepdive-info">
-    //             Any remaining savings can be used towards the longer term goals you may have or invested to grow your wealth. If you currently have any investments that you haven't considered part of your savings, or aren't mentioned previously, update the number now.
-    //           </div>
-    //         </div>
-    //       </div>
-    //     );
-    //   }
-    // },
+    {
+      category: 'Savings Deep Dive',
+      description: (
+        <>
+          <div className="budgettool-step-description">
+            <strong>Savings are the foundation you need to deal with issues, start investing and reach financial freedom.</strong>
+          </div>
+        </>
+      ),
+      questions: [],
+      renderCustomContent: (formData, setFormData) => {
+        // Helper for currency
+        const formatCurrency = (value) => `£${Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        // Calculate essentials (needs) for emergency fund using the same logic as calculateBudgetSummary
+        const essentials =
+          Number(formData.housingPayment || 0) +
+          Number(formData.utilities || 0) +
+          Number(formData.transportation || 0) +
+          Number(formData.groceries || 0) +
+          Number(formData.healthInsurance || 0) +
+          Number(formData.medicalExpenses || 0) +
+          Number(formData.otherLoanPayment || 0);
+        const emergencyMin = essentials * 3;
+        const totalSavings = Number(formData.totalSavings) || 0;
+        const currentEmergency = Math.min(totalSavings, emergencyMin);
+        const emergencyShortfall = Math.max(0, emergencyMin - totalSavings);
+        const recommendedMonthlySaving = Math.round((formData.monthlyIncome - essentials) * 0.33) || 0;
+        const monthsToTarget = recommendedMonthlySaving > 0 ? Math.ceil(emergencyShortfall / recommendedMonthlySaving) : null;
+        // Sinking Fund
+        const plannedExpenses = Number(formData.sinkingPlannedExpenses) || 0;
+        const sinkingFund = Math.max(0, totalSavings - emergencyMin);
+        // Goal/Investment Fund
+        const goalFund = Math.max(0, totalSavings - emergencyMin - plannedExpenses);
+        // Handlers
+        const handleEditTotalSavings = () => {
+          const val = prompt('Enter your total savings:', formData.totalSavings || '');
+          if (val !== null && !isNaN(val)) setFormData({ ...formData, totalSavings: val });
+        };
+        const handleEditGoalFund = () => {
+          const val = prompt('Enter your current goal/investment fund:', formData.goalFund || goalFund || '');
+          if (val !== null && !isNaN(val)) setFormData({ ...formData, goalFund: val });
+        };
+        return (
+          <div className="budgettool-savings-deepdive">
+            {/* Total Savings */}
+            <div className="budgettool-savings-deepdive-row">
+              <span className="budgettool-savings-deepdive-label">Total Savings:</span>
+              <span className="budgettool-savings-deepdive-value">{formatCurrency(totalSavings)}</span>
+              <button className="budgettool-savings-deepdive-edit" onClick={handleEditTotalSavings}>Edit</button>
+            </div>
+            {/* Emergency Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Emergency Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Minimum Amount (3 months of Essentials):</span>
+                <span>{formatCurrency(emergencyMin)}</span>
+              </div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current Savings:</span>
+                <span>{formatCurrency(currentEmergency)}</span>
+              </div>
+              <div className="budgettool-savings-deepdive-row budgettool-savings-deepdive-action">
+                {emergencyShortfall > 0 ? (
+                  <>
+                    <span>Action:</span>
+                    <span>You need another {formatCurrency(emergencyShortfall)} to reach the minimum amount. {monthsToTarget !== null && `Based on your ideal savings target above this will take ${monthsToTarget} month${monthsToTarget > 1 ? 's' : ''} to build up.`}</span>
+                  </>
+                ) : (
+                  <span>Fantastic, you have enough in your savings to cover this. Make sure you keep it aside from your other savings funds.</span>
+                )}
+              </div>
+            </div>
+            {/* Sinking Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Sinking Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Total planned expenses:</span>
+                <input
+                  type="number"
+                  className="budgettool-savings-deepdive-input"
+                  value={formData.sinkingPlannedExpenses || ''}
+                  onChange={e => setFormData({ ...formData, sinkingPlannedExpenses: e.target.value })}
+                  placeholder="Enter amount"
+                />
+                <span className="budgettool-info-button" tabIndex="0">💡<span className="budgettool-info-tooltip">Estimate any large expenses you have coming up in the next couple of years that aren't part of your usual spending such as home repair, wedding, large holiday etc. If you do not have any, then you can leave this blank.</span></span>
+              </div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current Fund Balance:</span>
+                <span>{formatCurrency(sinkingFund)}</span>
+              </div>
+            </div>
+            {/* Goal / Investment Fund */}
+            <div className="budgettool-savings-deepdive-section">
+              <div className="budgettool-savings-deepdive-title">Goal / Investment Fund</div>
+              <div className="budgettool-savings-deepdive-row">
+                <span>Current goal/Investment fund:</span>
+                <span>{formatCurrency(formData.goalFund || goalFund)}</span>
+                <button className="budgettool-savings-deepdive-edit" onClick={handleEditGoalFund}>Edit</button>
+              </div>
+              <div className="budgettool-savings-deepdive-info">
+                Any remaining savings can be used towards the longer term goals you may have or invested to grow your wealth. If you currently have any investments that you haven't considered part of your savings, or aren't mentioned previously, update the number now.
+              </div>
+            </div>
+          </div>
+        );
+      }
+    },
     {
       category: '6-Month Outline',
       description: (formData) => {
@@ -612,15 +612,15 @@ const BudgetTool = () => {
           const secondMonth = new Date(today.getFullYear(), today.getMonth() + 2, 1);
           return secondMonth.toLocaleString('default', { month: 'long' });
         }
-        // return (
-        //   <div className="budgettool-step-description">
-        //     <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
-        //     Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
-        //     <span className="budgettool-step-action">
-        //       Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
-        //     </span>
-        //   </div>
-        // );
+        return (
+          <div className="budgettool-step-description">
+            <strong>Fantastic, below is your spending and saving outline for the next 6 months.</strong><br />
+            Based on this, your savings will have increased by {formatCurrency(totalIncrease)}.<br /><br />
+            <span className="budgettool-step-action">
+              Action: During the first week of {getSecondMonthName()}, you need to come and enter the actual spend figures to see if you are on track.
+            </span>
+          </div>
+        );
       },
       questions: [],
       renderCustomContent: (formData) => {
@@ -946,12 +946,12 @@ const BudgetTool = () => {
               )}
             </div>
 
-            {/* <div className="budgettool-projections-footer">
+            <div className="budgettool-projections-footer">
               <p>
                 Please come back after one month and enter the actual figures to compare with these projections.
                 This will help you track your progress and make necessary adjustments to your budget.
               </p>
-            </div> */}
+            </div>
           </div>
         );
       }
